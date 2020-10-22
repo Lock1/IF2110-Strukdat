@@ -1,4 +1,4 @@
-# Tugas Besar - Algoritma & Stru
+# Tugas Besar - Algoritma dan Struktur Data
 **TBA**
 
 ### Release
