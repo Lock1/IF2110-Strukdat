@@ -67,20 +67,35 @@ JRE         | 9 -->
 
 
 ## Spesifikasi
-**TBA**
-<!-- **Status : Done** :white_check_mark: \
-**9 / 9**
+<!--**Base Game**
 Spesifikasi                       | Status
 -----------                       | ------
-SPL - Eliminasi Gauss             | :white_check_mark:
-SPL - Eliminasi Gauss-Jordan      | :white_check_mark:
-SPL - Matriks Invers              | :white_check_mark:
-SPL - Metode Cramer               | :white_check_mark:
-Determinan - Kofaktor             | :white_check_mark:
-Determinan - Reduksi Baris        | :white_check_mark:
-Invers - Matriks Invers           | :white_check_mark:
-Interpolasi - Polinom Interpolasi | :white_check_mark:
-Regresi - Regresi Linear Ganda    | :white_check_mark: -->
+Movement
+Tick
+Draw-->
+
+
+
+<!--**Fitur**
+**Status : WIP**
+Spesifikasi                       | Status
+-----------                       | ------
+-->
+ 
+
+**Bonus**
+**Status : WIP**
+Spesifikasi | Status
+----------- | ------
+Save        | :x:
+Load        | :x:
+Continue    | :x:
+
+**Status : WIP**
+Spesifikasi   | Status
+-----------   | ------
+Ukuran Wahana | :x:
+
 
 ## Laporan
 **TBA**
