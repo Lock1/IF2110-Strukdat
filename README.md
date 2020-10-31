@@ -22,9 +22,9 @@
 - Indentasi dan penempatan bracket dijaga konsisten. -->
 
 ## Snapshot
-**TBA**
+**TBA** \
 **lul** \
-![Kekw](/other/img/cool.gif) \
+![Kekw](/other/img/cool.gif)
 <!--
 **Gauss-Jordan Elimination** \
 ![Gauss Jordan Elimination](/src/readme/gjelimination.gif) -->
