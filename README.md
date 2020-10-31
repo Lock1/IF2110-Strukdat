@@ -23,9 +23,9 @@
 
 ## Snapshot
 **TBA**
-<!-- **Main Menu** \
-![Main Menu](/src/readme/mainmenu.gif) \
-
+**lul** \
+![Kekw](/other/img/cool.gif) \
+<!--
 **Gauss-Jordan Elimination** \
 ![Gauss Jordan Elimination](/src/readme/gjelimination.gif) -->
 
@@ -81,7 +81,7 @@ Draw-->
 Spesifikasi                       | Status
 -----------                       | ------
 -->
- 
+
 
 **Bonus**
 **Status : WIP**
