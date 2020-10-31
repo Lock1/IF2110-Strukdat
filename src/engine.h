@@ -1,11 +1,12 @@
-/* 13519214, Game engine
+/*
+13519214, Game engine
 mostly steal and rewritten on C for linux
 source: from my shitty C++ and windows-based game lul
 */
 
 
 // ------------------ Macro and Library ------------------
-// C Library
+// Standard C Library
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -31,7 +32,7 @@ source: from my shitty C++ and windows-based game lul
 
 
 // ---------------- Function Declaration -----------------
-void SetCursorPosition(int XPos, int YPos);
+void setCursorPosition(int XPos, int YPos);
 // Engine
 void mapUpdate();
 void forceDraw();
