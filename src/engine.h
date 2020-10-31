@@ -1,14 +1,16 @@
-/* Game engine, 13519214
-mostly steal and rewritten for linux
-source: from my shitty game lul
+/* 13519214, Game engine
+mostly steal and rewritten on C for linux
+source: from my shitty C++ and windows-based game lul
 */
-
 
 
 // ------------------ Macro and Library ------------------
 // C Library
 #include <stdio.h>
 #include <stdlib.h>
+
+// User library
+#include "structure/boolean.h"
 
 // Debugging feature
 #define DEBUG 1
@@ -25,11 +27,14 @@ source: from my shitty game lul
 // Debugging macro
 #define dpf(sform,...) if (DEBUG) printf(sform,__VA_ARGS__);
 #define dp(s) if (DEBUG) puts(s);
-
 // -------------------------------------------------------
 
 
-
-// --- Function declaration ----
+// ---------------- Function Declaration -----------------
+void SetCursorPosition(int XPos, int YPos);
+// Engine
+void mapUpdate();
+void forceDraw();
 void draw();
 // TODO: add description
+// -------------------------------------------------------
