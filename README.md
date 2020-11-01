@@ -55,24 +55,25 @@ NIM      | Nama
 
 **Tools yang digunakan**
 **TBA**
-<!-- Komponen      | Menggunakan
+Komponen      | Menggunakan
 --------      | -----------
-gcc (Ubuntu 7.4.0-1ubuntu1~18.04.1) 7.4.0-->
+Compiler      | gcc (Ubuntu 7.4.0-1ubuntu1~18.04.1) 7.4.0
 
 **Dependencies**
 **TBA**
-<!-- Komponen    | Menggunakan
---------    | -----------
-JRE         | 9 -->
-
+Komponen           | Menggunakan
+--------           | -----------
+Standard C Library | stdio.h
+Standard C Library | stdlib.h
+STD C UNIX Library | unistd.h
 
 ## Spesifikasi
-<!--**Base Game**
+**Base Game**
 Spesifikasi                       | Status
 -----------                       | ------
-Movement
-Tick
-Draw-->
+Input                             | :red_square:
+Tick                              | :red_square:
+Draw                              | :green_square:
 
 
 
@@ -82,19 +83,29 @@ Spesifikasi                       | Status
 -----------                       | ------
 -->
 
+**Struktur**
+Spesifikasi     | Status
+-----------     | ------
+Point           | :red_square:
+Jam             | :red_square:
+List Array      | :red_square:
+Matriks         | :red_square:
+Mesin Kata      | :red_square:
+Priority Queue  | :red_square:
+Stack           | :red_square:
+Linked List     | :orange_square:
+Tree            | :orange_square:
+Graph           | :orange_square:
+
 
 **Bonus**
 **Status : WIP**
-Spesifikasi | Status
------------ | ------
-Save        | :x:
-Load        | :x:
-Continue    | :x:
-
-**Status : WIP**
 Spesifikasi   | Status
 -----------   | ------
-Ukuran Wahana | :x:
+Save          | :red_square:
+Load          | :red_square:
+Continue      | :red_square:
+Ukuran Wahana | :red_square:
 
 
 ## Laporan
