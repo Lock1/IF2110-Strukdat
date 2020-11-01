@@ -23,6 +23,7 @@ source: from my shitty C++ and windows-based game lul
 
 // Debugging feature
 #define DEBUG 1
+#define DEBUG_HEADER
 
 // Target system macro
 #ifdef WIN
@@ -36,6 +37,9 @@ source: from my shitty C++ and windows-based game lul
 // Debugging macro
 #define dpf(sform,...) if (DEBUG) printf(sform,__VA_ARGS__);
 #define dp(s) if (DEBUG) puts(s);
+#ifdef DEBUG_HEADER
+    #include <time.h>
+#endif
 // -------------------------------------------------------
 
 

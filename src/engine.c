@@ -12,7 +12,7 @@ char frame[RES_Y][RES_X];
 char nframe[RES_Y][RES_X];
 
 const short int cRestX = 60;
-const short int cRestY = 26;
+const short int cRestY = 27;
 
 char mapframe[MAP_SIZE_Y][MAP_SIZE_X];
 // TODO : Information interface
@@ -62,8 +62,8 @@ void frameSet() { // TODO : Possible merge with other frame function
     char topb[] = "____________________/   Map   \\_____________________";
     char botb[] = "\\__________________________________________________/";
     for (int i = 0 ; i < 52 ; i++) {
-        nframe[MAP_OFFSET_Y-1][3+i] = topb[i];
-        nframe[MAP_OFFSET_Y+MAP_SIZE_Y][3+i] = botb[i];
+        nframe[MAP_OFFSET_Y-1][MAP_OFFSET_X-1+i] = topb[i];
+        nframe[MAP_OFFSET_Y+MAP_SIZE_Y][MAP_OFFSET_X-1+i] = botb[i];
     }
     // DEBUG STOP
 }
