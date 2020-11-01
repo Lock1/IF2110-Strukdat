@@ -18,11 +18,13 @@ int main(void) {
     // TODO: Main menu
 
     // Game loop
+    frameSet();
     forceDraw();
+    sleep(1);
     while (true) {
-        // mapUpdate();
+        mapUpdate();
         draw();
-        sleep(1);
+        sleep(0.9);
     }
     return 0;
 }

@@ -13,6 +13,14 @@ source: from my shitty C++ and windows-based game lul
 // User library
 #include "structure/boolean.h"
 
+// Default configuration
+#define RES_X 115
+#define RES_Y 29
+#define MAP_OFFSET_X 4
+#define MAP_OFFSET_Y 1
+#define MAP_SIZE_X 50
+#define MAP_SIZE_Y 25
+
 // Debugging feature
 #define DEBUG 1
 
@@ -32,10 +40,35 @@ source: from my shitty C++ and windows-based game lul
 
 
 // ---------------- Function Declaration -----------------
+// xxx----- Internal engine function -----xxx
+// NOT RECOMMENDED FOR USAGE OUTSIDE ENGINE.C
 void setCursorPosition(int XPos, int YPos);
-// Engine
+// Setting cursor to XPos and YPos
+// xxx------------------------------------xxx
+
+
+// xxx----- External engine function -----xxx
+// TODO : Input
+
+// TODO : Whole lot of update function
+
+// TODO : Maybe also tick update
+
+void frameSet();
+
 void mapUpdate();
-void forceDraw();
+// Update frame with changes in map
+
+
 void draw();
-// TODO: add description
+// Draw frame on screen with double buffering
+/* Note : Like my C++, implemented with double buffer
+in order to avoid flickering issues */
+
+void forceDraw();
+// Forcefully draw old frame
+/* Note : Avoid using it on loop, can cause massive
+flickering issues with uncontrolled call */
+
+// xxx------------------------------------xxx
 // -------------------------------------------------------

@@ -8,10 +8,14 @@ Useful UTF-8 Char for map
 #include "engine.h"
 
 // -------- Variable Declaration & Initialization --------
-char frames[20][20];    // Everything inside frame, temporary for debugging only 20
-char nframe[20][20];
-const int cRestX = 24;
-const int cRestY = 21;
+char frame[RES_Y][RES_X];
+char nframe[RES_Y][RES_X];
+
+const short int cRestX = 40;
+const short int cRestY = 25;
+
+char mapframe[MAP_SIZE_X][MAP_SIZE_Y];
+
 // -------------------------------------------------------
 
 
@@ -22,29 +26,71 @@ const int cRestY = 21;
 void setCursorPosition(int XPos, int YPos) {
     printf("\033[%d;%dH",YPos+1,XPos+1);
 }
+// TODO : Update
+
+
+void mapUpdate() {
+    // TODO : Need actual matrix of building to properly update
+    // DEBUG
+    if (random()%2)
+        mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 43;
+    else
+        mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 45;
+    // DEBUG STOP
+    for (int i = 0 ; i < MAP_SIZE_Y ; i++)
+        for (int j = 0 ; j < MAP_SIZE_X ; j++)
+            nframe[MAP_OFFSET_Y+i][MAP_OFFSET_X+j] = mapframe[i][j];
+}
 
 
 // Engine implementation
+void frameSet() { // TODO : Possible merge with other frame function
+    // DEBUG
+    for (int i = 0 ; i < RES_Y ; i++)
+        for (int j = 0 ; j < RES_X ; j++)
+            nframe[i][j] = frame[i][j] = '-';
+    for (int i = 0 ; i < MAP_SIZE_Y ; i++)
+        for (int j = 0 ; j < RES_X ; j++)
+            mapframe[i][j] = '-';
+    // DEBUG STOP
+}
+
+// TODO : Maybe special UTF-8 draw
+
 void forceDraw() {
+    system(CLSCRN);
     fflush(stdout);
     setCursorPosition(0,0);
-    for (int i = 0 ; i < 20 ; i++) {
-        for (int j = 0 ; j < 20 ; j++)
-            printf("%c",nframe[i][j]);
-        printf("\n");
+    for (int i = 0 ; i < RES_Y ; i++) {
+        for (int j = 0 ; j < RES_X ; j++) {
+            // Remember index are flipped
+            setCursorPosition(j,i);
+            // DEBUG
+            dpf("%s","\u2588");
+            // DEBUG STOP
+            // putchar(nframe[i][j]);       << Non-Debug
+        }
+        puts("");
     }
     setCursorPosition(cRestX,cRestY);
 }
 
 void draw(){
     fflush(stdout);
+    // DEBUG
+    int s = random()%RES_Y;
+    int p = random()%RES_X;
+    if (((s >= (MAP_SIZE_Y+MAP_OFFSET_Y)) || (s < (MAP_OFFSET_Y))) || ((p >= (MAP_SIZE_X+MAP_OFFSET_X)) || (p < (MAP_OFFSET_X))))
+        nframe[s][p] = 79 + random()%6;
+    // DEBUG STOP
     setCursorPosition(0,0);
-    for (int i = 0 ; i < 20 ; i++)
-        for (int j = 0 ; j < 20 ; j++)
-            if (nframe[i][j] != frames[i][j]) {
-                setCursorPosition(i,j);
-                printf("%c",nframe[i][j]);
-                frames[i][j] = nframe[i][j];
+    for (int i = 0 ; i < RES_Y ; i++)
+        for (int j = 0 ; j < RES_X ; j++)
+            if (nframe[i][j] != frame[i][j]) {
+                // Remember index are flipped
+                setCursorPosition(j,i);
+                putchar(nframe[i][j]);
+                frame[i][j] = nframe[i][j];
             }
     setCursorPosition(cRestX,cRestY);
 }
