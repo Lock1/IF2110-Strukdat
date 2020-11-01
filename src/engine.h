@@ -17,7 +17,7 @@ source: from my shitty C++ and windows-based game lul
 #define RES_X 115
 #define RES_Y 29
 #define MAP_OFFSET_X 4
-#define MAP_OFFSET_Y 1
+#define MAP_OFFSET_Y 2
 #define MAP_SIZE_X 50
 #define MAP_SIZE_Y 25
 
@@ -53,6 +53,7 @@ void setCursorPosition(int XPos, int YPos);
 // TODO : Whole lot of update function
 
 // TODO : Maybe also tick update
+// TODO : Use some seed for rng (probably username also fine lul)
 
 void frameSet();
 

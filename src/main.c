@@ -10,6 +10,10 @@
 ----------------------------------------------
 */
 
+// Dev
+// Tags used : TODO, DEBUG, FIXME
+// Macro : DEBUG
+
 // Library
 #include "engine.h"
 
@@ -19,12 +23,19 @@ int main(void) {
 
     // Game loop
     frameSet();
+    // mapUpdate();
     forceDraw();
     sleep(1);
+    // DEBUG
+    long long int fpush = 0;
+    // DEBUG STOP
     while (true) {
+        sleep(0.9);
         mapUpdate();
         draw();
-        sleep(0.9);
+        dpf("    |||<%lld frames pushed>|||    ",++fpush);
+        // dp("DBG");
+        // forceDraw();
     }
     return 0;
 }

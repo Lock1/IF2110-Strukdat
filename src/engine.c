@@ -11,11 +11,16 @@ Useful UTF-8 Char for map
 char frame[RES_Y][RES_X];
 char nframe[RES_Y][RES_X];
 
-const short int cRestX = 40;
-const short int cRestY = 25;
+const short int cRestX = 60;
+const short int cRestY = 26;
 
-char mapframe[MAP_SIZE_X][MAP_SIZE_Y];
-
+char mapframe[MAP_SIZE_Y][MAP_SIZE_X];
+// TODO : Information interface
+// Player name (line 1)
+// Money (line 2)
+// Time (line 3-5) (start, elapsed, stop)
+// Queue (line 6-12) (2 line for border, 5 for actual queue)
+// Broken building (line 13-15)
 // -------------------------------------------------------
 
 
@@ -31,11 +36,12 @@ void setCursorPosition(int XPos, int YPos) {
 
 void mapUpdate() {
     // TODO : Need actual matrix of building to properly update
+    // FIXME : Theres 2 pixel getting changed at same time
     // DEBUG
     if (random()%2)
         mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 43;
     else
-        mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 45;
+        mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 79;
     // DEBUG STOP
     for (int i = 0 ; i < MAP_SIZE_Y ; i++)
         for (int j = 0 ; j < MAP_SIZE_X ; j++)
@@ -48,10 +54,17 @@ void frameSet() { // TODO : Possible merge with other frame function
     // DEBUG
     for (int i = 0 ; i < RES_Y ; i++)
         for (int j = 0 ; j < RES_X ; j++)
-            nframe[i][j] = frame[i][j] = '-';
+            nframe[i][j] = frame[i][j] = '|';
     for (int i = 0 ; i < MAP_SIZE_Y ; i++)
         for (int j = 0 ; j < RES_X ; j++)
             mapframe[i][j] = '-';
+
+    char topb[] = "____________________/   Map   \\_____________________";
+    char botb[] = "\\__________________________________________________/";
+    for (int i = 0 ; i < 52 ; i++) {
+        nframe[MAP_OFFSET_Y-1][3+i] = topb[i];
+        nframe[MAP_OFFSET_Y+MAP_SIZE_Y][3+i] = botb[i];
+    }
     // DEBUG STOP
 }
 
@@ -66,9 +79,9 @@ void forceDraw() {
             // Remember index are flipped
             setCursorPosition(j,i);
             // DEBUG
-            dpf("%s","\u2588");
+            // dpf("%s","\u2588");
             // DEBUG STOP
-            // putchar(nframe[i][j]);       << Non-Debug
+            putchar(nframe[i][j]);
         }
         puts("");
     }
@@ -80,8 +93,8 @@ void draw(){
     // DEBUG
     int s = random()%RES_Y;
     int p = random()%RES_X;
-    if (((s >= (MAP_SIZE_Y+MAP_OFFSET_Y)) || (s < (MAP_OFFSET_Y))) || ((p >= (MAP_SIZE_X+MAP_OFFSET_X)) || (p < (MAP_OFFSET_X))))
-        nframe[s][p] = 79 + random()%6;
+    if (((s > (MAP_SIZE_Y+MAP_OFFSET_Y)) || (s < (MAP_OFFSET_Y-1))) || ((p > (MAP_SIZE_X+MAP_OFFSET_X)) || (p < (MAP_OFFSET_X-1))))
+        nframe[s][p] = 65 + random()%6;
     // DEBUG STOP
     setCursorPosition(0,0);
     for (int i = 0 ; i < RES_Y ; i++)
