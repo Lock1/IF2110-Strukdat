@@ -24,7 +24,9 @@
 ## Snapshot
 **TBA** \
 **lul** \
-![Kekw](/other/img/cool.gif)
+![Kekw](/other/img/cool.gif) \
+**uhh** \
+![nope](/other/img/wrong.gif)
 <!--
 **Gauss-Jordan Elimination** \
 ![Gauss Jordan Elimination](/src/readme/gjelimination.gif) -->
