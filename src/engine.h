@@ -2,7 +2,10 @@
 13519214, Game engine
 mostly steal and rewritten on C for linux
 source: from my shitty C++ and windows-based game lul
+i think i should follow the tutorial and make unix text editor kekw
 */
+
+
 
 
 // ------------------ Macro and Library ------------------
@@ -39,6 +42,8 @@ source: from my shitty C++ and windows-based game lul
 #define dp(s) if (DEBUG) puts(s);
 #ifdef DEBUG_HEADER
     #include <time.h>
+    #include <termios.h>
+    #include <fcntl.h>
 #endif
 // -------------------------------------------------------
 
@@ -77,3 +82,8 @@ flickering issues with uncontrolled call */
 
 // xxx------------------------------------xxx
 // -------------------------------------------------------
+
+// EXPERIMENTAL
+void userInput();
+void disableRawMode();
+void enableRawMode();

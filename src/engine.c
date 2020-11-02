@@ -21,6 +21,8 @@ char mapframe[MAP_SIZE_Y][MAP_SIZE_X];
 // Time (line 3-5) (start, elapsed, stop)
 // Queue (line 6-12) (2 line for border, 5 for actual queue)
 // Broken building (line 13-15)
+char c; // EXPERIMENTAL
+int blockx = MAP_OFFSET_X, blocky = MAP_OFFSET_Y; // EXPERIMENTAL
 // -------------------------------------------------------
 
 
@@ -95,6 +97,8 @@ void draw(){
     int p = random()%RES_X;
     if (((s > (MAP_SIZE_Y+MAP_OFFSET_Y)) || (s < (MAP_OFFSET_Y-1))) || ((p > (MAP_SIZE_X+MAP_OFFSET_X)) || (p < (MAP_OFFSET_X-1))))
         nframe[s][p] = 65 + random()%6;
+    setCursorPosition(blockx,blocky);
+    printf("%s","\u2588");
     // DEBUG STOP
     setCursorPosition(0,0);
     for (int i = 0 ; i < RES_Y ; i++)
@@ -108,3 +112,43 @@ void draw(){
     setCursorPosition(cRestX,cRestY);
 }
 // -------------------------------------------------------
+
+
+
+// EXPERIMENTAL BUILD, MOVE WHEN MERGING TO MAIN BRANCH
+struct termios orig_termios;
+
+void disableRawMode() {
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
+}
+
+void enableRawMode() {
+    tcgetattr(STDIN_FILENO, &orig_termios);
+    atexit(disableRawMode);
+    struct termios raw = orig_termios;
+    raw.c_lflag &= ~(ECHO | ICANON);
+    tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+}
+
+void userInput() {
+    // EXPERIMENTAL
+    static long long int count = 0;
+    count++;
+    read(STDIN_FILENO, &c, 1);
+    if (!(count%250))
+        switch (c) {
+            case 'w':
+            if (blocky > MAP_OFFSET_Y) blocky--;
+            break;
+            case 'a':
+            if (blockx > MAP_OFFSET_X) blockx--;
+            break;
+            case 's':
+            if (blocky < (MAP_OFFSET_Y + MAP_SIZE_Y - 1)) blocky++;
+            break;
+            case 'd':
+            if (blockx < (MAP_OFFSET_X + MAP_SIZE_X - 1)) blockx++;
+            break;
+        }
+    // EXPERIMENTAL
+}
