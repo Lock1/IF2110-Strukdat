@@ -4,7 +4,7 @@
 #include "boolean.h"
 /*------Konstruktor Jam------*/
 JAM MakeJAM(int H, int M)
-/*Membentuk Jam dari H, M, S yang valid*/
+/*Membentuk Jam dari H, M yang valid*/
 {   /*Kamus lokal */
     JAM J1;
     /*Algoritma*/
@@ -14,7 +14,7 @@ JAM MakeJAM(int H, int M)
 }
 /* Validator Jam */
 boolean IsJAMValid(int H, int M)
-/* True jika H,M,S membentuk jam yang valid*/
+/* True jika H,M membentuk jam yang valid*/
 {   /*Kamus Lokal*/
     /*Algoritma*/
     return ((H>=0 && H<=23) && (M>=0 && M<=59));
@@ -23,7 +23,7 @@ boolean IsJAMValid(int H, int M)
 void BacaJAM (JAM *J)
 // I.S : J tak terdefinisi
 // F.S : J terdefinisi
-// Proses : mengulang baca komponen H,M,S sehingga membentuk J yang valid
+// Proses : mengulang baca komponen H,M sehingga membentuk J yang valid
 {   /*Kamus lokal*/
     int H,M;
     /*Algoritma*/
@@ -37,7 +37,7 @@ void BacaJAM (JAM *J)
 }
 void TulisJAM(JAM J)
 // IS : J sembarang
-// FS : J ditulis dilayar dengan format HH:MM:SS
+// FS : J ditulis dilayar dengan format HH hour (s) MM minute (s) jika minute tidak 0.
 // Proses : Menulis ke layar
 {   /*Kamus Lokal*/
     /*Algoritma*/
@@ -55,7 +55,7 @@ long JAMToMenit (JAM J)
     return (60*Hour(J) + Minute(J));
 }
 JAM MenitToJAM (long N)
-//Konversi detik ke jam
+//Konversi menit ke jam
 {   /*Kamus Lokal*/
     int sisa;
     JAM JOut;
@@ -67,43 +67,7 @@ JAM MenitToJAM (long N)
     Minute(JOut)=sisa;
     return JOut;
 }
-boolean JEQ (JAM J1, JAM J2)
-/* Mengirimkan true jika J1=J2, false jika tidak */
-{   /*Kamus Lokal*/
-    long j1,j2;
-    /*Algoritma*/
-    j1=JAMToMenit(J1);
-    j2=JAMToMenit(J2);
-    return (j1==j2);
-}
 
-boolean JNEQ (JAM J1, JAM J2)
-/* Mengirimkan true jika J1 tidak sama dengan J2 */
-{   /*Kamus Lokal*/
-    long j1,j2;
-    /*Algoritma*/
-    j1=JAMToMenit(J1);
-    j2=JAMToMenit(J2);
-    return (j1!=j2);
-}
-boolean JLT (JAM J1, JAM J2)
-/* Mengirimkan true jika J1<J2, false jika tidak */
-{   /*Kamus Lokal*/
-    long j1,j2;
-    /*Algoritma*/
-    j1=JAMToMenit(J1);
-    j2=JAMToMenit(J2);
-    return (j1<j2);
-}
-boolean JGT (JAM J1, JAM J2){
-/* Mengirimkan true jika J1>J2, false jika tidak */
-    /*Kamus Lokal*/
-    long j1,j2;
-    /*Algoritma*/
-    j1=JAMToMenit(J1);
-    j2=JAMToMenit(J2);
-    return (j1>j2);
-}
 
 JAM NextNMenit (JAM J, int N){
 /* Mengirim N menit setelah J dalam bentuk JAM */
@@ -118,14 +82,14 @@ JAM NextNMenit (JAM J, int N){
 
 /* *** Kelompok Operator Aritmetika *** */
 long Durasi (JAM JAw, JAM JAkh){
-/* Mengirim JAkh-JAw dlm Detik, dengan kalkulasi */
+/* Mengirim JAkh-JAw dlm menit, dengan kalkulasi */
 /* Jika JAw > JAkh, maka JAkh adalah 1 hari setelah JAw */
     /*Kamus Lokal*/
     int JCurr, JEnd;
     /*Algoritma*/
     JCurr = JAMToMenit(JAw);
     JEnd = JAMToMenit(JAkh);
-    if (JLT(JAw,JAkh)) {
+    if (JCurr < JEnd) {
         return (JEnd - JCurr);
     }
     else {
