@@ -68,7 +68,7 @@ Komponen           | Menggunakan
 --------           | -----------
 Standard C Library | stdio.h
 Standard C Library | stdlib.h
-STD C UNIX Library | unistd.h
+<!--- STD C UNIX Library | unistd.h --->
 
 ## Spesifikasi
 **Base Game**
@@ -91,14 +91,14 @@ Spesifikasi     | Status
 -----------     | ------
 Point           | :red_square:
 Jam             | :red_square:
-List Array      | :red_square:
-Matriks         | :red_square:
+List Array      | :green_square:
+Matriks         | :green_square:
 Mesin Kata      | :red_square:
 Priority Queue  | :red_square:
 Stack           | :red_square:
-Linked List     | :orange_square:
-Tree            | :orange_square:
-Graph           | :orange_square:
+Linked List     | :red_square:
+Tree            | :red_square:
+Graph           | :red_square:
 
 
 **Bonus**
