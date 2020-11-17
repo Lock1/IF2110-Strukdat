@@ -26,20 +26,20 @@ source: from my shitty C++ and windows-based game lul
 #define DEBUG_HEADER
 
 // Target system macro
-#ifdef WIN
-    #include <Windows.h>
-    #define CLSCRN "cls"
-#else
-    #include <unistd.h>     // Needed for sleep()
+// #ifdef WIN
+//     #include <Windows.h>
+//     #define CLSCRN "cls"
+// #else
+//     #include <unistd.h>     // Needed for sleep()
     #define CLSCRN "clear"  // Target system clear screen command
-#endif
+// #endif
 
 // Debugging macro
 #define dpf(sform,...) if (DEBUG) printf(sform,__VA_ARGS__);
 #define dp(s) if (DEBUG) puts(s);
-#ifdef DEBUG_HEADER
-    #include <time.h>
-#endif
+// #ifdef DEBUG_HEADER
+//     #include <time.h>
+// #endif
 // -------------------------------------------------------
 
 
