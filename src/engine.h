@@ -6,6 +6,9 @@ source: from my shitty C++ and windows-based game lul
 
 
 // ------------------ Macro and Library ------------------
+#ifndef ENGINE_H
+#define ENGINE_H
+
 // Standard C Library
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,6 +23,8 @@ source: from my shitty C++ and windows-based game lul
 #define MAP_OFFSET_Y 2
 #define MAP_SIZE_X 50
 #define MAP_SIZE_Y 25
+
+#define IC 1000000
 
 // Debugging feature
 #define DEBUG 1
@@ -77,3 +82,5 @@ flickering issues with uncontrolled call */
 
 // xxx------------------------------------xxx
 // -------------------------------------------------------
+
+#endif

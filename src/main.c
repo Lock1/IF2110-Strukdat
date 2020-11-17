@@ -27,15 +27,18 @@ int main(void) {
     forceDraw();
     // DEBUG
     long long int fpush = 0;
+    long int clock = 0;
     // DEBUG STOP
     while (true) {
-        mapUpdate();
-        draw();
-        dpf("    |||<%lld frames pushed>|||    ",++fpush);
-        setCursorPosition(60,26);
-        dp("    +--------< DEBUG >---------+    ");
-        // dp("DBG");
-        // forceDraw();
+        if (clock % IC == 0) {
+            mapUpdate();
+            draw();
+            dpf("    |||<%lld frames pushed>|||    ",++fpush);
+            setCursorPosition(60,26);
+            dp("    +--------< DEBUG >---------+    ");
+            clock = 0;
+        }
+        clock++;
     }
     return 0;
 }
