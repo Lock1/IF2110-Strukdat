@@ -14,14 +14,14 @@ void makeList(int max, list *ls) {
 }
 // Destroy list and deallocate
 void deleteList(list *ls) {
-    length(*ls) = -1;
-    max(*ls) = -1;
+    max(*ls) = length(*ls) = -1;
     free(ls->data);
     ls->data = NULL;
 }
 // -------------------------------------------------------
 
 // --------------------- Manipulator ---------------------
+// Append new element on last list, if failed exit code 1
 void append(list *ls, listTuple newElement) {
     if (length(*ls) < max(*ls))
         ls->data[length(*ls)++] = newElement;

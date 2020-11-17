@@ -1,12 +1,15 @@
-all: matrix-listarray
+all: matrix listarray
 
-matrix-listarray:
+matrix:
 	gcc -Wall -Wextra matrix.h matrix.c driver/driver-matrix.c -o driver-executable/driver-matrix
-	# TODO
+
+
+listarray:
+	gcc -Wall -Wextra listarray.h listarray.c driver/driver-listarray.c -o driver-executable/driver-listarray
+
+
+
 
 clean:
 	rm driver-executable/*
 	rm *.o
-
-listarray:
-	gcc -Wall -Wextra listarray.h listarray.c driver/driver-listarray.c -o driver-executable/driver-listarray
