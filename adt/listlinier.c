@@ -57,13 +57,6 @@ address Search (List L, infotype X){
 }
 
 /****************** PRIMITIF BERDASARKAN NilAI ******************/
-void InsVFirst (List *L, infotype X){
-    address P=Alokasi(X);
-    if (P!=Nil){
-        InsertFirst(L, P);
-    }
-}
-
 void InsVLast (List *L, infotype X){
     address P=Alokasi(X);
     if (P!=Nil){
@@ -72,14 +65,6 @@ void InsVLast (List *L, infotype X){
 }
 
 /*** PENGHAPUSAN ELEMEN ***/
-void DelVFirst (List *L, infotype *X){
-    address P=First(*L);
-    First(*L)=Next(P);
-    Next(P)=Nil;
-    *X=Info(P);
-    Dealokasi(&P);
-}
-
 void DelVLast (List *L, infotype *X){
     address P=First(*L);
     address Prec=Nil;
@@ -100,11 +85,6 @@ void DelVLast (List *L, infotype *X){
 
 /****************** PRIMITIF BERDASARKAN ALAMAT ******************/
 /*** PENAMBAHAN ELEMEN BERDASARKAN ALAMAT ***/
-void InsertFirst (List *L, address P){
-  Next(P) = First(*L);
-  First(*L) = P;
-}
-
 void InsertAfter (List *L, address P, address Prec){
   Next(P) = Next(Prec);
   Next(Prec) = P;
@@ -114,7 +94,8 @@ void InsertLast (List *L, address P){
   address Last;
 
   if (IsEmpty(*L)) {
-    InsertFirst(L, P);
+    Next(P)=First(*L);
+    First(*L)=P;
   } else {
     Last = First(*L);
     while (Next(Last) != Nil) {
@@ -125,32 +106,6 @@ void InsertLast (List *L, address P){
 }
 
 /*** PENGHAPUSAN SEBUAH ELEMEN ***/
-void DelFirst (List *L, address *P){
-    *P=First(*L);
-    First(*L)=Next(First(*L));
-    Next(*P)=Nil;
-}
-
-void DelP (List *L, infotype X){
-    if (!IsEmpty(*L)) {
-        address P = Search(*L, X);
-        if (P != Nil) {
-            if (P == First(*L)) {
-                First(*L) = Next(P);
-                Next(P) = Nil;
-                Dealokasi(&P);
-            } else {
-                address Prec = First(*L);
-                while (Next(Prec) != P) {
-                    Prec = Next(Prec);
-                }
-                DelAfter(L, &P, Prec);
-                Dealokasi(&P);
-            }
-        }
-    }
-}
-
 void DelLast (List *L, address *P){
     address Last=First(*L);
     address PrecLast=Nil;
@@ -168,11 +123,6 @@ void DelLast (List *L, address *P){
     }  
 }
 
-void DelAfter (List *L, address *Pdel, address Prec){
-    *Pdel=Next(Prec);
-    Next(Prec)=Next(Next(Prec));
-    Next(*Pdel)=Nil;
-}
 
 /****************** PROSES SEMUA ELEMEN LIST ******************/
 void PrintInfo (List L){
@@ -208,50 +158,4 @@ int NbElmt (List L){
     }
 
     return count;
-}
-
-infotype Min (List L){
-    address P=Next(First(L));
-    infotype min=Info(First(L));
-
-    while(P!=Nil){
-        if (Info(P)<min)
-            min=Info(P);
-        P=Next(P);
-    }
-
-    return min;
-}
-
-infotype Max (List L)
-{
-    infotype max=Info(First(L));
-    address P=Next(First(L));
-
-    while(P!=Nil){
-        if (Info(P)>max)
-            max=Info(P);
-        P=Next(P);
-    }
-
-    return max;
-}
-
-/****************** PROSES TERHADAP LIST ******************/
-void Konkat1 (List *L1, List *L2, List *L3){
-    address Last;
-
-    CreateEmpty(L3);
-    if (IsEmpty(*L1))
-        First(*L3)=First(*L2);
-    else{
-        First(*L3)=First(*L1);
-        Last=First(*L1);
-        while (Next(Last)!=Nil)
-            Last=Next(Last);
-        Next(Last)=First(*L2);
-    }
-
-    First(*L1)=Nil;
-    First(*L2)=Nil;
 }
