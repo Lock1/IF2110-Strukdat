@@ -1,4 +1,4 @@
-#include "listlinier.h"
+#include "listlinear.h"
 #include "boolean.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -80,7 +80,7 @@ void DelVLast (List *L, infotype *X){
         Next(Prec)=Nil;
     }
     *X=Info(P);
-    Dealokasi(&P);  
+    Dealokasi(&P);
 }
 
 /****************** PRIMITIF BERDASARKAN ALAMAT ******************/
@@ -120,7 +120,7 @@ void DelLast (List *L, address *P){
         First(*L)=Nil;
     else{
         Next(PrecLast)=Nil;
-    }  
+    }
 }
 
 

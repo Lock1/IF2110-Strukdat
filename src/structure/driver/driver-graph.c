@@ -1,6 +1,8 @@
+// Driver graph
+// 13519146 / Fadel Ananda Dotty
 #include <stdio.h>
 #include <stdlib.h>
-#include "graph.c"
+#include "../graph.h"
 
 int main(){
     int nodes;

@@ -1,6 +1,8 @@
+// Driver linked list
+// 13519146 / Fadel Ananda Dotty
 #include <stdio.h>
 #include <stdlib.h>
-#include "listlinier.h"
+#include "../listlinear.h"
 
 int main(){
     List L;
