@@ -4,3 +4,12 @@
 23 wanky-wonderland 8 2 5 Membawamu ke suasana masa depan, cocok untukmu yang suka berfoto
 24 chocolate-eater 7 2 10 Cocok untuk kamu yang suka makan, kamu dapat makan sepuasnya disini
 25 dip-train 12 3 20 Membawamu berkeliling area wahana bermain, disini kamu akan mempelajari banyak hal terkait dengan taman bermain ini
+26 deep-horizon 6 5 15 Membuat anda merasa melupakan semua masalah yang anda hadapi, cocok untuk kamu yang punya banyak masalah
+27 bukan-halilintar-keluarga 9 7 20 Membuat anda melayang selama bermain disini, sangat baik untuk kesehatan keluarga
+28 dollay-gangs 4 9 5 Kamu dapat melihat sisi gelapnya dunia disini, cocok untuk belajar kehidupan
+29 gempol-pride 6 4 12 Cocok untuk kamu yang suka berpetualang untuk melihat keindahan dunia
+30 wanky-tube 7 6 14 Bisa membuat anda merasa menjadi penguasa, cocok untuk anda yang mempunyai jiwa kepemimpinan
+31 wanky-middle-earth 9 7 5 Cocok untuk anda yang suka berpetualang, baik untuk kesehatan otak dan memory
+32 wanky-tongfang 4 5 8 Baik untuk kesehatan dan kebugaran tubuh anda, bawa semua keluarga anda disini
+33 wanky-slim-fit 6 10 3 Bisa membuat tubuh anda memancarkan aura-aura positif dan mengusir semua aura negatif
+34 solo-wanky 7 4 8 Baik untuk melatih kemandirian anda untuk hidup di dunia ini
