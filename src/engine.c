@@ -15,12 +15,12 @@ const short int cRestX = 60;
 const short int cRestY = 27;
 
 char mapframe[MAP_SIZE_Y][MAP_SIZE_X];
-// TODO : Information interface
-// Player name (line 1)
-// Money (line 2)
-// Time (line 3-5) (start, elapsed, stop)
-// Queue (line 6-12) (2 line for border, 5 for actual queue)
-// Broken building (line 13-15)
+char infoframe[INFO_SIZE_Y][INFO_SIZE_X];
+
+char *username = "NULL";
+int money = START_MONEY;
+// TODO : set time
+
 // -------------------------------------------------------
 
 
@@ -32,6 +32,42 @@ void setCursorPosition(int XPos, int YPos) {
     printf("\033[%d;%dH",YPos+1,XPos+1);
 }
 // TODO : Update
+
+
+
+// TODO : Fix this
+void infoUpdate() {
+    for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
+        if (username[i] == '\0')
+            break;
+        else
+            infoframe[0][INFO_BLOCK_SIZE+i+1] = username[i];
+
+    char moneyString[INFO_SIZE_X - INFO_BLOCK_SIZE];
+    sprintf(moneyString,"%d",money);
+    for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
+        if (moneyString[i] == '\0')
+            break;
+        else
+            infoframe[1][INFO_BLOCK_SIZE+i+1] = moneyString[i];
+    // TODO : money
+
+    // DEBUG
+    // if (random()%2)
+    //     infoframe[random()%INFO_SIZE_Y][random()%INFO_SIZE_X] = 41;
+    // else
+    //     infoframe[random()%INFO_SIZE_Y][random()%INFO_SIZE_X] = 79;
+
+
+
+
+    // DEBUG STOP
+    for (int i = 0 ; i < INFO_SIZE_Y ; i++)
+        for (int j = 0 ; j < INFO_SIZE_X ; j++)
+            nframe[INFO_OFFSET_Y+i][INFO_OFFSET_X+j] = infoframe[i][j];
+}
+
+
 
 
 void mapUpdate() {
@@ -54,16 +90,53 @@ void frameSet() { // TODO : Possible merge with other frame function
     // DEBUG
     for (int i = 0 ; i < RES_Y ; i++)
         for (int j = 0 ; j < RES_X ; j++)
-            nframe[i][j] = frame[i][j] = '|';
+            nframe[i][j] = frame[i][j] = '\0';
     for (int i = 0 ; i < MAP_SIZE_Y ; i++)
         for (int j = 0 ; j < RES_X ; j++)
             mapframe[i][j] = '-';
+    for (int i = 0 ; i < INFO_SIZE_Y ; i++)
+        for (int j = 0 ; j < INFO_SIZE_X ; j++)
+            infoframe[i][j] = '\0';
+
+    char *infoBlock[8];
+    infoBlock[0] = "Nama           | ";
+    infoBlock[1] = "Money          | ";
+    infoBlock[2] = "Current time   | ";
+    infoBlock[3] = "Closing time   | ";
+    infoBlock[4] = "Time remaining | ";
+    infoBlock[5] = "     ---------------- Queue -----------------     ";
+    infoBlock[6] = "     ----------------------------------------     ";
+    infoBlock[7] = "           ----- Broken Building -----            ";
+    for (int i = 0 ; i < 5 ; i++)
+        for (int j = 0 ; j < INFO_BLOCK_SIZE ; j++)
+            infoframe[i][j] = infoBlock[i][j];
+
+    // char queue[] = "     ---------------- Queue -----------------     ";
+    for (int i = 0 ; i < INFO_SIZE_X ; i++) {
+        infoframe[5][i] = infoBlock[5][i];
+        infoframe[11][i] = infoBlock[6][i];
+        infoframe[12][i] = infoBlock[7][i];
+    }
+    // char qb[] = "     ----------------------------------------     ";
+    // for (int i = 0 ; i < 50 ; i++)
+    //     infoframe[11][i] = qb[i];
+    // char bb[] = "ajur nggeh";
+    // for (int i = 0 ; i < 15 ; i++)
+    //     infoframe[12][i] = bb[i];
+
 
     char topb[] = "____________________/   Map   \\_____________________";
     char botb[] = "\\__________________________________________________/";
     for (int i = 0 ; i < 52 ; i++) {
         nframe[MAP_OFFSET_Y-1][MAP_OFFSET_X-1+i] = topb[i];
         nframe[MAP_OFFSET_Y+MAP_SIZE_Y][MAP_OFFSET_X-1+i] = botb[i];
+    }
+    char infotb[] = "____________________/   Info   \\____________________";
+    char infobb[] = "\\__________________________________________________/";
+
+    for (int i = 0 ; i < 53 ; i++) {
+        nframe[INFO_OFFSET_Y-1][INFO_OFFSET_X-1+i] = infotb[i];
+        nframe[INFO_OFFSET_Y+INFO_SIZE_Y][INFO_OFFSET_X-1+i] = infobb[i];
     }
     // DEBUG STOP
 }
@@ -91,10 +164,10 @@ void forceDraw() {
 void draw(){
     fflush(stdout);
     // DEBUG
-    int s = random()%RES_Y;
-    int p = random()%RES_X;
-    if (((s > (MAP_SIZE_Y+MAP_OFFSET_Y)) || (s < (MAP_OFFSET_Y-1))) || ((p > (MAP_SIZE_X+MAP_OFFSET_X)) || (p < (MAP_OFFSET_X-1))))
-        nframe[s][p] = 65 + random()%6;
+    // int s = random()%RES_Y;
+    // int p = random()%RES_X;
+    // if (((s > (MAP_SIZE_Y+MAP_OFFSET_Y)) || (s < (MAP_OFFSET_Y-1))) || ((p > (MAP_SIZE_X+MAP_OFFSET_X)) || (p < (MAP_OFFSET_X-1))))
+    //     nframe[s][p] = 65 + random()%6;
     // DEBUG STOP
     setCursorPosition(0,0);
     for (int i = 0 ; i < RES_Y ; i++)

@@ -25,7 +25,7 @@ typedef struct {
 #define Elmt(M,i,j) (M).mtrx[(i)+colLen(M)*(j)]
 
 #define occupiedAt(M,i,j) (M).mtrx[(i)+colLen(M)*(j)].occupied
-#define entityAt(M,i,j)  (M).mtrx[(i)+colLen(M)*(j)].entityType
+#define entityAt(M,i,j) (M).mtrx[(i)+colLen(M)*(j)].entityType
 
 // ----------------- Resource Management -----------------
 // Creating matrix by allocating and set bound
