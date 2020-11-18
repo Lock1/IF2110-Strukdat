@@ -9,7 +9,7 @@
 #define INFO_OFFSET_X 60
 #define INFO_OFFSET_Y 6
 #define INFO_SIZE_X 50
-#define INFO_SIZE_Y 16
+#define INFO_SIZE_Y 17
 #define INFO_BLOCK_SIZE 16
 
 // Other configuration

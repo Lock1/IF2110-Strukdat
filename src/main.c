@@ -21,10 +21,10 @@ int main(void) {
     system(CLSCRN);
     if (startGame()) {
         // Give user time to seeing ASCII ART
-        delay(500);
+        delay(200);
 
         // Initial frame setup
-        frameSet();
+        frameSet(0);
         infoUpdate();
         mapUpdate();
         forceDraw();
@@ -40,7 +40,7 @@ int main(void) {
             mapUpdate();
             draw();
             // wordInput();
-
+            prepDay();
             // DEBUG
             dpf("    |||<%lld frames pushed>|||    ",++fpush);
             setCursorPosition(60,26);

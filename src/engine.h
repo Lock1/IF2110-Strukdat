@@ -17,6 +17,7 @@ source: from my shitty C++ and windows-based game lul
 #include "config.h"
 #include "structure/boolean.h"
 #include "structure/mesinkata.h"
+#include "structure/jam.h"
 
 
 // -------------------------------------------------------
@@ -48,6 +49,8 @@ boolean stringCompare(char* st1, char* st2);
 
 boolean startGame();
 // Checking for save and newgame
+
+void prepDay();
 
 void frameSet();
 
