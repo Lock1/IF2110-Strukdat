@@ -21,7 +21,7 @@ int main(void) {
     system(CLSCRN);
     if (startGame()) {
         // Give user time to seeing ASCII ART
-        delay(100);
+        delay(150);
 
         // Initial frame setup
         frameSet(0);
@@ -36,6 +36,5 @@ int main(void) {
             playDay();
         }
     }
-
     return 0;
 }

@@ -64,7 +64,7 @@ JAM MenitToJAM (long N)
     /* Algoritma */
 
     N=N%1440; //harus ditambah ini agar valid
-    Hour(JOut)=N/60;
+    Hour(JOut)=(int) N/60;
     sisa=N%60;
     Minute(JOut)=sisa;
     return JOut;

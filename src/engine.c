@@ -79,16 +79,28 @@ void infoUpdate() {
 
     char tempTime[STRING_LENGTH], curTime[STRING_LENGTH];
     sprintf(tempTime,"%d",Hour(currentTime));
-    stringCopy(tempTime,curTime);
+    printf("%s",tempTime);
+    if (Hour(currentTime) < 10) {
+        curTime[0] = '0';
+        curTime[1] = tempTime[0];
+    }
+    else {
+        curTime[0] = tempTime[0];
+        curTime[1] = tempTime[1];
+    }
     curTime[2] = ':';
     sprintf(tempTime,"%d",Minute(currentTime));
+    // Hour Handler
+
+
+    // Minute Handler
     if (Minute(currentTime) < 10) {
         curTime[3] = '0';
         curTime[4] = tempTime[0];
     }
     else {
-        curTime[3] = tempTime[1];
-        curTime[4] = tempTime[0];
+        curTime[3] = tempTime[0];
+        curTime[4] = tempTime[1];
     }
     curTime[5] = '\0';
     for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
@@ -167,8 +179,9 @@ void prepDay() {
         else if (stringCompare("main",CurrentInput))
             break;
         else {
-            forceDraw();
-            unicodeDraw(0);
+            currentTime = NextNMenit(currentTime,5);
+            // forceDraw();
+            // unicodeDraw(0);
         }
     }
     // forceDraw();
@@ -189,7 +202,6 @@ void playDay() {
 
 void mapUpdate() {
     // TODO : Need actual matrix of building to properly update
-    // FIXME : Theres 2 pixel getting changed at same time
     // DEBUG
     if (random()%2)
         mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 43;
