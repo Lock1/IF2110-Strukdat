@@ -46,7 +46,7 @@ boolean stringCompare(char* st1, char* st2);
 // TODO : Maybe also tick update
 // TODO : Use some seed for rng (probably username also fine lul)
 
-void startGame();
+boolean startGame();
 // Checking for save and newgame
 
 void frameSet();

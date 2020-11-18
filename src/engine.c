@@ -80,8 +80,8 @@ void infoUpdate() {
 }
 
 // TODO : cleanup
-void startGame() {
-    puts("Welcome to Willy Wangky's Land");
+boolean startGame() {
+    puts(START_MENU_ASCII_ART);
     puts("1. New Game");
     // puts("2. Continue");
     // puts("3. Load game");
@@ -95,11 +95,14 @@ void startGame() {
         printf("Masukkan nama : ");
         STARTKATA();
         stringCopy(CurrentInput,username);
+        puts(HAVE_FUN_ASCII_ART);
+        puts(WILLY_WANGKY_ASCII_ART);
+        return true;
     }
     else if (stringCompare("quit", CurrentInput) || CurrentInput[0] == '2')
-        exit(0);
+        return false;
+    return false;
 }
-
 
 
 

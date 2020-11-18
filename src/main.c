@@ -20,26 +20,34 @@
 int main(void) {
     system(CLSCRN);
     // TODO: Main menu
-    startGame();
-    // Game loop
-    frameSet();
-    // mapUpdate();
-    forceDraw();
-    // DEBUG
-    long long int fpush = 0;
-    long int clock = 0;
-    // DEBUG STOP
-    while (true) {
-        if (clock % IC == 0) {
-            infoUpdate();
-            mapUpdate();
-            draw();
-            dpf("    |||<%lld frames pushed>|||    ",++fpush);
-            setCursorPosition(60,26);
-            dp("    +--------< DEBUG >---------+    ");
+    if (startGame()) {
+        long long int clock = 0, count = 0;
+        while (count != 10) {
+            while (clock != IC*100)
+                clock++;
             clock = 0;
+            count++;
         }
-        clock++;
+        count = 0;
+        // Game loop
+        frameSet();
+        // mapUpdate();
+        forceDraw();
+        // DEBUG
+        long long int fpush = 0;
+        // DEBUG STOP
+        while (true) {
+            if (clock % IC == 0) {
+                infoUpdate();
+                mapUpdate();
+                draw();
+                dpf("    |||<%lld frames pushed>|||    ",++fpush);
+                setCursorPosition(60,26);
+                dp("    +--------< DEBUG >---------+    ");
+                clock = 0;
+            }
+            clock++;
+        }
     }
     return 0;
 }
