@@ -6,7 +6,7 @@
 #include "prioqueuechar.h"
 
 
-boolean IsFull (PrioQueueChar Q){
+boolean QueIsFull (PrioQueueChar Q){
     return (NBElmt(Q) == MaxEl(Q));
 }
 

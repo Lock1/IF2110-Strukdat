@@ -7,17 +7,17 @@
 //NIM   : 13519146
 
 /****************** TEST LIST KOSONG ******************/
-boolean IsEmpty (List L){
+boolean LinIsEmpty (List L){
     return First(L)==Nil;
 }
 
 /****************** PEMBUATAN LIST KOSONG ******************/
-void CreateEmpty (List *L){
+void LinCreateEmpty (List *L){
     First(*L)=Nil;
 }
 
 /****************** Manajemen Memori ******************/
-address Alokasi (infotype X){
+address LinAlokasi (infotype X){
     address P=(address) malloc(1*sizeof(ElmtList));
     if (P!=Nil){
         Info(P)=X;
@@ -26,16 +26,16 @@ address Alokasi (infotype X){
     return P;
 }
 
-void Dealokasi (address *P){
+void DeLinAlokasi (address *P){
     free(*P);
 }
 
 /****************** PENCARIAN SEBUAH ELEMEN LIST ******************/
-address Search (List L, infotype X){
+address LinSearch (List L, infotype X){
   address P;
   boolean xFound = false;
 
-  if (!IsEmpty(L)) {
+  if (!LinIsEmpty(L)) {
     P = First(L);
     while (!xFound && P != Nil) {
       if (X == Info(P)) {
@@ -58,7 +58,7 @@ address Search (List L, infotype X){
 
 /****************** PRIMITIF BERDASARKAN NilAI ******************/
 void InsVLast (List *L, infotype X){
-    address P=Alokasi(X);
+    address P=LinAlokasi(X);
     if (P!=Nil){
         InsertLast(L, P);
     }
@@ -80,7 +80,7 @@ void DelVLast (List *L, infotype *X){
         Next(Prec)=Nil;
     }
     *X=Info(P);
-    Dealokasi(&P);
+    DeLinAlokasi(&P);
 }
 
 /****************** PRIMITIF BERDASARKAN ALAMAT ******************/
@@ -93,7 +93,7 @@ void InsertAfter (address P, address Prec){
 void InsertLast (List *L, address P){
   address Last;
 
-  if (IsEmpty(*L)) {
+  if (LinIsEmpty(*L)) {
     Next(P)=First(*L);
     First(*L)=P;
   } else {
@@ -130,7 +130,7 @@ void PrintInfo (List L){
   boolean isFirst = true;
 
   printf("[");
-  if (!IsEmpty(L)) {
+  if (!LinIsEmpty(L)) {
     P = First(L);
     while (P != Nil) {
       if (!isFirst) {
@@ -145,11 +145,11 @@ void PrintInfo (List L){
   printf("]");
 }
 
-int NbElmt (List L){
+int LinNBElmt (List L){
     address P;
     int count=0;
 
-    if(!IsEmpty(L)){
+    if(!LinIsEmpty(L)){
         P=First(L);
         while (P!=Nil){
             count+=1;

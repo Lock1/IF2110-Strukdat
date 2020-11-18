@@ -9,12 +9,12 @@
 /* *** Manajemen Memori *** */
 address Alokasi (infotype X)
 /* Mengirimkan address hasil alokasi sebuah elemen */
-/* Jika alokasi berhasil, maka address tidak Nil, dan misalnya menghasilkan P, 
+/* Jika alokasi berhasil, maka address tidak Nil, dan misalnya menghasilkan P,
   maka Info(P) = X, Next(P) = Nil */
 /* Jika alokasi gagal, mengirimkan Nil */
 {
     address P = (address) malloc(sizeof(ElmtList));
-    
+
     if(P!=Nil){
         Info(P) = X;
         Next(P) = Nil;
@@ -31,7 +31,7 @@ void Dealokasi (address P)
 /* *** Primitif-primitif yang harus direalisasikan *** */
 
 /* Pemeriksaan Kondisi List */
-int IsEmpty(List L)
+int RekIsEmpty(List L)
 /* Mengirimkan 1 jika L kosong dan 0 jika L tidak kosong */
 {
     if(L==Nil){
@@ -44,8 +44,8 @@ int IsEmpty(List L)
 int IsOneElmt(List L)
 /* Mengirimkan 1 jika L berisi 1 elemen dan 0 jika > 1 elemen atau kosong */
 {
-    if(!IsEmpty(L)){
-        return IsEmpty(Next(L));
+    if(!RekIsEmpty(L)){
+        return RekIsEmpty(Next(L));
     }
     else{
         return 0;
@@ -64,7 +64,7 @@ List Tail(List L)
 }
 /* *** Konstruktor *** */
 List Konso(infotype e, List L)
-/* Mengirimkan list L dengan tambahan e sebagai elemen pertamanya. 
+/* Mengirimkan list L dengan tambahan e sebagai elemen pertamanya.
 e dialokasi terlebih dahulu. Jika alokasi gagal, mengirimkan L. */
 {
     address P = Alokasi(e);
@@ -79,22 +79,22 @@ e dialokasi terlebih dahulu. Jika alokasi gagal, mengirimkan L. */
 List KonsB(List L, infotype e)
 /* Mengirimkan list L dengan tambahan e sebagai elemen terakhirnya */
 /* e harus dialokasi terlebih dahulu */
-/* Jika alokasi e gagal, mengirimkan L */ 
+/* Jika alokasi e gagal, mengirimkan L */
 {
-    if(IsEmpty(L)){  
+    if(RekIsEmpty(L)){
         return Alokasi(e);
     }
     else{
         Next(L) = KonsB(Tail(L), e);
         return L;
-    }    
+    }
 }
 
 /* *** Operasi Lain *** */
 List Copy (List L)
 /* Mengirimkan salinan list L (menjadi list baru) */
 /* Jika ada alokasi gagal, mengirimkan L */ {
-    if(IsEmpty(L)){
+    if(RekIsEmpty(L)){
         return Nil;
     }
     else{
@@ -107,7 +107,7 @@ void MCopy (List Lin, List *Lout)
 /* Proses : menyalin Lin ke Lout */
 {
     List LTemp;
-    if(IsEmpty(Lin)){
+    if(RekIsEmpty(Lin)){
         *Lout =  Nil;
     }
     else{
@@ -119,7 +119,7 @@ List Concat (List L1, List L2)
 /* Mengirimkan salinan hasil konkatenasi list L1 dan L2 (menjadi list baru) */
 /* Jika ada alokasi gagal, menghasilkan Nil */
 {
-    if(IsEmpty(L1)){
+    if(RekIsEmpty(L1)){
         return Copy(L2);
     }
     else{
@@ -132,7 +132,7 @@ void MConcat (List L1, List L2, List *LHsl)
 /* Proses : Menghasilkan salinan hasil konkatenasi list L1 dan L2 */
 {
     List LTemp;
-    if(IsEmpty(L1)){
+    if(RekIsEmpty(L1)){
         *LHsl = Copy(L2);
     }
     else{
@@ -143,7 +143,7 @@ void MConcat (List L1, List L2, List *LHsl)
 void PrintList (List L)
 /* I.S. L terdefinisi. */
 /* F.S. Setiap elemen list dicetak. */{
-    if(IsEmpty(L)){
+    if(RekIsEmpty(L)){
     }
     else{
         printf("%d\n", FirstElmt(L));
@@ -152,7 +152,7 @@ void PrintList (List L)
 }
 int NbElmtList (List L)
 {
-    if(IsEmpty(L)){
+    if(RekIsEmpty(L)){
         return 0;
     }
     else{
@@ -163,7 +163,7 @@ int NbElmtList (List L)
 boolean Search (List L, infotype X)
 /* Mengirim true jika X adalah anggota list, false jika tidak */
 {
-    if(IsEmpty(L)){
+    if(RekIsEmpty(L)){
         return false;
     }
     else{

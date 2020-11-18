@@ -21,21 +21,21 @@ typedef struct {
 
 
 /****************** TEST KETIKA BELUM DI UPGRADE ******************/
-boolean IsEmpty (List L);
+boolean LinIsEmpty (List L);
 
 
 /****************** PEMBUATAN LIST KOSONG ******************/
-void CreateEmpty (List *L);
+void LinCreateEmpty (List *L);
 
 
 /****************** Manajemen Memori ******************/
-address Alokasi (infotype X);
+address LinAlokasi (infotype X);
 
-void Dealokasi (address *P);
+void LinDealokasi (address *P);
 
 
 /****************** Pencarian Upgrade ******************/
-address Search (List L, infotype X);
+address LinSearch (List L, infotype X);
 /* Mencari apakah ada elemen list dengan Info(P)= X */
 /* Jika ada, mengirimkan address elemen tersebut. */
 /* Jika tidak ada, mengirimkan Nil */
@@ -43,24 +43,24 @@ address Search (List L, infotype X);
 /****************** PRIMITIF BERDASARKAN NILAI ******************/
 void InsVLast (List *L, infotype X);
 /* I.S. L mungkin kosong */
-/* F.S. Melakukan alokasi sebuah elemen dan */
+/* F.S. Melakukan LinAlokasi sebuah elemen dan */
 /* menambahkan elemen list di akhir: elemen terakhir yang baru */
-/* berNilai X jika alokasi berhasil. Jika alokasi gagal: I.S.= F.S. */
+/* berNilai X jika LinAlokasi berhasil. Jika LinAlokasi gagal: I.S.= F.S. */
 
 void DelVLast (List *L, infotype *X);
 /* I.S. list tidak kosong */
 /* F.S. Elemen terakhir list dihapus: Nilai info disimpan pada X */
-/*      dan alamat elemen terakhir di-dealokasi */
+/*      dan alamat elemen terakhir di-LinDealokasi */
 
 /****************** PRIMITIF BERDASARKAN ALAMAT ******************/
 /*** PENAMBAHAN ELEMEN BERDASARKAN ALAMAT ***/
 void InsertAfter (address P, address Prec);
 /* I.S. Prec pastilah elemen list dan bukan elemen terakhir, */
-/*      P sudah dialokasi  */
+/*      P sudah diLinAlokasi  */
 /* F.S. Insert P sebagai elemen sesudah elemen beralamat Prec */
 
 void InsertLast (List *L, address P);
-/* I.S. Sembarang, P sudah dialokasi  */
+/* I.S. Sembarang, P sudah diLinAlokasi  */
 /* F.S. P ditambahkan sebagai elemen terakhir yang baru */
 
 void DelLast (List *L, address *P);
@@ -74,7 +74,7 @@ void DelLast (List *L, address *P);
 /****************** PROSES SEMUA ELEMEN LIST ******************/
 void PrintInfo (List L);
 
-int NbElmt (List L);
+int LinNBElmt (List L);
 /* Buat mengetahui berapa banyak sudah melakukan upgrade */
 
 

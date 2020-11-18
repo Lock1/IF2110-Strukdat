@@ -21,7 +21,7 @@ typedef struct tElmtlist {
 /* List kosong : L = Nil */
 typedef address List;
 
-/* Deklarasi  nama untuk variabel kerja */ 
+/* Deklarasi  nama untuk variabel kerja */
 /*  	L : List */
 /*  	P : address 	*/
 /* Maka penulisan First(L) menjadi L */
@@ -34,7 +34,7 @@ typedef address List;
 /* *** Manajemen Memori *** */
 address Alokasi (infotype X);
 /* Mengirimkan address hasil alokasi sebuah elemen */
-/* Jika alokasi berhasil, maka address tidak Nil, dan misalnya menghasilkan P, 
+/* Jika alokasi berhasil, maka address tidak Nil, dan misalnya menghasilkan P,
   maka Info(P) = X, Next(P) = Nil */
 /* Jika alokasi gagal, mengirimkan Nil */
 void Dealokasi (address P);
@@ -45,7 +45,7 @@ void Dealokasi (address P);
 /* *** Primitif-primitif yang harus direalisasikan *** */
 
 /* Pemeriksaan Kondisi List */
-int IsEmpty(List L);
+int RekIsEmpty(List L);
 /* Mengirimkan 1 jika L kosong dan 0 jika L tidak kosong */
 int IsOneElmt(List L);
 /* Mengirimkan 1 jika L berisi 1 elemen dan 0 jika > 1 elemen atau kosong */
@@ -58,17 +58,17 @@ List Tail(List L);
 
 /* *** Konstruktor *** */
 List Konso(infotype e, List L);
-/* Mengirimkan list L dengan tambahan e sebagai elemen pertamanya. 
+/* Mengirimkan list L dengan tambahan e sebagai elemen pertamanya.
 e dialokasi terlebih dahulu. Jika alokasi gagal, mengirimkan L. */
 List KonsB(List L, infotype e);
 /* Mengirimkan list L dengan tambahan e sebagai elemen terakhirnya */
 /* e harus dialokasi terlebih dahulu */
-/* Jika alokasi e gagal, mengirimkan L */ 
+/* Jika alokasi e gagal, mengirimkan L */
 
 /* *** Operasi Lain *** */
 List Copy (List L);
 /* Mengirimkan salinan list L (menjadi list baru) */
-/* Jika ada alokasi gagal, mengirimkan L */ 
+/* Jika ada alokasi gagal, mengirimkan L */
 void MCopy (List Lin, List *Lout);
 /* I.S. Lin terdefinisi */
 /* F.S. Lout berisi salinan dari Lin */
