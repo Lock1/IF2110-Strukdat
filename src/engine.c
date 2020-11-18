@@ -17,7 +17,7 @@ const short int cRestY = 27;
 char mapframe[MAP_SIZE_Y][MAP_SIZE_X];
 char infoframe[INFO_SIZE_Y][INFO_SIZE_X];
 
-char *username = "NULL";
+char username[STRING_LENGTH] = "";
 int money = START_MONEY;
 // TODO : set time
 
@@ -33,7 +33,19 @@ void setCursorPosition(int XPos, int YPos) {
 }
 // TODO : Update
 
+// TODO : comment
+void stringCopy(char src[STRING_LENGTH], char dst[STRING_LENGTH]) {
+    for (int i = 0 ; src[i] != '\0' ; i++)
+        dst[i] = src[i]; // FIXME : maybe null terminator
+}
 
+// TODO : comment
+boolean stringCompare(char st1[STRING_LENGTH], char st2[STRING_LENGTH]) {
+    for (int i = 0 ; st1[i] != '\0' ; i++)
+        if (st1[i] != st2[i])
+            return false;
+    return true;
+}
 
 // TODO : Fix this
 void infoUpdate() {
@@ -65,6 +77,27 @@ void infoUpdate() {
     for (int i = 0 ; i < INFO_SIZE_Y ; i++)
         for (int j = 0 ; j < INFO_SIZE_X ; j++)
             nframe[INFO_OFFSET_Y+i][INFO_OFFSET_X+j] = infoframe[i][j];
+}
+
+// TODO : cleanup
+void startGame() {
+    puts("Welcome to Willy Wangky's Land");
+    puts("1. New Game");
+    // puts("2. Continue");
+    // puts("3. Load game");
+    puts("2. Quit");
+
+    printf(">> ");
+    STARTKATA();
+    // char userInput[STRING_LENGTH];
+    // stringCopy(CurrentInput,userInput);
+    if (stringCompare("new",CurrentInput) || CurrentInput[0] == '1') {
+        printf("Masukkan nama : ");
+        STARTKATA();
+        stringCopy(CurrentInput,username);
+    }
+    else if (stringCompare("quit", CurrentInput) || CurrentInput[0] == '2')
+        exit(0);
 }
 
 

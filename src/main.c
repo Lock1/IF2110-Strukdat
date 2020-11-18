@@ -20,7 +20,7 @@
 int main(void) {
     system(CLSCRN);
     // TODO: Main menu
-
+    startGame();
     // Game loop
     frameSet();
     // mapUpdate();
