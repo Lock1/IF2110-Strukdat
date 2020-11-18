@@ -1,3 +1,5 @@
+// Driver prioqueuechar
+// 13519110 / Mohammad Afif Akromi
 /* File : prioqueue.h */
 /* Definisi ADT Priority Queue Char dengan representasi array secara eksplisit dan alokasi dinamik */
 /* Model Implementasi Versi III dengan circular buffer */
@@ -39,8 +41,6 @@ typedef struct {
 #define Elmt(Q,i)   (Q).T[(i)]
 
 /* ********* Prototype ********* */
-boolean IsEmpty (PrioQueueChar Q);
-/* Mengirim true jika Q kosong: lihat definisi di atas */
 boolean IsFull (PrioQueueChar Q);
 /* Mengirim true jika tabel penampung elemen Q sudah penuh */
 /* yaitu mengandung elemen sebanyak MaxEl */

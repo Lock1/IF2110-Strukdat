@@ -1,6 +1,6 @@
-/* File: point.h */
-/* Tanggal: 28 Agustus 2016 */
-/* *** Definisi ABSTRACT DATA TYPE POINT *** */
+// ADT point
+// 13519110 / Mohammad Afif Akromi
+
 
 #ifndef POINT_H
 #define POINT_H
@@ -68,9 +68,6 @@ POINT MirrorOf (POINT P, boolean SbX);
 /* Menghasilkan salinan P yang dicerminkan terhadap salah satu sumbu */
 /* Jika SbX bernilai true, maka dicerminkan terhadap sumbu X */
 /* Jika SbX bernilai false, maka dicerminkan terhadap sumbu Y */
-float Jarak0 (POINT P);
-/* Menghitung jarak P ke (0,0) */
-float Panjang (POINT P1, POINT P2);
 /* Menghitung panjang garis yang dibentuk P1 dan P2 */
 /* Perhatikanlah bahwa di sini spec fungsi kurang baik sebab menyangkut ADT Garis. */
 /* Tuliskan spec fungsi yang lebih tepat. */

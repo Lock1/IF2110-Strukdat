@@ -2,19 +2,16 @@
 // NIM : 13519110
 
 #include <stdio.h>
-#include "stdlib.h"
+#include <stdlib.h>
 #include "prioqueuechar.h"
 
-boolean IsEmpty (PrioQueueChar Q){
-    return (Head(Q) == Nil && Tail(Q) == Nil);
-}
 
 boolean IsFull (PrioQueueChar Q){
     return (NBElmt(Q) == MaxEl(Q));
 }
 
 int NBElmt (PrioQueueChar Q){
-    if (IsEmpty(Q)){
+    if (!(Head(Q) || Tail(Q))) {
         return 0;
     }
     else if (Head(Q) <= Tail(Q)){
@@ -27,14 +24,14 @@ int NBElmt (PrioQueueChar Q){
 
 void MakeEmpty (PrioQueueChar * Q, int Max){
     (*Q).T = (infotype *) malloc ((Max) * sizeof(infotype));
-    if ((*Q).T != NULL){    
+    if ((*Q).T != NULL){
         MaxEl(*Q) = Max;
         Head(*Q) = Nil;
         Tail(*Q) = Nil;
     } else {
         MaxEl(*Q) = 0;
     }
-    
+
 }
 
 void DeAlokasi(PrioQueueChar * Q){
@@ -79,4 +76,3 @@ void PrintPrioQueueChar (PrioQueueChar Q){
 
     printf("#\n");
 }
-

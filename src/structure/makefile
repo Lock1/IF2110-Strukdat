@@ -1,4 +1,4 @@
-all: matrix listarray graph listlinear jam mesinkata
+all: matrix listarray graph listlinear jam mesinkata queue point
 
 matrix:
 	gcc -Wall -Wextra matrix.c driver/driver-matrix.c -o driver-executable/driver-matrix
@@ -17,6 +17,12 @@ jam:
 
 mesinkata:
 	gcc -Wall -Wextra mesinkata.c mesinkar.c driver/driver-mesinkata.c -o driver-executable/driver-mesinkata
+
+queue:
+	gcc -Wall -Wextra prioqueuechar.c driver/driver-prioqueuechar.c -o driver-executable/driver-queue
+
+point:
+	gcc -Wall -Wextra point.c driver/driver-point.c -o driver-executable/driver-point
 
 clean:
 	rm driver-executable/*

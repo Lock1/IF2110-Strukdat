@@ -1,3 +1,5 @@
+// ADT point
+// 13519110 / Mohammad Afif Akromi
 /* *** Definisi ABSTRACT DATA TYPE POINT *** */
 
 #include <stdio.h>
@@ -120,22 +122,7 @@ POINT MirrorOf(POINT P, boolean SbX)
         return MakePOINT(-(Absis(P)), Ordinat(P));
     }
 }
-float Jarak0(POINT P)
-/* Menghitung jarak P ke (0,0) */
-{
-    return (sqrt(pow(Absis(P), 2) + pow(Ordinat(P), 2)));
-}
-float Panjang(POINT P1, POINT P2)
-/* Menghitung panjang garis yang dibentuk P1 dan P2 */
-/* Perhatikanlah bahwa di sini spec fungsi kurang baik sebab menyangkut ADT Garis. */
-/* Tuliskan spec fungsi yang lebih tepat. */
-{
-    float deltaX, deltaY;
-    deltaX = Absis(P1) - Absis(P2);
-    deltaY = Ordinat(P1) - Ordinat(P2);
 
-    return (sqrt(pow(deltaX, 2) + pow(deltaY, 2)));
-}
 void Geser(POINT *P, float deltaX, float deltaY)
 /* I.S. P terdefinisi */
 /* F.S. P digeser, absisnya sebesar deltaX dan ordinatnya sebesar deltaY */
