@@ -1,4 +1,4 @@
-all: matrix listarray graph listlinear jam mesinkata queue point
+all: matrix listarray graph listlinear jam mesinkata queue point tree stack
 
 matrix:
 	gcc -Wall -Wextra matrix.c driver/driver-matrix.c -o driver-executable/driver-matrix
@@ -23,6 +23,9 @@ queue:
 
 stack:
 	gcc -Wall -Wextra stack.c driver/driver-stack.c -o driver-executable/driver-stack
+
+tree:
+	gcc -Wall -Wextra tree.c listrek.c driver/driver-tree.c -o driver-executable/driver-tree
 
 point:
 	gcc -Wall -Wextra point.c driver/driver-point.c -o driver-executable/driver-point

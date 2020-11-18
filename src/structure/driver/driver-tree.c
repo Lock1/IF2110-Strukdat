@@ -1,6 +1,6 @@
 // Driver tree
 // 13519206 / Muhammad Fawwaz Naabigh
-#include "tree.h"
+#include "../tree.h"
 #include <stdio.h>
 
 int main(){
@@ -20,11 +20,11 @@ int main(){
     printf("Banyak elemen adalah %d\n", NbElmt(P));
     printf("Banyak daun adalah %d\n", NbDaun(P));
     printf("Level node '1' adalah %d\n", Level(P, 1));
-    printf("Tinggi pohon adalah %d\n", Tinggi(P));  
+    printf("Tinggi pohon adalah %d\n", Tinggi(P));
     printf("Node berlevel 3:\n");
-    PrintList(MakeListLevel(P, 3));  
+    PrintList(MakeListLevel(P, 3));
     printf("Semua daun:\n");
-    PrintList(MakeListDaun(P));  
+    PrintList(MakeListDaun(P));
     printf("Semua node:\n");
     PrintList(MakeListPreorder(P));
 
@@ -39,6 +39,6 @@ int main(){
     }
     if(IsUnerRight(P)){
         printf("Ini adalah pohon uner dengan subpohon di kanan");
-    }    
+    }
     return 0;
 }
