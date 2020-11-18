@@ -1,3 +1,5 @@
+// ADT Tree
+// 13519206 / Muhammad Fawwaz Naabigh
 /* ADT Pohon Biner */
 /* Implementasi dengan menggunakan pointer */
 /* Penamaan type infotype, type addrNode, dan beberapa fungsi disesuikan

@@ -1,3 +1,5 @@
+// ADT Stack
+// 13519206 / Muhammad Fawwaz Naabigh
 #include "stack.h"
 
 
@@ -16,7 +18,7 @@ boolean IsEmpty (Stack S){
 
 /* Mengirim true jika tabel penampung nilai elemen stack penuh */
 boolean IsFull (Stack S){
-    return Top(S) == MaxEl-1;  
+    return Top(S) == MaxEl-1;
 }
 
 /* ************ Menambahkan sebuah elemen ke Stack ************ */

@@ -21,6 +21,9 @@ mesinkata:
 queue:
 	gcc -Wall -Wextra prioqueuechar.c driver/driver-prioqueuechar.c -o driver-executable/driver-queue
 
+stack:
+	gcc -Wall -Wextra stack.c driver/driver-stack.c -o driver-executable/driver-stack
+
 point:
 	gcc -Wall -Wextra point.c driver/driver-point.c -o driver-executable/driver-point
 

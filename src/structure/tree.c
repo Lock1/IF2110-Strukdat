@@ -1,3 +1,5 @@
+// ADT Tree
+// 13519206 / Muhammad Fawwaz Naabigh
 #include "tree.h"
 #include "boolean.h"
 #include <stdio.h>
@@ -13,7 +15,7 @@ BinTree Tree (infotype Akar, BinTree L, BinTree R)
     if (New_tree != Nil){
         Akar(New_tree) = Akar;
         Left(New_tree) = L;
-        Right(New_tree) = R;    
+        Right(New_tree) = R;
     }
     return New_tree;
 }
@@ -204,7 +206,7 @@ void AddDaun (BinTree *P, infotype X, infotype Y, boolean Kiri)
     }
 }
 
-void DelDaun (BinTree *P, infotype X)     
+void DelDaun (BinTree *P, infotype X)
 {
     if (!IsTreeEmpty(*P)){
 

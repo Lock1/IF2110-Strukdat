@@ -1,3 +1,5 @@
+// ADT Stack
+// 13519206 / Muhammad Fawwaz Naabigh
 #ifndef stackt_H
 #define stackt_H
 
@@ -12,7 +14,7 @@ typedef int address;   /* indeks tabel */
 
 /* Contoh deklarasi variabel bertype stack dengan ciri TOP : */
 /* Versi I : dengan menyimpan tabel dan alamat top secara eksplisit*/
-typedef struct { 
+typedef struct {
   infotype T[MaxEl]; /* tabel penyimpan elemen */
   address TOP;  /* alamat TOP: elemen puncak */
 } Stack;
