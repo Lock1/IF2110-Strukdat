@@ -1,16 +1,25 @@
-#ifndef graph_H
-#define graph_H
+#include <stdio.h>
+#include <stdlib.h>
 
-typedef struct tnode *address;
-typedef struct tnode{
-    int info;
-    address *next;
-} node;
-typedef struct {
-    address last;
-};
+#define maxNode 5
 
-void ReadGraph(address ad[], int nbNode);
-void PrintGraph(address ad[], int nbNode);
+typedef struct Node *address;
 
-#endif
+typedef struct Node{
+    int vertexNum;
+    address next;
+}Node;
+
+typedef struct List{
+    address head;
+}List;
+
+List *adjlist[maxNode]={0};
+
+void addNode(int s, int d);
+
+void printList();
+
+
+
+
