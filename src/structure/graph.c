@@ -1,43 +1,34 @@
-// Graph
+// ADT Graf
 // 13519146 / Fadel Ananda Dotty
-#include <stdio.h>
-#include <stdlib.h>
 #include "graph.h"
+#include <stdio.h>
+#include <stlib.h>
 
-
-void ReadGraph(address ad[], int nbNode)
-{
-    address new_node;
-    int k, val;
-    for(int i=0; i<nbNode; i++){
-        address last = NULL;
-        printf("Masukkan jumlah tetangga node %d: ", i+1);
-        scanf("%d", &k);
-        for(int j=0; j<k; j++){
-            printf("Masukkan nilai tetangga node %d: ", i+1);
-            scanf("%d", &val);
-            new_node = (address) malloc(sizeof(address));
-            new_node->info=val;
-            new_node->next=NULL;
-            if(ad[i]==NULL)
-                ad[i]=new_node;
-            else
-                last->next=new_node;
-            last=new_node;
-
-        }
+void addNode(int s, int d){
+    address dest, temp, src;
+    if(adjlist[s]->head==NULL){
+        src=(address)malloc(sizeof(Node));
+        src->vertexNum=s;
+        src->next=NULL;
+        adjlist[s]->head=src;
     }
+    dest=(address)malloc(sizeof(Node));
+    dest->vertexNum=d;
+    dest->next=NULL;
+    temp=adjlist[s]->head;
+    while (temp->next!=NULL)
+        temp=temp->next;
+    temp->next=dest;
 }
 
-
-void PrintGraph(address ad[], int nbNode){
-    address Ptr=NULL;
-    for (int i=0; i<nbNode; i++){
-        Ptr=ad[i];
-        printf("\n The neighbours of %d are: ", i+1);
-        while(Ptr!=NULL){
-            printf("%d\t", Ptr->info);
-            Ptr=Ptr->next;
+void printList(){
+    for(int i=0; i<maxNode; i++){
+        address p=adjlist[i]->head;    
+        printf("List for vertex %d: ", i);
+        while(p){
+            printf("%d ", p->vertexNum);
+            p=p->next;
         }
+        printf("\n");
     }
-}
+    printf("\n");

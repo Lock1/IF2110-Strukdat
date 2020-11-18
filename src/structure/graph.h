@@ -1,18 +1,23 @@
-// Driver linked list
+// ADT Graf
 // 13519146 / Fadel Ananda Dotty
-#ifndef graph_H
-#define graph_H
+#include <stdio.h>
+#include <stdlib.h>
 
-typedef struct tnode *address;
-typedef struct tnode {
-    int info;
+#define maxNode 5
+
+typedef struct Node *address;
+
+typedef struct Node{
+    int vertexNum;
     address next;
-} node;
-typedef struct g {
-    address last;
-} graph;
+}Node;
 
-void ReadGraph(address ad[], int nbNode);
-void PrintGraph(address ad[], int nbNode);
+typedef struct List{
+    address head;
+}List;
 
-#endif
+List *adjlist[maxNode]={0};
+
+void addNode(int s, int d);
+
+void printList();
