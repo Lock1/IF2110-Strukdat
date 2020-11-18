@@ -28,24 +28,12 @@ int main(void) {
         infoUpdate();
         mapUpdate();
         forceDraw();
-        unicodeDraw();
-        // DEBUG
-        long long int fpush = 0;
-        // DEBUG STOP
 
         // Game loop
         while (true) {
-            delay(1);
-            infoUpdate();
-            mapUpdate();
             draw();
-            // wordInput();
             prepDay();
-            // DEBUG
-            dpf("    |||<%lld frames pushed>|||    ",++fpush);
-            setCursorPosition(60,26);
-            dp("    +--------< DEBUG >---------+    ");
-            // DEBUG STOP
+            playDay();
         }
     }
 

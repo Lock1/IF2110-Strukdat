@@ -20,6 +20,7 @@ JAM prepTime;
 char mapframe[MAP_SIZE_Y][MAP_SIZE_X];
 char infoframe[INFO_SIZE_Y][INFO_SIZE_X];
 
+matrix map1; // TODO : multiple map, T
 char username[STRING_LENGTH] = "";
 int money = START_MONEY;
 int currentDay = 1;
@@ -32,7 +33,7 @@ JAM currentTime;
 // ---------------- Function Definition =-----------------
 
 // Theres function in Windows that allow set cursor pos
-// Linux implementation pretty short
+// Anyway UNIX implementation pretty short
 void setCursorPosition(int XPos, int YPos) {
     printf("\033[%d;%dH",YPos+1,XPos+1);
 }
@@ -125,8 +126,6 @@ boolean startGame() {
 
     printf(">> ");
     wordInput();
-    // char userInput[STRING_LENGTH];
-    // stringCopy(CurrentInput,userInput);
     if (stringCompare("new",CurrentInput) || CurrentInput[0] == '1') {
         printf("Masukkan nama : ");
         wordInput();
@@ -144,23 +143,33 @@ boolean startGame() {
 // TODO : Load branch
 
 void prepDay() {
-    // STACK
+    // TODO : STACK
     frameSet(1);
     unicodeDraw(0);
     while (true) {
-        wordInput();
+        infoUpdate();
+        mapUpdate();
+        draw();
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y);
+        puts("Masukkan perintah :                        ");
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+24, MAP_OFFSET_Y + MAP_SIZE_Y);
 
+        wordInput();
+        // DEBUG
         if (stringCompare("build",CurrentInput))
             puts(what);
-        // else if (stringCompare("upgrade",CurrentInput))
-        //
-        // else if (stringCompare("buy",CurrentInput))
-        //
-        // else if (stringCompare("build",CurrentInput))
-
+        else if (stringCompare("upgrade",CurrentInput))
+            puts(what);
+        else if (stringCompare("buy",CurrentInput))
+            puts(what);
+        else if (stringCompare("build",CurrentInput))
+            puts(what);
         else if (stringCompare("main",CurrentInput))
             break;
-
+        else {
+            forceDraw();
+            unicodeDraw(0);
+        }
     }
     // forceDraw();
 
@@ -169,7 +178,14 @@ void prepDay() {
     // }
 }
 
+void playDay() {
+    frameSet(2);
+    unicodeDraw(1);
+    draw();
+    // LOOP
 
+    currentDay++;
+}
 
 void mapUpdate() {
     // TODO : Need actual matrix of building to properly update

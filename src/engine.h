@@ -18,6 +18,7 @@ source: from my shitty C++ and windows-based game lul
 #include "structure/boolean.h"
 #include "structure/mesinkata.h"
 #include "structure/jam.h"
+#include "structure/matrix.h"
 
 
 // -------------------------------------------------------
@@ -51,6 +52,8 @@ boolean startGame();
 // Checking for save and newgame
 
 void prepDay();
+
+void playDay();
 
 void frameSet();
 
