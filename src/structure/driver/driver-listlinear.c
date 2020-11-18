@@ -11,7 +11,11 @@ int main(){
     InsVLast(&L, 1);
     InsVLast(&L, 2);
     InsVLast(&L, 3);
+    printf("Sebelum delete\n");
+    PrintInfo(L);
+    puts("");
     DelVLast(&L, &X);
-    printf("%d", X);
+    printf("Setelah delete\n");
+    PrintInfo(L);
     return 0;
 }

@@ -85,7 +85,7 @@ void DelVLast (List *L, infotype *X){
 
 /****************** PRIMITIF BERDASARKAN ALAMAT ******************/
 /*** PENAMBAHAN ELEMEN BERDASARKAN ALAMAT ***/
-void InsertAfter (List *L, address P, address Prec){
+void InsertAfter (address P, address Prec){
   Next(P) = Next(Prec);
   Next(Prec) = P;
 }
@@ -101,7 +101,7 @@ void InsertLast (List *L, address P){
     while (Next(Last) != Nil) {
       Last = Next(Last);
     }
-    InsertAfter(L, P, Last);
+    InsertAfter(P, Last);
   }
 }
 

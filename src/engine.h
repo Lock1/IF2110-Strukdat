@@ -23,8 +23,17 @@ source: from my shitty C++ and windows-based game lul
 #define MAP_OFFSET_Y 2
 #define MAP_SIZE_X 50
 #define MAP_SIZE_Y 25
+#define INFO_OFFSET_X 60
+#define INFO_OFFSET_Y 4
+#define INFO_SIZE_X 50
+#define INFO_SIZE_Y 16
+#define INFO_BLOCK_SIZE 16
 
-#define IC 1000000
+// Other configuration
+#define IC 1000000 // Instruction clock
+#define START_MONEY 100
+#define START_PLAY 9
+#define START_PREP 21
 
 // Debugging feature
 #define DEBUG 1
@@ -46,7 +55,11 @@ source: from my shitty C++ and windows-based game lul
 //     #include <time.h>
 // #endif
 // -------------------------------------------------------
-
+// Player name (line 1)
+// Money (line 2)
+// Time (line 3-5) (start, elapsed, stop)
+// Queue (line 6-12) (2 line for border, 5 for actual queue)
+// Broken building (line 13-15)
 
 // ---------------- Function Declaration -----------------
 // xxx----- Internal engine function -----xxx
@@ -66,8 +79,12 @@ void setCursorPosition(int XPos, int YPos);
 
 void frameSet();
 
+void infoUpdate();
+// Update frame with changes in information screen
+
 void mapUpdate();
 // Update frame with changes in map
+
 
 
 void draw();

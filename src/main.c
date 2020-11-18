@@ -31,6 +31,7 @@ int main(void) {
     // DEBUG STOP
     while (true) {
         if (clock % IC == 0) {
+            infoUpdate();
             mapUpdate();
             draw();
             dpf("    |||<%lld frames pushed>|||    ",++fpush);

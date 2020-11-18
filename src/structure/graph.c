@@ -1,3 +1,5 @@
+// Graph
+// 13519146 / Fadel Ananda Dotty
 #include <stdio.h>
 #include <stdlib.h>
 #include "graph.h"
@@ -22,7 +24,7 @@ void ReadGraph(address ad[], int nbNode)
             else
                 last->next=new_node;
             last=new_node;
-            
+
         }
     }
 }
@@ -39,4 +41,3 @@ void PrintGraph(address ad[], int nbNode){
         }
     }
 }
-
