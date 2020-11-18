@@ -1,5 +1,6 @@
 # Tugas Besar - Algoritma dan Struktur Data
 **TBA**
+<!-- FAQ Link ???? -->
 
 ### Release
 **TBA**
@@ -24,7 +25,11 @@
 ## Snapshot
 **TBA** \
 **lul** \
-![Kekw](/other/img/cool.gif)
+![Kekw](/other/img/cool.gif) \
+**uhh** \
+![nope](/other/img/wrong.gif) \
+**have fun* \
+![havefun](/other/img/have-fun.jpg)
 <!--
 **Gauss-Jordan Elimination** \
 ![Gauss Jordan Elimination](/src/readme/gjelimination.gif) -->
@@ -55,24 +60,25 @@ NIM      | Nama
 
 **Tools yang digunakan**
 **TBA**
-<!-- Komponen      | Menggunakan
+Komponen      | Menggunakan
 --------      | -----------
-gcc (Ubuntu 7.4.0-1ubuntu1~18.04.1) 7.4.0-->
+Compiler      | gcc (Ubuntu 7.4.0-1ubuntu1~18.04.1) 7.4.0
 
 **Dependencies**
 **TBA**
-<!-- Komponen    | Menggunakan
---------    | -----------
-JRE         | 9 -->
-
+Komponen           | Menggunakan
+--------           | -----------
+Standard C Library | stdio.h
+Standard C Library | stdlib.h
+<!--- STD C UNIX Library | unistd.h --->
 
 ## Spesifikasi
-<!--**Base Game**
+**Base Game**
 Spesifikasi                       | Status
 -----------                       | ------
-Movement
-Tick
-Draw-->
+Input                             | :red_square:
+Tick                              | :red_square:
+Draw                              | :green_square:
 
 
 
@@ -82,19 +88,29 @@ Spesifikasi                       | Status
 -----------                       | ------
 -->
 
+**Struktur**
+Spesifikasi     | Status
+-----------     | ------
+Point           | :green_square:
+Jam             | :green_square:
+List Array      | :green_square:
+Matriks         | :green_square:
+Mesin Kata      | :green_square:
+Priority Queue  | :green_square:
+Stack           | :green_square:
+Linked List     | :green_square:
+Tree            | :green_square:
+Graph           | :green_square:
+
 
 **Bonus**
 **Status : WIP**
-Spesifikasi | Status
------------ | ------
-Save        | :x:
-Load        | :x:
-Continue    | :x:
-
-**Status : WIP**
 Spesifikasi   | Status
 -----------   | ------
-Ukuran Wahana | :x:
+Save          | :red_square:
+Load          | :red_square:
+Continue      | :red_square:
+Ukuran Wahana | :red_square:
 
 
 ## Laporan

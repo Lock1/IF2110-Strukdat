@@ -1,3 +1,5 @@
+// ADT Graf
+// 13519146 / Fadel Ananda Dotty
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -19,7 +21,3 @@ List *adjlist[maxNode]={0};
 void addNode(int s, int d);
 
 void printList();
-
-
-
-

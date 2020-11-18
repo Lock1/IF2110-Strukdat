@@ -1,3 +1,5 @@
+// ADT Graf
+// 13519146 / Fadel Ananda Dotty
 #include "graph.h"
 #include <stdio.h>
 #include <stlib.h>
@@ -30,4 +32,3 @@ void printList(){
         printf("\n");
     }
     printf("\n");
-}
