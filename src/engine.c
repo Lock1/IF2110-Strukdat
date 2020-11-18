@@ -86,8 +86,8 @@ void infoUpdate() {
         curTime[4] = tempTime[0];
     }
     else {
-        curTime[3] = tempTime[0];
-        curTime[4] = tempTime[1];
+        curTime[3] = tempTime[1];
+        curTime[4] = tempTime[0];
     }
     curTime[5] = '\0';
     for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
@@ -134,8 +134,7 @@ boolean startGame() {
         puts(HAVE_FUN_ASCII_ART);
         puts(WILLY_WANGKY_ASCII_ART);
         playTime = MakeJAM(START_PLAY,0);
-        prepTime = MakeJAM(START_PREP,0);
-        currentTime = MakeJAM(START_PREP,0);
+        prepTime = currentTime = MakeJAM(START_PREP,0);
         return true;
     }
     else if (stringCompare("quit", CurrentInput) || CurrentInput[0] == '2')
@@ -145,9 +144,26 @@ boolean startGame() {
 // TODO : Load branch
 
 void prepDay() {
+    // STACK
     frameSet(1);
+    unicodeDraw(0);
+    while (true) {
+        wordInput();
+
+        if (stringCompare("build",CurrentInput))
+            puts(what);
+        // else if (stringCompare("upgrade",CurrentInput))
+        //
+        // else if (stringCompare("buy",CurrentInput))
+        //
+        // else if (stringCompare("build",CurrentInput))
+
+        else if (stringCompare("main",CurrentInput))
+            break;
+
+    }
     // forceDraw();
-    // unicodeDraw(0);
+
     // while (true) {
     //
     // }
@@ -188,7 +204,6 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
     // 1 Preparation
     // 2 Play
 
-    // DEBUG
     if (tp == 0) {
         for (int i = 0 ; i < RES_Y ; i++)
             for (int j = 0 ; j < RES_X ; j++)
@@ -201,25 +216,42 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
                 infoframe[i][j] = '\0';
     }
 
-    char *infoBlock[9];
-    infoBlock[0] = "Nama           | ";
+    char *infoBlock[9], endTime[5];
+    if (tp == 1 || tp == 0) {
+        infoBlock[4] = "Opening time   | ";
+        infoBlock[6] = "     --------------- Action -----------------     ";
+        char* actionBlock[3];
+        actionBlock[0] = "Action count   | ";
+        actionBlock[1] = "Time required  | ";
+        actionBlock[2] = "Gold required  | ";
+        for (int i = 0 ; i < 3 ; i++)
+            for (int j = 0 ; j < INFO_BLOCK_SIZE ; j++)
+                infoframe[7+i][j] = actionBlock[i][j];
+        sprintf(endTime,"%d",Hour(playTime));
+
+    }
+    else if (tp == 2) {
+        infoBlock[4] = "Closing time   | ";
+        infoBlock[6] = "     ---------------- Queue -----------------     ";
+        sprintf(endTime,"%d",Hour(prepTime));
+    }
+    endTime[2] = ':';
+    endTime[3] = endTime[4] = '0';
+
+    infoBlock[0] = "Name           | ";
     infoBlock[1] = "Money          | ";
     infoBlock[2] = "Day            | ";
     infoBlock[3] = "Current time   | ";
-    if (tp == 1 || tp == 0)
-        infoBlock[4] = "Opening time   | ";
-    else if (tp == 2)
-        infoBlock[4] = "Closing time   | ";
     infoBlock[5] = "Time remaining | ";
-    if (tp == 1 || tp == 0)
-        infoBlock[6] = "     --------------- Action -----------------     ";
-    else if (tp == 2)
-        infoBlock[6] = "     ---------------- Queue -----------------     ";
     infoBlock[7] = "     ----------------------------------------     ";
     infoBlock[8] = "           ----- Broken Building -----            ";
     for (int i = 0 ; i < 6 ; i++)
         for (int j = 0 ; j < INFO_BLOCK_SIZE ; j++)
             infoframe[i][j] = infoBlock[i][j];
+
+    for (int i = 0 ; i < 5 ; i++)
+        infoframe[4][INFO_BLOCK_SIZE+i+1] = endTime[i]; // FIXME : ??
+
 
     for (int i = 0 ; i < INFO_SIZE_X ; i++) {
         infoframe[6][i] = infoBlock[6][i];
@@ -255,9 +287,9 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
 void unicodeDraw(int tp) {
     switch (tp) {
         case 0:
-            setCursorPosition(INFO_OFFSET_X,INFO_OFFSET_Y-4);
+            setCursorPosition(INFO_OFFSET_X-3,INFO_OFFSET_Y-4);
             puts(PREP_DAY_TITLE_1);
-            setCursorPosition(INFO_OFFSET_X,INFO_OFFSET_Y-3);
+            setCursorPosition(INFO_OFFSET_X-3,INFO_OFFSET_Y-3);
             puts(PREP_DAY_TITLE_2);
             break;
         case 1:

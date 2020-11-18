@@ -6,7 +6,7 @@
 #define MAP_OFFSET_Y 2
 #define MAP_SIZE_X 50
 #define MAP_SIZE_Y 25
-#define INFO_OFFSET_X 60
+#define INFO_OFFSET_X 63
 #define INFO_OFFSET_Y 6
 #define INFO_SIZE_X 50
 #define INFO_SIZE_Y 17
