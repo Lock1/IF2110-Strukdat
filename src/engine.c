@@ -14,8 +14,8 @@ char nframe[RES_Y][RES_X];
 const short int cRestX = 60;
 const short int cRestY = 27;
 
-JAM playTime;
-JAM prepTime;
+JAM cPlayTime;
+JAM cPrepTime;
 
 char mapframe[MAP_SIZE_Y][MAP_SIZE_X];
 char infoframe[INFO_SIZE_Y][INFO_SIZE_X];
@@ -55,12 +55,13 @@ boolean stringCompare(char st1[STRING_LENGTH], char st2[STRING_LENGTH]) {
 
 // TODO : Fix this
 void infoUpdate() {
+    // ---- Username ---
     for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
         if (username[i] == '\0')
             break;
         else
             infoframe[0][INFO_BLOCK_SIZE+i+1] = username[i];
-
+    // ---- Money ----
     char moneyString[INFO_SIZE_X - INFO_BLOCK_SIZE];
     sprintf(moneyString,"%d",money);
     for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
@@ -68,7 +69,7 @@ void infoUpdate() {
             break;
         else
             infoframe[1][INFO_BLOCK_SIZE+i+1] = moneyString[i];
-
+    // ---- Day ----
     char dayString[INFO_SIZE_X - INFO_BLOCK_SIZE];
     sprintf(dayString,"%d",currentDay);
     for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
@@ -76,10 +77,10 @@ void infoUpdate() {
             break;
         else
             infoframe[2][INFO_BLOCK_SIZE+i+1] = dayString[i];
-
+    // ---- Current time ----
     char tempTime[STRING_LENGTH], curTime[STRING_LENGTH];
+    // Hour Handler
     sprintf(tempTime,"%d",Hour(currentTime));
-    printf("%s",tempTime);
     if (Hour(currentTime) < 10) {
         curTime[0] = '0';
         curTime[1] = tempTime[0];
@@ -88,12 +89,10 @@ void infoUpdate() {
         curTime[0] = tempTime[0];
         curTime[1] = tempTime[1];
     }
+    // Separator
     curTime[2] = ':';
-    sprintf(tempTime,"%d",Minute(currentTime));
-    // Hour Handler
-
-
     // Minute Handler
+    sprintf(tempTime,"%d",Minute(currentTime));
     if (Minute(currentTime) < 10) {
         curTime[3] = '0';
         curTime[4] = tempTime[0];
@@ -102,6 +101,7 @@ void infoUpdate() {
         curTime[3] = tempTime[0];
         curTime[4] = tempTime[1];
     }
+    // Copying and null terminator
     curTime[5] = '\0';
     for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
         if (curTime[i] == '\0')
@@ -109,20 +109,7 @@ void infoUpdate() {
         else
             infoframe[3][INFO_BLOCK_SIZE+i+1] = curTime[i];
 
-    // DEBUG
-
-    // DEBUG END
-
-    // DEBUG
-    // if (random()%2)
-    //     infoframe[random()%INFO_SIZE_Y][random()%INFO_SIZE_X] = 41;
-    // else
-    //     infoframe[random()%INFO_SIZE_Y][random()%INFO_SIZE_X] = 79;
-
-
-
-
-    // DEBUG STOP
+    // Moving info frame to next frame buffer
     for (int i = 0 ; i < INFO_SIZE_Y ; i++)
         for (int j = 0 ; j < INFO_SIZE_X ; j++)
             nframe[INFO_OFFSET_Y+i][INFO_OFFSET_X+j] = infoframe[i][j];
@@ -144,8 +131,8 @@ boolean startGame() {
         stringCopy(CurrentInput,username);
         puts(HAVE_FUN_ASCII_ART);
         puts(WILLY_WANGKY_ASCII_ART);
-        playTime = MakeJAM(START_PLAY,0);
-        prepTime = currentTime = MakeJAM(START_PREP,0);
+        cPlayTime = MakeJAM(START_PLAY,0);
+        cPrepTime = currentTime = MakeJAM(START_PREP,0);
         return true;
     }
     else if (stringCompare("quit", CurrentInput) || CurrentInput[0] == '2')
@@ -255,13 +242,16 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
         for (int i = 0 ; i < 3 ; i++)
             for (int j = 0 ; j < INFO_BLOCK_SIZE ; j++)
                 infoframe[7+i][j] = actionBlock[i][j];
-        sprintf(endTime,"%d",Hour(playTime));
-
+        sprintf(endTime,"%d",Hour(cPlayTime));
+        if (Hour(cPlayTime) < 10) {
+            endTime[1] = endTime[0];
+            endTime[0] = '0';
+        }
     }
     else if (tp == 2) {
         infoBlock[4] = "Closing time   | ";
         infoBlock[6] = "     ---------------- Queue -----------------     ";
-        sprintf(endTime,"%d",Hour(prepTime));
+        sprintf(endTime,"%d",Hour(cPrepTime));
     }
     endTime[2] = ':';
     endTime[3] = endTime[4] = '0';
@@ -315,12 +305,13 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
 void unicodeDraw(int tp) {
     switch (tp) {
         case 0:
+        case 1:
             setCursorPosition(INFO_OFFSET_X-3,INFO_OFFSET_Y-4);
             puts(PREP_DAY_TITLE_1);
             setCursorPosition(INFO_OFFSET_X-3,INFO_OFFSET_Y-3);
             puts(PREP_DAY_TITLE_2);
             break;
-        case 1:
+        case 2:
 
             break;
     }
@@ -337,9 +328,6 @@ void forceDraw() {
         for (int j = 0 ; j < RES_X ; j++) {
             // Remember index are flipped
             setCursorPosition(j,i);
-            // DEBUG
-            // dpf("%s","\u2588");
-            // DEBUG STOP
             putchar(nframe[i][j]);
         }
         puts("");
