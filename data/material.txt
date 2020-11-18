@@ -1,0 +1,4 @@
+10 Kayu 2
+11 Besi 5
+12 Bata 3
+13 Semen 2
