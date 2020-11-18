@@ -54,7 +54,7 @@ boolean stringCompare(char st1[STRING_LENGTH], char st2[STRING_LENGTH]) {
 }
 
 // TODO : Fix this
-void infoUpdate() {
+void infoUpdate(int tp) {
     // ---- Username ---
     for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
         if (username[i] == '\0')
@@ -109,6 +109,44 @@ void infoUpdate() {
         else
             infoframe[3][INFO_BLOCK_SIZE+i+1] = curTime[i];
 
+    // ---- Time remaining ----
+    char timeRemaining[STRING_LENGTH];
+    JAM targetTime;
+    // Hour Handler
+    if (tp == 0 || tp == 1)
+        targetTime = MenitToJAM(Durasi(currentTime,cPlayTime));
+    else if (tp == 2)
+        targetTime = MenitToJAM(Durasi(currentTime,cPrepTime));
+    sprintf(tempTime,"%d", Hour(targetTime));
+    if (Hour(targetTime) < 10) {
+        timeRemaining[0] = '0';
+        timeRemaining[1] = tempTime[0];
+    }
+    else {
+        timeRemaining[0] = tempTime[0];
+        timeRemaining[1] = tempTime[1];
+    }
+    // Separator
+    timeRemaining[2] = ':';
+    // Minute Handler
+    sprintf(tempTime,"%d",Minute(targetTime));
+    if (Minute(targetTime) < 10) {
+        timeRemaining[3] = '0';
+        timeRemaining[4] = tempTime[0];
+    }
+    else {
+        timeRemaining[3] = tempTime[0];
+        timeRemaining[4] = tempTime[1];
+    }
+    // Copying and null terminator
+    timeRemaining[5] = '\0';
+    for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
+        if (timeRemaining[i] == '\0')
+            break;
+        else
+            infoframe[5][INFO_BLOCK_SIZE+i+1] = timeRemaining[i];
+
+
     // Moving info frame to next frame buffer
     for (int i = 0 ; i < INFO_SIZE_Y ; i++)
         for (int j = 0 ; j < INFO_SIZE_X ; j++)
@@ -146,7 +184,7 @@ void prepDay() {
     frameSet(1);
     unicodeDraw(0);
     while (true) {
-        infoUpdate();
+        infoUpdate(1);
         mapUpdate();
         draw();
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y);
