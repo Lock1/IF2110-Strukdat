@@ -1,5 +1,5 @@
-/* File: mesinkar.c */
-/* Implementasi Mesin Karakter */
+// ADT Mesin karakter
+// 13519046 / Dwianditya Hanif Raharjanto
 
 #include "mesinkar.h"
 #include <stdio.h>
@@ -18,15 +18,16 @@ void START() {
           Jika CC = MARK maka EOP akan menyala (true) */
 
 	/* Algoritma */
+	// if (pita)
 	pita = stdin;
 	ADV();
 }
 
 void ADV() {
-/* Pita dimajukan satu karakter. 
-   I.S. : Karakter pada jendela = 
+/* Pita dimajukan satu karakter.
+   I.S. : Karakter pada jendela =
           CC, CC != MARK
-   F.S. : CC adalah karakter berikutnya dari CC yang lama, 
+   F.S. : CC adalah karakter berikutnya dari CC yang lama,
           CC mungkin = MARK.
 		  Jika  CC = MARK maka EOP akan menyala (true) */
 
@@ -34,6 +35,6 @@ void ADV() {
 	retval = fscanf(pita,"%c",&CC);
 	EOP = (CC == MARK);
 	if (EOP) {
-       fclose(pita);
+       // fclose(pita);
  	}
 }
