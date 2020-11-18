@@ -88,12 +88,12 @@ boolean startGame() {
     puts("2. Quit");
 
     printf(">> ");
-    STARTKATA();
+    wordInput();
     // char userInput[STRING_LENGTH];
     // stringCopy(CurrentInput,userInput);
     if (stringCompare("new",CurrentInput) || CurrentInput[0] == '1') {
         printf("Masukkan nama : ");
-        STARTKATA();
+        wordInput();
         stringCopy(CurrentInput,username);
         puts(HAVE_FUN_ASCII_ART);
         puts(WILLY_WANGKY_ASCII_ART);
@@ -103,7 +103,7 @@ boolean startGame() {
         return false;
     return false;
 }
-
+// TODO : Load branch
 
 
 void mapUpdate() {
@@ -119,6 +119,18 @@ void mapUpdate() {
         for (int j = 0 ; j < MAP_SIZE_X ; j++)
             nframe[MAP_OFFSET_Y+i][MAP_OFFSET_X+j] = mapframe[i][j];
 }
+
+// Delaying by counting
+void delay(int limit) {
+    long long int clock = 0, count = 0;
+    while (count != limit) {
+        while (clock != IC)
+            clock++;
+        clock = 0;
+        count++;
+    }
+}
+
 
 
 // Engine implementation

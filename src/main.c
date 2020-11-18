@@ -19,35 +19,35 @@
 
 int main(void) {
     system(CLSCRN);
-    // TODO: Main menu
     if (startGame()) {
-        long long int clock = 0, count = 0;
-        while (count != 10) {
-            while (clock != IC*100)
-                clock++;
-            clock = 0;
-            count++;
-        }
-        count = 0;
-        // Game loop
+        // Give user time to seeing ASCII ART
+        delay(1000);
+
+        // Initial frame setup
         frameSet();
-        // mapUpdate();
+        infoUpdate();
+        mapUpdate();
         forceDraw();
+
         // DEBUG
         long long int fpush = 0;
         // DEBUG STOP
+
+        // Game loop
         while (true) {
-            if (clock % IC == 0) {
-                infoUpdate();
-                mapUpdate();
-                draw();
-                dpf("    |||<%lld frames pushed>|||    ",++fpush);
-                setCursorPosition(60,26);
-                dp("    +--------< DEBUG >---------+    ");
-                clock = 0;
-            }
-            clock++;
+            delay(1);
+            infoUpdate();
+            mapUpdate();
+            draw();
+            // wordInput();
+
+            // DEBUG
+            dpf("    |||<%lld frames pushed>|||    ",++fpush);
+            setCursorPosition(60,26);
+            dp("    +--------< DEBUG >---------+    ");
+            // DEBUG STOP
         }
     }
+
     return 0;
 }

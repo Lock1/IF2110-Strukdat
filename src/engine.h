@@ -57,6 +57,8 @@ void infoUpdate();
 void mapUpdate();
 // Update frame with changes in map
 
+void delay(int limit);
+// Delaying by count
 
 
 void draw();
