@@ -42,11 +42,14 @@ void infoUpdate() {
             break;
         else
             infoframe[0][INFO_BLOCK_SIZE+i+1] = username[i];
-    // for (int i = INFO_BLOCK_SIZE ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
-    //     if (username[i] == '\0')
-    //         break;
-    //     else
-    //         infoframe[0][i] = username[i];
+
+    char moneyString[INFO_SIZE_X - INFO_BLOCK_SIZE];
+    sprintf(moneyString,"%d",money);
+    for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
+        if (moneyString[i] == '\0')
+            break;
+        else
+            infoframe[1][INFO_BLOCK_SIZE+i+1] = moneyString[i];
     // TODO : money
 
     // DEBUG
@@ -161,8 +164,8 @@ void forceDraw() {
 void draw(){
     fflush(stdout);
     // DEBUG
-    int s = random()%RES_Y;
-    int p = random()%RES_X;
+    // int s = random()%RES_Y;
+    // int p = random()%RES_X;
     // if (((s > (MAP_SIZE_Y+MAP_OFFSET_Y)) || (s < (MAP_OFFSET_Y-1))) || ((p > (MAP_SIZE_X+MAP_OFFSET_X)) || (p < (MAP_OFFSET_X-1))))
     //     nframe[s][p] = 65 + random()%6;
     // DEBUG STOP
