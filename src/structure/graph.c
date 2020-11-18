@@ -2,7 +2,7 @@
 // 13519146 / Fadel Ananda Dotty
 #include "graph.h"
 #include <stdio.h>
-#include <stlib.h>
+#include <stdlib.h>
 
 void addNode(int s, int d){
     address dest, temp, src;
@@ -23,7 +23,7 @@ void addNode(int s, int d){
 
 void printList(){
     for(int i=0; i<maxNode; i++){
-        address p=adjlist[i]->head;    
+        address p=adjlist[i]->head;
         printf("List for vertex %d: ", i);
         while(p){
             printf("%d ", p->vertexNum);
@@ -32,3 +32,4 @@ void printList(){
         printf("\n");
     }
     printf("\n");
+}

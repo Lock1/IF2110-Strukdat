@@ -60,6 +60,7 @@ void mapUpdate();
 void delay(int limit);
 // Delaying by count
 
+void unicodeDraw();
 
 void draw();
 // Draw frame on screen with double buffering

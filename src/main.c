@@ -21,14 +21,14 @@ int main(void) {
     system(CLSCRN);
     if (startGame()) {
         // Give user time to seeing ASCII ART
-        delay(1000);
+        delay(500);
 
         // Initial frame setup
         frameSet();
         infoUpdate();
         mapUpdate();
         forceDraw();
-
+        unicodeDraw();
         // DEBUG
         long long int fpush = 0;
         // DEBUG STOP

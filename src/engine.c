@@ -190,6 +190,15 @@ void frameSet() { // TODO : Possible merge with other frame function
 }
 
 // TODO : Maybe special UTF-8 draw
+void unicodeDraw() {
+    setCursorPosition(INFO_OFFSET_X,INFO_OFFSET_Y-4);
+    puts(PREP_DAY_TITLE_1);
+    setCursorPosition(INFO_OFFSET_X,INFO_OFFSET_Y-3);
+    puts(PREP_DAY_TITLE_2);
+}
+
+
+
 
 void forceDraw() {
     system(CLSCRN);
