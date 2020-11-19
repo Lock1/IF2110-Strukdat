@@ -65,6 +65,8 @@ void loadMap();
 
 void printBuildList();
 
+void printMaterialList();
+
 void loadDatabase();
 
 void infoUpdate();

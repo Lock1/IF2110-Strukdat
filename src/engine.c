@@ -275,36 +275,38 @@ boolean startGame() {
         return false;
     return false;
 }
-
+// TODO : Move between map
 void prepDay() {
-    // TODO : STACK
     frameSet(1);
     unicodeDraw(1);
     Absis(cursorLocation) = CURSOR_REST_X;
     Ordinat(cursorLocation) = CURSOR_REST_Y;
+    // Preparation day loop
     while (true) {
         infoUpdate(1);
         mapUpdate(1);
         draw();
 
+        // Positioning for user input
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
         wordInput();
-        // Command flush
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
         puts("                   ");
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
         puts("                                                 ");
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
 
+        // Input check
         if (stringCompare("build",CurrentInput)) {
             boolean isAreaBuildable = !occupiedAt(map1,Ordinat(cursorLocation),Absis(cursorLocation));
             if (isAreaBuildable) {
                 printBuildList();
                 wordInput(); // WARNING : BUILDING ID START FROM 20
-                // TODO : stack
                 int tempID;
                 sscanf(CurrentInput,"%d",&tempID);
                 if (searchWahanaByID(buildingDatabase,tempID+19)) {
+                    // TODO : Check money
+                    currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
                     occupiedAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = true;
                     entityAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
                     buildingAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = createWahanaByID(buildingDatabase,tempID+19);
@@ -327,7 +329,20 @@ void prepDay() {
         // else if (stringCompare("upgrade",CurrentInput))
         //
         else if (stringCompare("buy",CurrentInput)) {
+            printMaterialList();
+            wordInput(); // WARNING : Material ID START FROM 10
+            int tempID;
+            sscanf(CurrentInput,"%d",&tempID);
+            if (searchMaterialByID(materialDatabase,tempID+9)) {
 
+            }
+            else {
+                setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
+                puts("ID Material tidak dapat ditemukan");
+            }
+            delay(300);
+            forceDraw();
+            unicodeDraw(1);
         }
 
         // else if (stringCompare("undo",CurrentInput))
@@ -335,7 +350,7 @@ void prepDay() {
 
         else if (stringCompare("main",CurrentInput))
             break;
-        else if (stringCompare("dbg",CurrentInput))
+        else if (stringCompare("dbg",CurrentInput)) // DEBUG
             currentTime = NextNMenit(currentTime,5);
         else if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd') {
             // ADD Colision detection
@@ -389,6 +404,20 @@ void printBuildList() {
     puts("Masukkan ID yang ingin dibangun :");
     printf(">> ");
 }
+
+void printMaterialList() {
+    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
+    // TODO : Puts build title
+    puts(MATERIAL_LIST_1);
+    puts(MATERIAL_LIST_2);
+    puts(MATERIAL_LIST_3);
+    for (int i = 0 ; i < materialCount ; i++) // TODO : Print everything
+        printf(MATERIAL_LIST_4, materialDatabase[i].ID-9, materialDatabase[i].nama, materialDatabase[i].harga, materialDatabase[i].material_count);
+    puts(MATERIAL_LIST_5);
+    puts("Masukkan ID yang ingin dibeli :");
+    printf(">> ");
+}
+
 
 void frameSet(int tp) { // TODO : Possible merge with other frame function
     // 0 Initialization

@@ -6,13 +6,11 @@
 typedef struct Material{
 	int ID, harga, material_count;
 	char nama[999];
-	char gambar;
 }Material;
 
-#define ID(M) (M).ID
-#define Harga(M) (M).harga
-#define Nama(M) (M).nama
-#define Gambar(M) (M).gambar
+#define MaterialID(M) (M).ID
+#define MaterialHarga(M) (M).harga
+#define MaterialNama(M) (M).nama
 #define Count(M) (M).material_count
 
 boolean searchMaterialByID(Material* w, int ID);
