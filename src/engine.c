@@ -108,6 +108,12 @@ void loadDatabase() {
 
 // ----- Frame update function -----
 void infoUpdate(int tp) {
+
+    // ---- Wipe ----
+    // Money frame wipe
+    for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
+            infoframe[1][INFO_BLOCK_SIZE+i] = ' ';
+
     // ---- Username ---
     for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
         if (username[i] == '\0')
@@ -304,19 +310,22 @@ void prepDay() {
                 wordInput(); // WARNING : BUILDING ID START FROM 20
                 int tempID;
                 sscanf(CurrentInput,"%d",&tempID);
+                setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
                 if (searchWahanaByID(buildingDatabase,tempID+19)) {
-                    // TODO : Check money
-                    currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
-                    occupiedAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = true;
-                    entityAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
-                    buildingAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = createWahanaByID(buildingDatabase,tempID+19);
-                    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
-                    puts("Wahana telah dibangun!");
+                    int buildCost = getHargaWahanaByID(buildingDatabase,tempID+19);
+                    if (money >= buildCost) {
+                        currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
+                        occupiedAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = true;
+                        entityAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
+                        buildingAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = createWahanaByID(buildingDatabase,tempID+19);
+                        money -= buildCost;
+                        puts("Wahana telah dibangun!");
+                    }
+                    else
+                        puts("Maaf uang tidak cukup");
                 }
-                else {
-                    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
+                else
                     puts("ID Wahana tidak dapat ditemukan");
-                }
                 delay(300);
                 forceDraw();
                 unicodeDraw(1);
@@ -331,15 +340,27 @@ void prepDay() {
         else if (stringCompare("buy",CurrentInput)) {
             printMaterialList();
             wordInput(); // WARNING : Material ID START FROM 10
-            int tempID;
+            int tempID, buyQuantity;
             sscanf(CurrentInput,"%d",&tempID);
             if (searchMaterialByID(materialDatabase,tempID+9)) {
-
-            }
-            else {
                 setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
-                puts("ID Material tidak dapat ditemukan");
+                puts("Masukkan jumlah yang akan dibeli");
+                printf(">> ");
+                wordInput();
+                sscanf(CurrentInput,"%d",&buyQuantity);
+                setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+4);
+                int buyCost = buyQuantity * getHargaMaterialByID(materialDatabase,tempID+9);
+                if (money >= buyCost) {
+                    setCountMaterialByID(materialDatabase,tempID+9,buyQuantity+getCountMaterialByID(materialDatabase,tempID+9));
+                    currentTime = NextNMenit(currentTime,BUY_TIME); // Buy time
+                    money -= buyCost;
+                    puts("Material telah dibeli!");
+                }
+                else
+                    puts("Maaf uang tidak cukup");
             }
+            else
+                puts("ID Material tidak dapat ditemukan");
             delay(300);
             forceDraw();
             unicodeDraw(1);

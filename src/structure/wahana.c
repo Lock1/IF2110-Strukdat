@@ -107,4 +107,5 @@ int getHargaWahanaByID(Wahana* w, int ID){
             return w[i].harga;
         }
     }
+    return 0;
 }

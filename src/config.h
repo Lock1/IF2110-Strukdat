@@ -23,6 +23,7 @@
 #define PLAYER_START_X 5
 #define PLAYER_START_Y 5
 #define BUILD_TIME 30
+#define BUY_TIME 15
 
 // Debugging feature
 #define DEBUG 1
