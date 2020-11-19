@@ -18,6 +18,8 @@
 #define START_PLAY 9
 #define START_PREP 21
 #define STRING_LENGTH 50
+#define CURSOR_REST_X 1
+#define CURSOR_REST_Y 1
 
 // Debugging feature
 #define DEBUG 1

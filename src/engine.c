@@ -29,6 +29,7 @@ char infoframe[INFO_SIZE_Y][INFO_SIZE_X];
 
 matrix map1; // TODO : multiple map, FIXME : Debug version
 POINT cursorLocation;// TODO : Cleanup and Preferably to split cursorLocation for prep phase
+POINT playerLocation;
 char username[STRING_LENGTH] = "";
 int money = START_MONEY;
 int currentDay = 1;
@@ -71,8 +72,6 @@ void loadMap() {
         }
     }
 
-    occupiedAt(map1,3,3) = true;
-    entityAt(map1,3,3) = 1;
 }
 
 void loadDatabase() {
@@ -198,9 +197,14 @@ boolean startGame() {
         puts(WILLY_WANGKY_ASCII_ART);
         cPlayTime = MakeJAM(START_PLAY,0);
         cPrepTime = currentTime = MakeJAM(START_PREP,0);
-        cursorLocation = MakePOINT(3,3); // DEBUG : temp
+        cursorLocation = MakePOINT(CURSOR_REST_X,CURSOR_REST_Y);
         loadMap();
         loadDatabase();
+        // DEBUG : temp
+        playerLocation = MakePOINT(5,5);
+        occupiedAt(map1,5,5) = true;
+        entityAt(map1,5,5) = 1;
+        // DEBUG STOP
         return true;
     }
     else if (stringCompare("quit", CurrentInput) || CurrentInput[0] == '2')
@@ -212,14 +216,17 @@ void prepDay() {
     // TODO : STACK
     frameSet(1);
     unicodeDraw(0);
+    Absis(cursorLocation) = CURSOR_REST_X;
+    Ordinat(cursorLocation) = CURSOR_REST_Y;
     while (true) {
         infoUpdate(1);
-        mapUpdate();
+        mapUpdate(1);
         draw();
-        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
-        puts("Masukkan perintah :                        ");
-        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+24, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
 
+        // Command flush
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+        puts("           ");
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
 
         wordInput();
         // DEBUG
@@ -233,46 +240,34 @@ void prepDay() {
         //
         // else if (stringCompare("undo",CurrentInput))
         //
+
         else if (stringCompare("main",CurrentInput))
             break;
         else if (stringCompare("dbg",CurrentInput))
             currentTime = NextNMenit(currentTime,5);
         else if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd') {
-            occupiedAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = false;
-            entityAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = 0;
             // ADD Colision detection
-            boolean moveRegistered = false;
             switch (CurrentInput[0]) {
                 case 'w':
-                    if (0 < Ordinat(cursorLocation)) {
+                    if (0 < Ordinat(cursorLocation))
                         Geser(&cursorLocation,0,-1);
-                        moveRegistered = true;
-                    }
                     break;
                 case 'a':
-                    if (0 < Absis(cursorLocation)) {
+                    if (0 < Absis(cursorLocation))
                         Geser(&cursorLocation,-1,0);
-                        moveRegistered = true;
-                    }
                     break;
                 case 's':
-                    if (Ordinat(cursorLocation) < MAP_SIZE_Y - 1) {
+                    if (Ordinat(cursorLocation) < MAP_SIZE_Y - 1)
                         Geser(&cursorLocation,0,1);
-                        moveRegistered = true;
-                    }
                     break;
                 case 'd':
-                    if (Absis(cursorLocation) < MAP_SIZE_X - 1) {
+                    if (Absis(cursorLocation) < MAP_SIZE_X - 1)
                         Geser(&cursorLocation,1,0);
-                        moveRegistered = true;
-                    }
                     break;
             }
-            if (moveRegistered)
-                currentTime = NextNMenit(currentTime,5);
             // DEBUG
-            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
-            TulisPOINT(cursorLocation);
+            // setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+            // TulisPOINT(cursorLocation);
             // forceDraw();
             // unicodeDraw(0);
             // DEBUG STOP
@@ -284,29 +279,30 @@ void prepDay() {
 
 void playDay() {
     frameSet(2);
-    unicodeDraw(1);
+    unicodeDraw(2);
     draw();
     // LOOP
 
     currentDay++;
 }
 
-void mapUpdate() {
+void mapUpdate(int tp) {
     // DEBUG
-    // TODO : split to prep and play
-    occupiedAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = true;
-    entityAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = 1;
     for (int i = 0 ; i < MAP_SIZE_Y ; i++)
         for (int j = 0 ; j < MAP_SIZE_X ; j++)
             switch (entityAt(map1,i,j)) {
                 case 0:
-                    mapframe[i][j] = ' ';
+                    mapframe[i][j] = '.'; // Nothing
                     break;
                 case 1:
-                    mapframe[i][j] = '*';
+                    mapframe[i][j] = '@'; // Player
                     break;
             }
+    // Draw cursor only on preparation phase
+    if (tp == 1)
+        mapframe[Ordinat(cursorLocation)][Absis(cursorLocation)] = '*';
 
+     // TODO : Let unique UNICODE char print as '*' at background
     // if (random()%2)
     //     mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 43;
     // else
@@ -347,6 +343,7 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
             for (int j = 0 ; j < INFO_SIZE_X ; j++)
                 infoframe[i][j] = '\0';
     }
+
 
     char *infoBlock[9], endTime[5];
     if (tp == 1 || tp == 0) {
@@ -401,6 +398,9 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
     // for (int i = 0 ; i < 15 ; i++)
     //     infoframe[12][i] = bb[i];
 
+    char commandPrompt[] = "Masukkan perintah :                     ";
+    for (int i = 0 ; i < 40 ; i++)
+        nframe[MAP_OFFSET_Y+MAP_SIZE_Y-2][MAP_OFFSET_X+MAP_SIZE_X+5+i] = commandPrompt[i]; // DEBUG
 
     char topb[] = "____________________/   Map   \\_____________________";
     char botb[] = "\\__________________________________________________/";
