@@ -9,7 +9,7 @@
 
 /* *** DEFINISI PROTOTIPE PRIMITIF *** */
 /* *** Konstruktor membentuk POINT *** */
-POINT MakePOINT(float X, float Y)
+POINT MakePOINT(int X, int Y)
 /* Membentuk sebuah POINT dari komponen-komponennya */
 {
     POINT P;
@@ -28,8 +28,8 @@ void BacaPOINT(POINT *P)
 /* I.S. Sembarang */
 /* F.S. P terdefinisi */
 {
-    float x, y;
-    scanf("%f %f", &x, &y);
+    int x, y;
+    scanf("%d %d", &x, &y);
     *P = MakePOINT(x, y);
 }
 void TulisPOINT(POINT P)
@@ -41,7 +41,7 @@ void TulisPOINT(POINT P)
 /* I.S. P terdefinisi */
 /* F.S. P tertulis di layar dengan format "(X,Y)" */
 {
-    printf("(%.2f,%.2f)\n", Absis(P), Ordinat(P));
+    printf("(%d,%d)\n", Absis(P), Ordinat(P));
 }
 /* *** Kelompok operasi relasional terhadap POINT *** */
 boolean EQ(POINT P1, POINT P2)
@@ -103,7 +103,7 @@ POINT NextY(POINT P)
 {
     return MakePOINT(Absis(P), Ordinat(P) + 1);
 }
-POINT PlusDelta(POINT P, float deltaX, float deltaY)
+POINT PlusDelta(POINT P, int deltaX, int deltaY)
 /* Mengirim salinan P yang absisnya adalah Absis(P) + deltaX dan ordinatnya adalah Ordinat(P) + deltaY */
 {
     return MakePOINT(Absis(P) + deltaX, Ordinat(P) + deltaY);
@@ -123,7 +123,7 @@ POINT MirrorOf(POINT P, boolean SbX)
     }
 }
 
-void Geser(POINT *P, float deltaX, float deltaY)
+void Geser(POINT *P, int deltaX, int deltaY)
 /* I.S. P terdefinisi */
 /* F.S. P digeser, absisnya sebesar deltaX dan ordinatnya sebesar deltaY */
 {
