@@ -20,6 +20,7 @@ source: from my shitty C++ and windows-based game lul
 #include "structure/jam.h"
 #include "structure/matrix.h"
 #include "structure/point.h"
+#include "structure/stack.h"
 
 
 #include "fileio.h"

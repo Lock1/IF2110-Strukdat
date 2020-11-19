@@ -71,7 +71,7 @@ void setStatusWahana(Wahana* W, int newStatus) {
 }
 
 Wahana* createWahanaByID(Wahana* w, int ID){
-  Wahana* hasil=(Wahana*)malloc(1*sizeof(Wahana));
+  Wahana* hasil=(Wahana*)malloc(sizeof(Wahana));
   for (int i=0; i<20; i++){
     if (w[i].ID==ID){
       ID(*hasil)=ID(w[i]);

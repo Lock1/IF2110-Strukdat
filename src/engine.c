@@ -36,6 +36,7 @@ int currentDay = 1;
 int buildingCount = 0;
 int materialCount = 0;
 JAM currentTime;
+Stack actionStack;
 
 Wahana* buildingDatabase;
 Material* materialDatabase;
@@ -67,9 +68,10 @@ boolean stringCompare(char st1[STRING_LENGTH], char st2[STRING_LENGTH]) {
     return true;
 }
 
+// FIXME : mem corruption
 void loadMap() {
     // TODO : Load actual map.txt
-    makeMatrix(MAP_SIZE_Y,MAP_SIZE_X,&map1);
+    makeMatrix(MAP_SIZE_X,MAP_SIZE_Y,&map1);
     for (int i = 0 ; i < rowLen(map1) ; i++) {
         for (int j = 0 ; j < colLen(map1) ; j++) {
             occupiedAt(map1,i,j) = false;
@@ -211,7 +213,6 @@ boolean startGame() {
         printf("Masukkan nama : ");
         wordInput();
         stringCopy(CurrentInput,username);
-        // FIXME : For some reason load map then database cause map corruption
         loadDatabase();
         loadMap();
         puts(HAVE_FUN_ASCII_ART);
@@ -219,6 +220,7 @@ boolean startGame() {
         cPlayTime = MakeJAM(START_PLAY,0);
         cPrepTime = currentTime = MakeJAM(START_PREP,0);
         cursorLocation = MakePOINT(CURSOR_REST_X,CURSOR_REST_Y);
+        CreateEmpty(&actionStack);
 
         // DEBUG : temp
         playerLocation = MakePOINT(5,5);
@@ -252,21 +254,26 @@ void prepDay() {
         puts("                                                 ");
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
 
-        // DEBUG
         if (stringCompare("build",CurrentInput)) {
-            boolean isAreaBuildable = !occupiedAt(map1,Absis(cursorLocation),Ordinat(cursorLocation));
+            boolean isAreaBuildable = !occupiedAt(map1,Ordinat(cursorLocation),Absis(cursorLocation));
             if (isAreaBuildable) {
                 printBuildList();
-                wordInput(); // WARNING : BUILDING ID START FROM
+                wordInput(); // WARNING : BUILDING ID START FROM 20
+                // TODO : stack
                 int tempID;
                 sscanf(CurrentInput,"%d",&tempID);
-                if (searchWahanaByID(buildingDatabase,tempID))
-                    puts(what);
+                if (searchWahanaByID(buildingDatabase,tempID+19)) {
+                    occupiedAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = true;
+                    entityAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
+                    buildingAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = createWahanaByID(buildingDatabase,tempID+19);
+                    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
+                    puts("Wahana telah dibangun!");
+                }
                 else {
                     setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
                     puts("ID Wahana tidak dapat ditemukan");
-                    delay(750);
                 }
+                delay(300);
                 forceDraw();
                 unicodeDraw(1);
             }
@@ -278,8 +285,6 @@ void prepDay() {
         // else if (stringCompare("upgrade",CurrentInput))
         //
         // else if (stringCompare("buy",CurrentInput))
-        //
-        // else if (stringCompare("build",CurrentInput))
         //
         // else if (stringCompare("undo",CurrentInput))
         //
@@ -308,12 +313,6 @@ void prepDay() {
                         Geser(&cursorLocation,1,0);
                     break;
             }
-            // DEBUG
-            // setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
-            // TulisPOINT(cursorLocation);
-            // forceDraw();
-            // unicodeDraw(0);
-            // DEBUG STOP
         }
     }
     // forceDraw();
@@ -339,6 +338,10 @@ void mapUpdate(int tp) {
                     break;
                 case 1:
                     mapframe[i][j] = '@'; // Player
+                    break;
+                default:
+                    if (entityAt(map1,i,j) > 19)
+                        mapframe[i][j] = buildingAt(map1,i,j)->gambar;
                     break;
             }
     // Draw cursor only on preparation phase

@@ -10,7 +10,7 @@
 void makeMatrix (int row, int col, matrix *mat) {
     rowLen(*mat) = row;
     colLen(*mat) = col;
-    mat->mtrx = (matrixTuple *) malloc(col*row*sizeof(matrixTuple));
+    mat->mtrx = (matrixTuple*) malloc(col*row*sizeof(matrixTuple));
 }
 // Destroy matrix and deallocate
 void deleteMatrix (matrix *mat) {
