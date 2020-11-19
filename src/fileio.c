@@ -2,22 +2,23 @@
 #include <stdio.h>
 #include "fileio.h"
 
-void ReadFromWahana(){
+Wahana* ReadFromWahana(){
 	FILE* file=fopen("../../../data/wahana.txt", "r");
 	if (!file)
-		return;
+		return NULL;
 
 	char buffer[200];
 	fgets(buffer, 200, file);
-
-	while(!feof(file)){
+	Wahana* array=(Wahana*)malloc(20*sizeof(Wahana));
+	
+	for(int i=0; !feof(file); i++){
 		Wahana w;
 		sscanf(buffer,"%d %s %d %d %d %s", &w.ID, w.nama, &w.harga, &w.durasi, &w.kapasitas, w.deskripsi);
-		printf("read wahana: %d %s %d %d %d %s\n", w.ID, w.nama, w.harga, w.durasi, w.kapasitas, w.deskripsi);
 		fgets(buffer, 200, file);
-		printf("%s\n", w.nama);
+		array[i]=w;
 	}
 	fclose(file);
+	return array;
 }
 
 void ReadFromBahan(){

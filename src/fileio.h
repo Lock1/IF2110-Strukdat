@@ -3,5 +3,5 @@
 #include "structure/wahana.h"
 #include "structure/material.h"
 
-void ReadFromWahana();
+Wahana* ReadFromWahana();
 void ReadFromBahan();
