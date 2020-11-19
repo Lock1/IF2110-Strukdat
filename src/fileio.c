@@ -3,13 +3,13 @@
 #include "fileio.h"
 
 void ReadFromWahana(){
-	FILE* file=fopen("wahana.txt", "r");
+	FILE* file=fopen("../../../data/wahana.txt", "r");
 	if (!file)
-		return 1;
-	
+		return;
+
 	char buffer[200];
 	fgets(buffer, 200, file);
-	
+
 	while(!feof(file)){
 		Wahana w;
 		sscanf(buffer,"%d %s %d %d %d %s", &w.ID, w.nama, &w.harga, &w.durasi, &w.kapasitas, w.deskripsi);
@@ -21,13 +21,13 @@ void ReadFromWahana(){
 }
 
 void ReadFromBahan(){
-	FILE* file=fopen("bahan.txt", "r");
+	FILE* file=fopen("../../../data/material.txt", "r");
 	if (!file)
-		return 1;
-	
+		return;
+
 	char buffer[200];
 	fgets(buffer, 200, file);
-	
+
 	while(!feof(file)){
 		Material m;
 		sscanf(buffer,"%d %s %d", &m.ID, m.nama, &m.harga);
