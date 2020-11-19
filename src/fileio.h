@@ -4,4 +4,4 @@
 #include "structure/material.h"
 
 Wahana* ReadFromWahana();
-void ReadFromBahan();
+Material* ReadFromBahan();
