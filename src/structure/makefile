@@ -31,7 +31,7 @@ point:
 	gcc -Wall -Wextra point.c driver/driver-point.c -o driver-executable/driver-point
 
 fileio:
-	gcc -Wall -Wextra driver/driver-fileio.c -o driver-executable/driver-fileio
+	gcc -Wall -Wextra driver/driver-fileio.c ../fileio.c -o driver-executable/driver-fileio
 
 clean:
 	rm driver-executable/*
