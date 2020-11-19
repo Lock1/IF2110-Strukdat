@@ -54,6 +54,8 @@ char* getDeskripsi(Wahana W);
 
 char getGambar(Wahana W);
 
+void destroyWahana(Wahana* w);
+
 void setStatusWahana(Wahana* W, int newStatus);
 
 Wahana* createWahanaByID(Wahana* w, int ID);

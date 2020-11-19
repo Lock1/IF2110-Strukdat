@@ -37,6 +37,7 @@ int buildingCount = 0;
 int materialCount = 0;
 JAM currentTime;
 Stack actionStack;
+int actionCount = 0;
 
 Wahana* buildingDatabase;
 Material* materialDatabase;
@@ -283,6 +284,17 @@ boolean startGame() {
 }
 // TODO : Move between map
 void prepDay() {
+    // Preparation day references
+    /* Undo table
+    | ActID | Action |
+    | ----- | ------ |
+    | 1     | Build  |
+    | 2     | Upgrade|
+    | 3     | Buy    |
+    | -------------- |
+    Every action logged on actionTuple,
+    check stack.h for more information
+    */
     frameSet(1);
     unicodeDraw(1);
     Absis(cursorLocation) = CURSOR_REST_X;
@@ -314,11 +326,14 @@ void prepDay() {
                 if (searchWahanaByID(buildingDatabase,tempID+19)) {
                     int buildCost = getHargaWahanaByID(buildingDatabase,tempID+19);
                     if (money >= buildCost) {
+                        actionTuple buildLog = { 1,tempID+19,Ordinat(cursorLocation),Absis(cursorLocation),buildCost };
+                        Push(&actionStack,buildLog);
                         currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
                         occupiedAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = true;
                         entityAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
                         buildingAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = createWahanaByID(buildingDatabase,tempID+19);
                         money -= buildCost;
+                        actionCount++;
                         puts("Wahana telah dibangun!");
                     }
                     else
@@ -351,9 +366,12 @@ void prepDay() {
                 setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+4);
                 int buyCost = buyQuantity * getHargaMaterialByID(materialDatabase,tempID+9);
                 if (money >= buyCost) {
+                    actionTuple buyLog = { 3,tempID+9,-1,-1,buyQuantity };
+                    Push(&actionStack,buyLog);
                     setCountMaterialByID(materialDatabase,tempID+9,buyQuantity+getCountMaterialByID(materialDatabase,tempID+9));
                     currentTime = NextNMenit(currentTime,BUY_TIME); // Buy time
                     money -= buyCost;
+                    actionCount++;
                     puts("Material telah dibeli!");
                 }
                 else
@@ -366,8 +384,36 @@ void prepDay() {
             unicodeDraw(1);
         }
 
-        // else if (stringCompare("undo",CurrentInput))
-        //
+        else if (stringCompare("undo",CurrentInput)) {
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+            if (!IsEmpty(actionStack)) {
+                actionTuple lastAction;
+                Pop(&actionStack,&lastAction);
+                actionCount--;
+                switch (lastAction.actID) {
+                    case 1:
+                        currentTime = NextNMenit(currentTime,1440-BUILD_TIME);
+                        money += lastAction.actIdentifier;
+                        destroyWahana(buildingAt(map1,lastAction.eventPosX,lastAction.eventPosY));
+                        buildingAt(map1,lastAction.eventPosX,lastAction.eventPosY) = NULL;
+                        entityAt(map1,lastAction.eventPosX,lastAction.eventPosY) = 0;
+                        occupiedAt(map1,lastAction.eventPosX,lastAction.eventPosY) = false;
+                        puts("Wahana telah dibakar");
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        currentTime = NextNMenit(currentTime,1440-BUY_TIME);
+                        money += lastAction.actIdentifier * getHargaMaterialByID(materialDatabase,lastAction.entityID);
+                        setCountMaterialByID(materialDatabase,lastAction.entityID,getCountMaterialByID(materialDatabase,lastAction.entityID)-lastAction.actIdentifier);
+                        puts("Pembelian telah direfund");
+                        break;
+                }
+            }
+            else
+                puts("Tidak ada aksi yang dapat diundo");
+        }
+
 
         else if (stringCompare("main",CurrentInput))
             break;
