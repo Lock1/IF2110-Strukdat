@@ -1,5 +1,4 @@
 //13519146 - Fadel Ananda Dotty
-//13519110 - M. Akromi Afif
 
 #ifndef _MATERIAL_H_
 #define _MATERIAL_H_
@@ -15,6 +14,6 @@ typedef struct Material{
 #define Nama(M) (M).nama
 #define Gambar(M) (M).gambar
 
-
+boolean searchMaterialByID(Material* w, int ID);
 
 #endif
