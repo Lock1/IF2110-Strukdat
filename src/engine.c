@@ -31,6 +31,7 @@ matrix map[4];
 POINT cursorLocation;
 POINT playerLocation;
 char username[STRING_LENGTH] = "";
+long int actionTime = 0;
 int money = START_MONEY;
 int currentDay = 1;
 int buildingCount = 0;
@@ -38,6 +39,7 @@ int materialCount = 0;
 JAM currentTime;
 Stack actionStack;
 int actionCount = 0;
+int actionGoldSum = 0;
 int currentMap = 0;
 
 Wahana* buildingDatabase;
@@ -119,9 +121,12 @@ void loadDatabase() {
 void infoUpdate(int tp) {
 
     // ---- Wipe ----
-    // Money frame wipe
+    // Frame wipe
     for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
-            infoframe[1][INFO_BLOCK_SIZE+i] = ' ';
+            infoframe[1][INFO_BLOCK_SIZE+i] = ' '; // Money
+    if (tp == 0 || tp == 1)
+        for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
+                infoframe[7][INFO_BLOCK_SIZE+i] = infoframe[8][INFO_BLOCK_SIZE+i] = infoframe[9][INFO_BLOCK_SIZE+i] = ' '; // Action
 
     // ---- Username ---
     for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
@@ -182,7 +187,7 @@ void infoUpdate(int tp) {
     JAM targetTime;
     // Hour Handler
     if (tp == 0 || tp == 1)
-        targetTime = MenitToJAM(Durasi(currentTime,cPlayTime));
+        targetTime = MenitToJAM(Durasi(currentTime,cPlayTime)); // TODO : Why??
     else if (tp == 2)
         targetTime = MenitToJAM(Durasi(currentTime,cPrepTime));
     sprintf(tempTime,"%d", Hour(targetTime));
@@ -213,6 +218,61 @@ void infoUpdate(int tp) {
             break;
         else
             infoframe[5][INFO_BLOCK_SIZE+i+1] = timeRemaining[i];
+
+    // Window for queue and action
+    if (tp == 0 || tp == 1) {
+        char actionString[INFO_SIZE_X - INFO_BLOCK_SIZE];
+        // Action count
+        sprintf(actionString,"%d",actionCount);
+        for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
+            if (actionString[i] == '\0')
+                break;
+            else
+                infoframe[7][INFO_BLOCK_SIZE+i+1] = actionString[i];
+        // Time required
+        char actTime[STRING_LENGTH];
+        JAM actionTimeRequired = MenitToJAM(actionTime);
+        // Hour Handler
+        sprintf(tempTime,"%d",Hour(actionTimeRequired));
+        if (Hour(actionTimeRequired) < 10) {
+            actTime[0] = '0';
+            actTime[1] = tempTime[0];
+        }
+        else {
+            actTime[0] = tempTime[0];
+            actTime[1] = tempTime[1];
+        }
+        // Separator
+        actTime[2] = ':';
+        // Minute Handler
+        sprintf(tempTime,"%d",Minute(actionTimeRequired));
+        if (Minute(actionTimeRequired) < 10) {
+            actTime[3] = '0';
+            actTime[4] = tempTime[0];
+        }
+        else {
+            actTime[3] = tempTime[0];
+            actTime[4] = tempTime[1];
+        }
+        // Copying and null terminator
+        actTime[5] = '\0';
+        for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
+            if (actTime[i] == '\0')
+                break;
+            else
+                infoframe[8][INFO_BLOCK_SIZE+i+1] = actTime[i];
+
+        // Gold required
+        sprintf(actionString,"%d",actionGoldSum);
+        for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
+            if (actionString[i] == '\0')
+                break;
+            else
+                infoframe[9][INFO_BLOCK_SIZE+i+1] = actionString[i];
+
+
+
+    }
 
     // Moving info frame to next frame buffer
     for (int i = 0 ; i < INFO_SIZE_Y ; i++)
@@ -320,8 +380,14 @@ void prepDay() {
         puts("                                                 ");
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
 
+        // If input too long, force draw everything
+        if (LengthInput > 15) {
+            forceDraw();
+            unicodeDraw(1);
+        }
+
         // Input check
-        if (stringCompare("build",CurrentInput)) {
+        if (stringCompare("build",CurrentInput)) { // TODO : Add double pointer to store build result in play phase
             boolean isAreaBuildable = !occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation));
             if (isAreaBuildable) {
                 printBuildList();
@@ -339,7 +405,9 @@ void prepDay() {
                         entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
                         buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = createWahanaByID(buildingDatabase,tempID+19);
                         money -= buildCost;
+                        actionGoldSum += buildCost;
                         actionCount++;
+                        actionTime += BUILD_TIME;
                         puts("Wahana telah dibangun!");
                     }
                     else
@@ -377,7 +445,9 @@ void prepDay() {
                     setCountMaterialByID(materialDatabase,tempID+9,buyQuantity+getCountMaterialByID(materialDatabase,tempID+9));
                     currentTime = NextNMenit(currentTime,BUY_TIME); // Buy time
                     money -= buyCost;
+                    actionGoldSum += buyCost;
                     actionCount++;
+                    actionTime += BUY_TIME;
                     puts("Material telah dibeli!");
                 }
                 else
@@ -400,6 +470,8 @@ void prepDay() {
                     case 1:
                         currentTime = NextNMenit(currentTime,1440-BUILD_TIME);
                         money += lastAction.actIdentifier;
+                        actionGoldSum -= lastAction.actIdentifier;
+                        actionTime -= BUILD_TIME;
                         destroyWahana(buildingAt(map[currentMap],lastAction.eventPosX,lastAction.eventPosY));
                         buildingAt(map[currentMap],lastAction.eventPosX,lastAction.eventPosY) = NULL;
                         entityAt(map[currentMap],lastAction.eventPosX,lastAction.eventPosY) = 0;
@@ -411,6 +483,8 @@ void prepDay() {
                     case 3:
                         currentTime = NextNMenit(currentTime,1440-BUY_TIME);
                         money += lastAction.actIdentifier * getHargaMaterialByID(materialDatabase,lastAction.entityID);
+                        actionGoldSum -= lastAction.actIdentifier * getHargaMaterialByID(materialDatabase,lastAction.entityID);
+                        actionTime -= BUY_TIME;
                         setCountMaterialByID(materialDatabase,lastAction.entityID,getCountMaterialByID(materialDatabase,lastAction.entityID)-lastAction.actIdentifier);
                         puts("Pembelian telah direfund");
                         break;
@@ -421,7 +495,7 @@ void prepDay() {
         }
 
 
-        else if (stringCompare("main",CurrentInput))
+        else if (stringCompare("main",CurrentInput)) // TODO
             break;
         else if (stringCompare("dbg",CurrentInput)) // DEBUG
             currentTime = NextNMenit(currentTime,5);
@@ -466,8 +540,8 @@ void playDay() {
 
 // ----- Draw function set -----
 void printBuildList() {
-    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
-    // TODO : Puts build title
+    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+3);
+    puts(BUILD_TITLE);
     puts(BUILD_LIST_1);
     puts(BUILD_LIST_2);
     puts(BUILD_LIST_3);
@@ -479,8 +553,8 @@ void printBuildList() {
 }
 
 void printMaterialList() {
-    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
-    // TODO : Puts build title
+    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+3);
+    puts(MATERIAL_TITLE);
     puts(MATERIAL_LIST_1);
     puts(MATERIAL_LIST_2);
     puts(MATERIAL_LIST_3);
@@ -637,22 +711,23 @@ void unicodeDraw(int tp) {
     setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y+INFO_SIZE_Y);
     puts(INFO_BOTTOM_UNICODE);
 
+    // TODO : Add play phase print
     switch (tp) {
         case 0:
         case 1:
-            setCursorPosition(INFO_OFFSET_X+10,INFO_OFFSET_Y-4);
-            puts(PLAY_DAY_TITLE_1);
-            setCursorPosition(INFO_OFFSET_X+10,INFO_OFFSET_Y-3);
-            puts(PLAY_DAY_TITLE_2);
+            setCursorPosition(INFO_OFFSET_X-3,INFO_OFFSET_Y-4);
+            puts(PREP_DAY_TITLE_1);
+            setCursorPosition(INFO_OFFSET_X-3,INFO_OFFSET_Y-3);
+            puts(PREP_DAY_TITLE_2);
             setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y+6);
             puts(INFO_PREP_WINDOW);
 
             break;
         case 2:
-            setCursorPosition(INFO_OFFSET_X-3,INFO_OFFSET_Y-4);
-            puts(PREP_DAY_TITLE_1);
-            setCursorPosition(INFO_OFFSET_X-3,INFO_OFFSET_Y-3);
-            puts(PREP_DAY_TITLE_2);
+            setCursorPosition(INFO_OFFSET_X+10,INFO_OFFSET_Y-4);
+            puts(PLAY_DAY_TITLE_1);
+            setCursorPosition(INFO_OFFSET_X+10,INFO_OFFSET_Y-3);
+            puts(PLAY_DAY_TITLE_2);
             break;
     }
 }
@@ -674,12 +749,6 @@ void forceDraw() {
 
 void draw(){
     fflush(stdout);
-    // DEBUG
-    // int s = random()%RES_Y;
-    // int p = random()%RES_X;
-    // if (((s > (MAP_SIZE_Y+MAP_OFFSET_Y)) || (s < (MAP_OFFSET_Y-1))) || ((p > (MAP_SIZE_X+MAP_OFFSET_X)) || (p < (MAP_OFFSET_X-1))))
-    //     nframe[s][p] = 65 + random()%6;
-    // DEBUG STOP
     setCursorPosition(0,0);
     for (int i = 0 ; i < RES_Y ; i++)
         for (int j = 0 ; j < RES_X ; j++)
