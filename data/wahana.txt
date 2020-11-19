@@ -1,6 +1,6 @@
-20 chocolate-tornado 5 2 5 Cocok untukmu yang ingin menantang adrenalin, tornado ini akan membuat adrenalinmu meningkat dengan sangat pesat 
-21 candy-house  10 1 15 Membawamu berkeliling rumah cokelat yang didalamnya terdapat berbagai macam koleksi cokelat
-22 chocolate-factory 6 10 3 Kamu dapat melihat proses pembuatan cokelat khas Willy Wangky disini, kamu juga akan diajari cara membuatnya
-23 wanky-wonderland 8 2 5 Membawamu ke suasana masa depan, cocok untukmu yang suka berfoto
-24 chocolate-eater 7 2 10 Cocok untuk kamu yang suka makan, kamu dapat makan sepuasnya disini
-25 dip-train 12 3 20 Membawamu berkeliling area wahana bermain, disini kamu akan mempelajari banyak hal terkait dengan taman bermain ini
+20 Chocolate-tornado 5 2 5 Meningkatkan_adrenalin w
+21 Candy-house  10 1 15 Cocok_untuk_orang_rakus w
+22 Chocolate-factory 6 10 3 Melihat_proses_pembuatan_cokelat w
+23 Wanky-wonderland 8 2 5 Spot_foto_paling_gaulzzz w
+24 Chocolate-eater 7 2 10 Kumpulan_cokelat_diseluruh_dunia w
+25 Dip-train 12 3 20 Masuk_dunia_fantasi w

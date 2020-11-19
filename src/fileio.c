@@ -3,7 +3,7 @@
 #include "fileio.h"
 
 Wahana* ReadFromWahana(){
-	FILE* file=fopen("data/wahana.txt", "r");
+	FILE* file=fopen("../../data/wahana.txt", "r");
 	if (!file)
 		return NULL;
 
@@ -13,7 +13,7 @@ Wahana* ReadFromWahana(){
 
 	for(int i=0; !feof(file); i++){
 		Wahana w;
-		sscanf(buffer,"%d %s %d %d %d %s", &w.ID, w.nama, &w.harga, &w.durasi, &w.kapasitas, w.deskripsi);
+		sscanf(buffer,"%d %s %d %d %d %s %c", &w.ID, w.nama, &w.harga, &w.durasi, &w.kapasitas, w.deskripsi, &w.gambar);
 		fgets(buffer, 200, file);
 		Frekuensi(w)=0;
 		Penghasilan(w)=0;
@@ -26,7 +26,7 @@ Wahana* ReadFromWahana(){
 }
 
 Material* ReadFromBahan(){
-	FILE* file=fopen("data/material.txt", "r");
+	FILE* file=fopen("../../data/material.txt", "r");
 	if (!file)
 		return NULL;
 
