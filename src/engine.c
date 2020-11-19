@@ -27,7 +27,7 @@ JAM cPrepTime;
 char mapframe[MAP_SIZE_Y][MAP_SIZE_X];
 char infoframe[INFO_SIZE_Y][INFO_SIZE_X];
 
-matrix map1, map2, map3, map4;
+matrix map[4];
 POINT cursorLocation;
 POINT playerLocation;
 char username[STRING_LENGTH] = "";
@@ -38,6 +38,7 @@ int materialCount = 0;
 JAM currentTime;
 Stack actionStack;
 int actionCount = 0;
+int currentMap = 0;
 
 Wahana* buildingDatabase;
 Material* materialDatabase;
@@ -84,17 +85,24 @@ void delay(int limit) {
 // ----- Load function -----
 void loadMap() {
     // TODO : Load actual map.txt
-    makeMatrix(MAP_SIZE_X,MAP_SIZE_Y,&map1);
-    makeMatrix(MAP_SIZE_X,MAP_SIZE_Y,&map2);
-    makeMatrix(MAP_SIZE_X,MAP_SIZE_Y,&map3);
-    makeMatrix(MAP_SIZE_X,MAP_SIZE_Y,&map4);
-    for (int i = 0 ; i < rowLen(map1) ; i++) {
-        for (int j = 0 ; j < colLen(map1) ; j++) {
-            occupiedAt(map1,i,j) = occupiedAt(map2,i,j) = occupiedAt(map3,i,j) = occupiedAt(map4,i,j) = false;
-            entityAt(map1,i,j) = entityAt(map2,i,j) = entityAt(map3,i,j) = entityAt(map4,i,j) = 0;
-            buildingAt(map1,i,j) = buildingAt(map2,i,j) = buildingAt(map3,i,j) = buildingAt(map4,i,j) = NULL;
+    for (int i = 0 ; i < 4 ; i++)
+        makeMatrix(MAP_SIZE_X,MAP_SIZE_Y,&map[i]);
+    for (int a = 0 ; a < 4 ; a++) {
+        for (int i = 0 ; i < MAP_SIZE_X ; i++) {
+            for (int j = 0 ; j < MAP_SIZE_Y ; j++) {
+                if (i == 0 || i == MAP_SIZE_X-1 || j == 0 || j == MAP_SIZE_Y-1) {
+                    occupiedAt(map[a],j,i) = true;
+                    entityAt(map[a],j,i) = 2;
+                }
+                else {
+                    occupiedAt(map[a],j,i) = false;
+                    entityAt(map[a],j,i) = 0;
+                }
+                buildingAt(map[a],j,i) = NULL;
+            }
         }
     }
+
 
 }
 
@@ -216,16 +224,19 @@ void mapUpdate(int tp) {
     // DEBUG
     for (int i = 0 ; i < MAP_SIZE_Y ; i++)
         for (int j = 0 ; j < MAP_SIZE_X ; j++)
-            switch (entityAt(map1,i,j)) {
+            switch (entityAt(map[currentMap],i,j)) {
                 case 0:
                     mapframe[i][j] = '.'; // Nothing
                     break;
                 case 1:
                     mapframe[i][j] = '@'; // Player
                     break;
+                case 2:
+                    mapframe[i][j] = '#'; // Wall
+                    break;
                 default:
-                    if (entityAt(map1,i,j) > 19)
-                        mapframe[i][j] = buildingAt(map1,i,j)->gambar;
+                    if (entityAt(map[currentMap],i,j) > 19)
+                        mapframe[i][j] = buildingAt(map[currentMap],i,j)->gambar;
                     break;
             }
     // Draw cursor only on preparation phase
@@ -233,11 +244,6 @@ void mapUpdate(int tp) {
         mapframe[Ordinat(cursorLocation)][Absis(cursorLocation)] = '*';
 
      // TODO : Let unique UNICODE char print as '*' at background
-    // if (random()%2)
-    //     mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 43;
-    // else
-    //     mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 79;
-    // DEBUG STOP
     for (int i = 0 ; i < MAP_SIZE_Y ; i++)
         for (int j = 0 ; j < MAP_SIZE_X ; j++)
             nframe[MAP_OFFSET_Y+i][MAP_OFFSET_X+j] = mapframe[i][j];
@@ -273,8 +279,8 @@ boolean startGame() {
         cPrepTime = currentTime = MakeJAM(START_PREP,0);
         cursorLocation = MakePOINT(CURSOR_REST_X,CURSOR_REST_Y);
         playerLocation = MakePOINT(PLAYER_START_X,PLAYER_START_Y);
-        occupiedAt(map1,PLAYER_START_X,PLAYER_START_Y) = true;
-        entityAt(map1,PLAYER_START_X,PLAYER_START_Y) = 1;
+        occupiedAt(map[currentMap],PLAYER_START_X,PLAYER_START_Y) = true;
+        entityAt(map[currentMap],PLAYER_START_X,PLAYER_START_Y) = 1;
 
         return true;
     }
@@ -316,7 +322,7 @@ void prepDay() {
 
         // Input check
         if (stringCompare("build",CurrentInput)) {
-            boolean isAreaBuildable = !occupiedAt(map1,Ordinat(cursorLocation),Absis(cursorLocation));
+            boolean isAreaBuildable = !occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation));
             if (isAreaBuildable) {
                 printBuildList();
                 wordInput(); // WARNING : BUILDING ID START FROM 20
@@ -329,9 +335,9 @@ void prepDay() {
                         actionTuple buildLog = { 1,tempID+19,Ordinat(cursorLocation),Absis(cursorLocation),buildCost };
                         Push(&actionStack,buildLog);
                         currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
-                        occupiedAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = true;
-                        entityAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
-                        buildingAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = createWahanaByID(buildingDatabase,tempID+19);
+                        occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = true;
+                        entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
+                        buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = createWahanaByID(buildingDatabase,tempID+19);
                         money -= buildCost;
                         actionCount++;
                         puts("Wahana telah dibangun!");
@@ -394,10 +400,10 @@ void prepDay() {
                     case 1:
                         currentTime = NextNMenit(currentTime,1440-BUILD_TIME);
                         money += lastAction.actIdentifier;
-                        destroyWahana(buildingAt(map1,lastAction.eventPosX,lastAction.eventPosY));
-                        buildingAt(map1,lastAction.eventPosX,lastAction.eventPosY) = NULL;
-                        entityAt(map1,lastAction.eventPosX,lastAction.eventPosY) = 0;
-                        occupiedAt(map1,lastAction.eventPosX,lastAction.eventPosY) = false;
+                        destroyWahana(buildingAt(map[currentMap],lastAction.eventPosX,lastAction.eventPosY));
+                        buildingAt(map[currentMap],lastAction.eventPosX,lastAction.eventPosY) = NULL;
+                        entityAt(map[currentMap],lastAction.eventPosX,lastAction.eventPosY) = 0;
+                        occupiedAt(map[currentMap],lastAction.eventPosX,lastAction.eventPosY) = false;
                         puts("Wahana telah dibakar");
                         break;
                     case 2:
