@@ -2,38 +2,43 @@
 #include <stdio.h>
 #include "fileio.h"
 
-void ReadFromWahana(){
+Wahana* ReadFromWahana(){
 	FILE* file=fopen("../../../data/wahana.txt", "r");
 	if (!file)
-		return;
+		return NULL;
 
 	char buffer[200];
 	fgets(buffer, 200, file);
-
-	while(!feof(file)){
+	Wahana* array=(Wahana*)malloc(20*sizeof(Wahana));
+	
+	for(int i=0; !feof(file); i++){
 		Wahana w;
 		sscanf(buffer,"%d %s %d %d %d %s", &w.ID, w.nama, &w.harga, &w.durasi, &w.kapasitas, w.deskripsi);
-		printf("read wahana: %d %s %d %d %d %s\n", w.ID, w.nama, w.harga, w.durasi, w.kapasitas, w.deskripsi);
 		fgets(buffer, 200, file);
-		printf("%s\n", w.nama);
+		array[i]=w;
 	}
 	fclose(file);
+	return array;
 }
 
-void ReadFromBahan(){
+Material* ReadFromBahan(){
 	FILE* file=fopen("../../../data/material.txt", "r");
 	if (!file)
-		return;
+		return NULL;
 
 	char buffer[200];
 	fgets(buffer, 200, file);
+	Material* array=(Material*)malloc(20*sizeof(Material));
 
-	while(!feof(file)){
+	// while(!feof(file)){
+	for(int i=0; !feof(file); i++){
 		Material m;
 		sscanf(buffer,"%d %s %d", &m.ID, m.nama, &m.harga);
-		printf("read wahana: %d %s %d\n", m.ID, m.nama, m.harga);
+		// printf("read wahana: %d %s %d\n", m.ID, m.nama, m.harga);
 		fgets(buffer, 200, file);
-		printf("%s\n", m.nama);
+		// printf("%s\n", m.nama);
+		array[i]=m;
 	}
 	fclose(file);
+	return array;
 }
