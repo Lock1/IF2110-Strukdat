@@ -72,6 +72,7 @@ void loadMap() {
         for (int j = 0 ; j < colLen(map1) ; j++) {
             occupiedAt(map1,i,j) = false;
             entityAt(map1,i,j) = 0; // Let ID 0 as nothing
+            buildingAt(map1,i,j) = NULL;
         }
     }
 
@@ -85,11 +86,12 @@ void loadDatabase() {
 
 void printBuildList() {
     setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
+    // TODO : Puts build title
     puts(BUILD_LIST_1);
-    printf(BUILD_LIST_2,"Building list");
+    puts(BUILD_LIST_2);
     puts(BUILD_LIST_3);
     for (int i = 0 ; i < 5 ; i++) // TODO : Print everything
-        printf(BUILD_LIST_4, buildingDatabase[i].ID, buildingDatabase[i].nama, buildingDatabase[i].harga, buildingDatabase[i].durasi, buildingDatabase[i].kapasitas, buildingDatabase[i].deskripsi);
+        printf(BUILD_LIST_4, buildingDatabase[i].ID-19, buildingDatabase[i].nama, buildingDatabase[i].harga, buildingDatabase[i].durasi, buildingDatabase[i].kapasitas, buildingDatabase[i].deskripsi);
     puts(BUILD_LIST_5);
     puts("Masukkan ID yang ingin dibangun :");
     printf(">> ");
@@ -188,7 +190,6 @@ void infoUpdate(int tp) {
         else
             infoframe[5][INFO_BLOCK_SIZE+i+1] = timeRemaining[i];
 
-
     // Moving info frame to next frame buffer
     for (int i = 0 ; i < INFO_SIZE_Y ; i++)
         for (int j = 0 ; j < INFO_SIZE_X ; j++)
@@ -233,7 +234,7 @@ boolean startGame() {
 void prepDay() {
     // TODO : STACK
     frameSet(1);
-    unicodeDraw(0);
+    unicodeDraw(1);
     Absis(cursorLocation) = CURSOR_REST_X;
     Ordinat(cursorLocation) = CURSOR_REST_Y;
     while (true) {
@@ -255,8 +256,10 @@ void prepDay() {
             boolean isAreaBuildable = !occupiedAt(map1,Absis(cursorLocation),Ordinat(cursorLocation));
             if (isAreaBuildable) {
                 printBuildList();
-                wordInput();
-                // forceDraw();
+                wordInput(); // WARNING : BUILDING ID START FROM 1
+                // ID Existence
+                forceDraw();
+                unicodeDraw(1);
             }
             else {
                 setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);

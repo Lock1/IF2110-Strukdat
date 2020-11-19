@@ -25,8 +25,8 @@ int main(void) {
 
         // Initial frame setup
         frameSet(0);
-        infoUpdate();
-        mapUpdate();
+        infoUpdate(0);
+        mapUpdate(1);
         forceDraw();
 
         // Game loop
