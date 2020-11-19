@@ -13,6 +13,7 @@ typedef struct Material{
 #define MaterialNama(M) (M).nama
 #define Count(M) (M).material_count
 
-boolean searchMaterialByID(Material* w, int ID);
+boolean searchMaterialByID(Material* m, int ID);
+int getHargaByID(Material* m, int ID);
 
 #endif

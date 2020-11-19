@@ -13,3 +13,11 @@ boolean searchMaterialByID(Material* m, int ID){
   }
   return false;
 }
+
+int getHargaById(Material *m, int ID){
+    for (int i=0; i<20; i++){
+        if (m[i].ID==ID){
+            return m[i].harga;
+        }
+    }
+}

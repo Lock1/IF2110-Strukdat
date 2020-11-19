@@ -100,3 +100,11 @@ boolean searchWahanaByID(Wahana* w, int ID){
   }
   return false;
 }
+
+int getHargaWahanaByID(Wahana* w, int ID){
+  for (int i=0; i<20; i++){
+        if (w[i].ID==ID){
+            return w[i].harga;
+        }
+    }
+}
