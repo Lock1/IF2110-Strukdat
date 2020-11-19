@@ -26,6 +26,16 @@ Wahana* ReadFromWahana(){
 		JumlahTotal(w)++;
 		array[i]=w;
 	}
+	for(int i=0;i<200;i++){
+		for(int j=0; j<200;j++){
+			if (array[i].nama[j]=='-'){
+				array[i].nama[j]=' ';
+			}
+			if(array[i].deskripsi[j]=='-'){
+				array[i].deskripsi[j]=' ';
+			}
+		}
+	}
 	fclose(file);
 	return array;
 }
