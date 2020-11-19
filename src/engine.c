@@ -454,6 +454,9 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
 
 
 void unicodeDraw(int tp) {
+    setCursorPosition(0,0);
+    puts(TOP_BORDER);
+
     switch (tp) {
         case 0:
         case 1:
@@ -461,6 +464,7 @@ void unicodeDraw(int tp) {
             puts(PREP_DAY_TITLE_1);
             setCursorPosition(INFO_OFFSET_X-3,INFO_OFFSET_Y-3);
             puts(PREP_DAY_TITLE_2);
+
             break;
         case 2:
 
