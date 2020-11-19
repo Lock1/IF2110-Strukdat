@@ -57,6 +57,7 @@ int ReadFromBahan(Material**database){
 		sscanf(buffer,"%d %s %d", &m.ID, m.nama, &m.harga);
 		// printf("read wahana: %d %s %d\n", m.ID, m.nama, m.harga);
 		fgets(buffer, 200, file);
+		Count(m)=0;
 		// printf("%s\n", m.nama);
 		array[i]=m;
 		i++;
