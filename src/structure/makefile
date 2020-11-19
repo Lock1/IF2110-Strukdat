@@ -1,4 +1,4 @@
-all: matrix listarray graph listlinear jam mesinkata queue point tree stack
+all: matrix listarray graph listlinear jam mesinkata queue point tree stack fileio
 
 matrix:
 	gcc -Wall -Wextra matrix.c driver/driver-matrix.c -o driver-executable/driver-matrix
@@ -29,6 +29,9 @@ tree:
 
 point:
 	gcc -Wall -Wextra point.c driver/driver-point.c -o driver-executable/driver-point
+
+fileio:
+	gcc -Wall -Wextra driver/driver-fileio.c ../fileio.c -o driver-executable/driver-fileio
 
 clean:
 	rm driver-executable/*
