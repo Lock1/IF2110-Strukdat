@@ -67,7 +67,7 @@ void setStatusWahana(Wahana* W, int newStatus) {
   StatusWahana(*W) = newStatus;
 }
 
-Wahana* searchWahanaByID(Wahana* w, int ID){
+Wahana* createWahanaByID(Wahana* w, int ID){
   Wahana* hasil=(Wahana*)malloc(1*sizeof(Wahana));
   for (int i=0; i<20; i++){
     if (w[i].ID==ID){
@@ -87,4 +87,13 @@ Wahana* searchWahanaByID(Wahana* w, int ID){
     }
   }
   return hasil;
+}
+
+boolean searchByID(Wahana* w, int ID){
+  for (int i=0; i<20; i++){
+    if (w[i].ID==ID){
+      return true;
+    }
+  }
+  return false;
 }

@@ -55,4 +55,6 @@ void setStatusWahana(Wahana* W, int newStatus);
 
 Wahana* searchWahanaByID(Wahana* w, int ID);
 
+boolean searchByID(Wahana* w, int ID);
+
 #endif
