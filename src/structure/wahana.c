@@ -92,7 +92,7 @@ Wahana* createWahanaByID(Wahana* w, int ID){
   return hasil;
 }
 
-boolean searchByID(Wahana* w, int ID){
+boolean searchByWahanaID(Wahana* w, int ID){
   for (int i=0; i<20; i++){
     if (w[i].ID==ID){
       return true;
