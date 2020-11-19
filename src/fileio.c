@@ -26,7 +26,16 @@ int ReadFromWahana(Wahana** database){
 		array[i]=w;
 		i++;
 	}
-
+	for(int k=0;k<i;k++){
+		for(int j=0; j<200;j++){
+			if (array[k].nama[j]=='-'){
+				array[k].nama[j]=' ';
+			}
+			if(array[k].deskripsi[j]=='-'){
+				array[k].deskripsi[j]=' ';
+			}
+		}
+	}
 	fclose(file);
 	*database = array;
 	return i;
