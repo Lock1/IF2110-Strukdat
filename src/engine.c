@@ -33,6 +33,8 @@ POINT playerLocation;
 char username[STRING_LENGTH] = "";
 int money = START_MONEY;
 int currentDay = 1;
+int buildingCount = 0;
+int materialCount = 0;
 JAM currentTime;
 
 Wahana* buildingDatabase;
@@ -79,9 +81,8 @@ void loadMap() {
 }
 
 void loadDatabase() {
-    buildingDatabase = ReadFromWahana();
-    materialDatabase = ReadFromBahan();
-    // TODO : load both wahaha.txt and material.txt
+    buildingCount = ReadFromWahana(&buildingDatabase);
+    materialCount = ReadFromBahan(&materialDatabase);
 }
 
 void printBuildList() {
@@ -90,7 +91,7 @@ void printBuildList() {
     puts(BUILD_LIST_1);
     puts(BUILD_LIST_2);
     puts(BUILD_LIST_3);
-    for (int i = 0 ; i < 5 ; i++) // TODO : Print everything
+    for (int i = 0 ; i < buildingCount ; i++) // TODO : Print everything
         printf(BUILD_LIST_4, buildingDatabase[i].ID-19, buildingDatabase[i].nama, buildingDatabase[i].harga, buildingDatabase[i].durasi, buildingDatabase[i].kapasitas, buildingDatabase[i].deskripsi);
     puts(BUILD_LIST_5);
     puts("Masukkan ID yang ingin dibangun :");
@@ -256,8 +257,16 @@ void prepDay() {
             boolean isAreaBuildable = !occupiedAt(map1,Absis(cursorLocation),Ordinat(cursorLocation));
             if (isAreaBuildable) {
                 printBuildList();
-                wordInput(); // WARNING : BUILDING ID START FROM 1
-                // ID Existence
+                wordInput(); // WARNING : BUILDING ID START FROM
+                int tempID;
+                sscanf(CurrentInput,"%d",&tempID);
+                if (searchWahanaByID(buildingDatabase,tempID))
+                    puts(what);
+                else {
+                    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
+                    puts("ID Wahana tidak dapat ditemukan");
+                    delay(750);
+                }
                 forceDraw();
                 unicodeDraw(1);
             }

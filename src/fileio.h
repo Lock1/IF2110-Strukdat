@@ -3,5 +3,5 @@
 #include "structure/wahana.h"
 #include "structure/material.h"
 
-Wahana* ReadFromWahana();
-Material* ReadFromBahan();
+int ReadFromWahana(Wahana** database);
+int ReadFromBahan(Material** database);
