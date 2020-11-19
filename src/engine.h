@@ -62,6 +62,8 @@ void frameSet();
 
 void loadMap();
 
+void printBuildList();
+
 void loadDatabase();
 
 void infoUpdate();

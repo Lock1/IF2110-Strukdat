@@ -83,6 +83,17 @@ void loadDatabase() {
     // TODO : load both wahaha.txt and material.txt
 }
 
+void printBuildList() {
+    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
+    puts(BUILD_LIST_1);
+    printf(BUILD_LIST_2,"Building list");
+    puts(BUILD_LIST_3);
+    for (int i = 0 ; i < 5 ; i++) // TODO : Print everything
+        printf(BUILD_LIST_4, buildingDatabase[i].ID, buildingDatabase[i].nama, buildingDatabase[i].harga, buildingDatabase[i].durasi, buildingDatabase[i].kapasitas, buildingDatabase[i].deskripsi);
+    puts(BUILD_LIST_5);
+    puts("Masukkan ID yang ingin dibangun :");
+    printf(">> ");
+}
 
 // TODO : Fix this
 void infoUpdate(int tp) {
@@ -198,13 +209,15 @@ boolean startGame() {
         printf("Masukkan nama : ");
         wordInput();
         stringCopy(CurrentInput,username);
+        // FIXME : For some reason load map then database cause map corruption
+        loadDatabase();
+        loadMap();
         puts(HAVE_FUN_ASCII_ART);
         puts(WILLY_WANGKY_ASCII_ART);
         cPlayTime = MakeJAM(START_PLAY,0);
         cPrepTime = currentTime = MakeJAM(START_PREP,0);
         cursorLocation = MakePOINT(CURSOR_REST_X,CURSOR_REST_Y);
-        loadMap();
-        loadDatabase();
+
         // DEBUG : temp
         playerLocation = MakePOINT(5,5);
         occupiedAt(map1,5,5) = true;
@@ -227,20 +240,29 @@ void prepDay() {
         infoUpdate(1);
         mapUpdate(1);
         draw();
-        // for(int i=0; i<3; i++){
-        //     printf("read material: %d %d %s\n", materialDatabase[i].ID, materialDatabase[i].harga, materialDatabase[i].nama);
-        //     printf("read wahana: %d %s %d %d %d %s\n", buildingDatabase[i].ID, buildingDatabase[i].nama, buildingDatabase[i].harga, tbuildingDatabasei].durasi, buildingDatabase[i].kapasitas, buildingDatabase[i].deskripsi);
-        // }
 
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+        wordInput();
         // Command flush
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
-        puts("           ");
+        puts("                   ");
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+        puts("                                                 ");
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
 
-        wordInput();
         // DEBUG
-        if (stringCompare("build",CurrentInput))
-            puts("build command registered");
+        if (stringCompare("build",CurrentInput)) {
+            boolean isAreaBuildable = !occupiedAt(map1,Absis(cursorLocation),Ordinat(cursorLocation));
+            if (isAreaBuildable) {
+                printBuildList();
+                wordInput();
+                // forceDraw();
+            }
+            else {
+                setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+                puts("Lokasi terpilih tidak dapat dibangun");
+            }
+        }
         // else if (stringCompare("upgrade",CurrentInput))
         //
         // else if (stringCompare("buy",CurrentInput))
