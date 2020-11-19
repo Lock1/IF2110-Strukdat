@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "../../fileio.h"
+#include "../wahana.h"
 
 int main(){
 	FILE* file=fopen("wahana.txt", "r");
