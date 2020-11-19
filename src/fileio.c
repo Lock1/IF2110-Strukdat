@@ -13,6 +13,7 @@ Wahana* ReadFromWahana(){
 	char buffer[200];
 	fgets(buffer, 200, file);
 	Wahana* array=(Wahana*)malloc(20*sizeof(Wahana));
+	JumlahTotal(w)=0;
 
 	for(int i=0; !feof(file); i++){
 		Wahana w;
@@ -22,6 +23,7 @@ Wahana* ReadFromWahana(){
 		Penghasilan(w)=0;
 		PenghasilanHari(w)=0;
 		StatusWahana(w)=0;
+		JumlahTotal(w)++;
 		array[i]=w;
 	}
 	fclose(file);
