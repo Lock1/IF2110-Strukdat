@@ -20,7 +20,8 @@ JAM cPrepTime;
 char mapframe[MAP_SIZE_Y][MAP_SIZE_X];
 char infoframe[INFO_SIZE_Y][INFO_SIZE_X];
 
-matrix map1; // TODO : multiple map, T
+matrix map1; // TODO : multiple map, FIXME : Debug version
+POINT playerLocation;// TODO : Cleanup
 char username[STRING_LENGTH] = "";
 int money = START_MONEY;
 int currentDay = 1;
@@ -52,6 +53,25 @@ boolean stringCompare(char st1[STRING_LENGTH], char st2[STRING_LENGTH]) {
             return false;
     return true;
 }
+
+void loadMap() {
+    // TODO : Load actual map.txt
+    makeMatrix(MAP_SIZE_Y,MAP_SIZE_X,&map1);
+    for (int i = 0 ; i < rowLen(map1) ; i++) {
+        for (int j = 0 ; j < colLen(map1) ; j++) {
+            occupiedAt(map1,i,j) = false;
+            entityAt(map1,i,j) = 0; // Let ID 0 as nothing
+        }
+    }
+
+    occupiedAt(map1,3,3) = true;
+    entityAt(map1,3,3) = 1;
+}
+
+void loadDatabase() {
+    // TODO : load both wahaha.txt and material.txt
+}
+
 
 // TODO : Fix this
 void infoUpdate(int tp) {
@@ -171,13 +191,15 @@ boolean startGame() {
         puts(WILLY_WANGKY_ASCII_ART);
         cPlayTime = MakeJAM(START_PLAY,0);
         cPrepTime = currentTime = MakeJAM(START_PREP,0);
+        MakePOINT(3,3); // DEBUG : temp
+        loadMap();
+        loadDatabase();
         return true;
     }
     else if (stringCompare("quit", CurrentInput) || CurrentInput[0] == '2')
         return false;
     return false;
 }
-// TODO : Load branch
 
 void prepDay() {
     // TODO : STACK
@@ -194,26 +216,42 @@ void prepDay() {
         wordInput();
         // DEBUG
         if (stringCompare("build",CurrentInput))
-            puts(what);
-        else if (stringCompare("upgrade",CurrentInput))
-            puts(what);
-        else if (stringCompare("buy",CurrentInput))
-            puts(what);
-        else if (stringCompare("build",CurrentInput))
-            puts(what);
+            puts("bu");
+        // else if (stringCompare("upgrade",CurrentInput))
+        //
+        // else if (stringCompare("buy",CurrentInput))
+        //
+        // else if (stringCompare("build",CurrentInput))
+        //
         else if (stringCompare("main",CurrentInput))
             break;
-        else {
+        else if (stringCompare("dbg",CurrentInput))
             currentTime = NextNMenit(currentTime,5);
+        else {
+            switch (CurrentInput[0]) {
+                case 'w':
+                    Geser(&playerLocation,0,1);
+                    break;
+                case 'a':
+                    Geser(&playerLocation,-1,0);
+                    break;
+                case 's':
+                    Geser(&playerLocation,0,-1);
+                    break;
+                case 'd':
+                    // ADD Colision detection
+                    Geser(&playerLocation,1,0);
+                    break;
+            }
+            // DEBUG
+            TulisPOINT(playerLocation);
             // forceDraw();
             // unicodeDraw(0);
+            // DEBUG STOP
         }
     }
     // forceDraw();
 
-    // while (true) {
-    //
-    // }
 }
 
 void playDay() {
@@ -228,10 +266,11 @@ void playDay() {
 void mapUpdate() {
     // TODO : Need actual matrix of building to properly update
     // DEBUG
-    if (random()%2)
-        mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 43;
-    else
-        mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 79;
+
+    // if (random()%2)
+    //     mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 43;
+    // else
+    //     mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 79;
     // DEBUG STOP
     for (int i = 0 ; i < MAP_SIZE_Y ; i++)
         for (int j = 0 ; j < MAP_SIZE_X ; j++)

@@ -19,6 +19,7 @@ source: from my shitty C++ and windows-based game lul
 #include "structure/mesinkata.h"
 #include "structure/jam.h"
 #include "structure/matrix.h"
+#include "structure/point.h"
 
 
 // -------------------------------------------------------
@@ -56,6 +57,10 @@ void prepDay();
 void playDay();
 
 void frameSet();
+
+void loadMap();
+
+void loadDatabase();
 
 void infoUpdate();
 // Update frame with changes in information screen
