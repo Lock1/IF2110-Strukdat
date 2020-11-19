@@ -3,7 +3,7 @@
 #include "fileio.h"
 
 Wahana* ReadFromWahana(){
-	FILE* file=fopen("../../data/wahana.txt", "r");
+	FILE* file=fopen("data/wahana.txt", "r");
 	if (!file)
 		return NULL;
 
@@ -26,7 +26,7 @@ Wahana* ReadFromWahana(){
 }
 
 Material* ReadFromBahan(){
-	FILE* file=fopen("../../data/material.txt", "r");
+	FILE* file=fopen("data/material.txt", "r");
 	if (!file)
 		return NULL;
 
