@@ -7,7 +7,7 @@ typedef struct {
 	int ID, harga, durasi, kapasitas, frekuensiTotal, penghasilanTotal, penghasilanHari, frekuensiHari, statusWahana;
 	char nama[999];
 	char deskripsi[999];
-  char gambar[999];
+    char gambar[999];
 } Wahana;
 
 #define ID(W) (W).ID
@@ -52,5 +52,7 @@ char getDeskripsi(Wahana W);
 char getGambar(Wahana W);
 
 void setStatusWahana(Wahana* W, int newStatus);
+
+Wahana* searchWahana(Wahana* w, int ID);
 
 #endif

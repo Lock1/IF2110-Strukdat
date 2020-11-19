@@ -70,3 +70,23 @@ char getGambar(Wahana W) {
 void setStatusWahana(Wahana* W, int newStatus) {
   StatusWahana(*W) = newStatus;
 }
+
+Wahana* searchWahana(Wahana* w, int ID){
+  Wahana* hasil=(Wahana*)malloc(1*sizeof(Wahana));
+  for (int i=0; i<20; i++){
+    if (w[i].ID==ID){
+      ID(hasil)=ID(w);
+      Harga(hasil)=Harga(w);
+      Durasi(hasil)=Durasi(w);
+      Kapasitas(hasil)=Kapasitas(w);
+      Frekuensi(hasil)=Frekuensi(w);
+      Penghasilan(hasil)=Penghasilan(w);
+      Frekuensi(hasil)=Frekuensi(w);
+      StatusWahana(hasil)=StatusWahana(w);
+      Nama(hasil)=Nama(w);
+      Deskripsi(hasil)=Deskripsi(w);
+      Gambar(hasil)=Gambar(w);
+    }
+  }
+  return hasil;
+}

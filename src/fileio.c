@@ -15,6 +15,10 @@ Wahana* ReadFromWahana(){
 		Wahana w;
 		sscanf(buffer,"%d %s %d %d %d %s", &w.ID, w.nama, &w.harga, &w.durasi, &w.kapasitas, w.deskripsi);
 		fgets(buffer, 200, file);
+		Frekuensi(w)=0;
+		Penghasilan(w)=0;
+		PenghasilanHari(w)=0;
+		StatusWahana(w)=0;
 		array[i]=w;
 	}
 	fclose(file);
