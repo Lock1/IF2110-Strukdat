@@ -22,6 +22,8 @@ source: from my shitty C++ and windows-based game lul
 #include "structure/point.h"
 
 
+#include "fileio.h"
+
 // -------------------------------------------------------
 // Player name (line 1)
 // Money (line 2)

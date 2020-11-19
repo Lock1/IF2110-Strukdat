@@ -7,23 +7,23 @@ typedef struct {
 	int ID, harga, durasi, kapasitas, frekuensiTotal, penghasilanTotal, penghasilanHari, frekuensiHari, statusWahana;
 	char nama[999];
 	char deskripsi[999];
-    char gambar[999];
+    char gambar;
 } Wahana;
 
 #define ID(W) (W).ID
 #define Harga(W) (W).harga
-#define Durasi(W) (W).durasi
+#define WahanaDurasi(W) (W).durasi
 #define Kapasitas(W) (W).kapasitas
 #define Frekuensi(W) (W).frekuensiTotal
 #define Penghasilan(W) (W).penghasilanTotal
 #define PenghasilanHari(W) (W).penghasilanHari
 #define FrekuensiHari(W) (W).frekuensiHari
 #define StatusWahana(W) (W).statusWahana
-#define Nama(W) (W).nama[999]
-#define Deskripsi(W) (W).deskripsi[999]
-#define Gambar(W) (W).gambar[999]
+#define Nama(W) (W).nama
+#define Deskripsi(W) (W).deskripsi
+#define Gambar(W) (W).gambar
 
-Wahana MakeWahana(int ID, int harga, int durasi, int kapasitas, char nama, char deskripsi, char gambar);
+// Wahana MakeWahana(int ID, int harga, int durasi, int kapasitas, char nama[999], char deskripsi, char gambar);
 
 int getIDWahana(Wahana W);
 
@@ -45,14 +45,14 @@ int getFrekuensiHariWahana(Wahana W);
 
 int getStatusWahana(Wahana W);
 
-char getNamaWahana(Wahana W);
+char* getNamaWahana(Wahana W);
 
-char getDeskripsi(Wahana W);
+char* getDeskripsi(Wahana W);
 
 char getGambar(Wahana W);
 
 void setStatusWahana(Wahana* W, int newStatus);
 
-Wahana* searchWahana(Wahana* w, int ID);
+Wahana* searchWahanaByID(Wahana* w, int ID);
 
 #endif

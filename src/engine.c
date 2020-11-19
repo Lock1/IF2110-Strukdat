@@ -34,6 +34,9 @@ char username[STRING_LENGTH] = "";
 int money = START_MONEY;
 int currentDay = 1;
 JAM currentTime;
+
+Wahana* buildingDatabase;
+Material* materialDatabase;
 // TODO : set time
 
 // -------------------------------------------------------
@@ -75,6 +78,8 @@ void loadMap() {
 }
 
 void loadDatabase() {
+    buildingDatabase = ReadFromWahana();
+    materialDatabase = ReadFromBahan();
     // TODO : load both wahaha.txt and material.txt
 }
 
@@ -222,6 +227,10 @@ void prepDay() {
         infoUpdate(1);
         mapUpdate(1);
         draw();
+        // for(int i=0; i<3; i++){
+        //     printf("read material: %d %d %s\n", materialDatabase[i].ID, materialDatabase[i].harga, materialDatabase[i].nama);
+        //     printf("read wahana: %d %s %d %d %d %s\n", buildingDatabase[i].ID, buildingDatabase[i].nama, buildingDatabase[i].harga, tbuildingDatabasei].durasi, buildingDatabase[i].kapasitas, buildingDatabase[i].deskripsi);
+        // }
 
         // Command flush
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
