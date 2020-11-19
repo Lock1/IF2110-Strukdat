@@ -20,6 +20,8 @@
 #define STRING_LENGTH 50
 #define CURSOR_REST_X 1
 #define CURSOR_REST_Y 1
+#define PLAYER_START_X 5
+#define PLAYER_START_Y 5
 
 // Debugging feature
 #define DEBUG 1

@@ -27,8 +27,8 @@ JAM cPrepTime;
 char mapframe[MAP_SIZE_Y][MAP_SIZE_X];
 char infoframe[INFO_SIZE_Y][INFO_SIZE_X];
 
-matrix map1; // TODO : multiple map, FIXME : Debug version
-POINT cursorLocation;// TODO : Cleanup and Preferably to split cursorLocation for prep phase
+matrix map1, map2, map3, map4;
+POINT cursorLocation;
 POINT playerLocation;
 char username[STRING_LENGTH] = "";
 int money = START_MONEY;
@@ -40,43 +40,58 @@ Stack actionStack;
 
 Wahana* buildingDatabase;
 Material* materialDatabase;
-// TODO : set time
+
 
 // -------------------------------------------------------
 
 
 // ---------------- Function Definition =-----------------
 
+// ----- Other function -----
 // Theres function in Windows that allow set cursor pos
 // Anyway UNIX implementation pretty short
 void setCursorPosition(int XPos, int YPos) {
     printf("\033[%d;%dH",YPos+1,XPos+1);
 }
-// TODO : Update
 
-// TODO : comment
 void stringCopy(char src[STRING_LENGTH], char dst[STRING_LENGTH]) {
     for (int i = 0 ; src[i] != '\0' ; i++)
         dst[i] = src[i]; // FIXME : maybe null terminator
 }
 
-// TODO : comment
 boolean stringCompare(char st1[STRING_LENGTH], char st2[STRING_LENGTH]) {
     for (int i = 0 ; st1[i] != '\0' ; i++)
         if (st1[i] != st2[i])
             return false;
     return true;
 }
+// Delaying by counting
+void delay(int limit) {
+    long long int clock = 0, count = 0;
+    while (count != limit) {
+        while (clock != IC)
+            clock++;
+        clock = 0;
+        count++;
+    }
+}
 
-// FIXME : mem corruption
+
+
+
+
+// ----- Load function -----
 void loadMap() {
     // TODO : Load actual map.txt
     makeMatrix(MAP_SIZE_X,MAP_SIZE_Y,&map1);
+    makeMatrix(MAP_SIZE_X,MAP_SIZE_Y,&map2);
+    makeMatrix(MAP_SIZE_X,MAP_SIZE_Y,&map3);
+    makeMatrix(MAP_SIZE_X,MAP_SIZE_Y,&map4);
     for (int i = 0 ; i < rowLen(map1) ; i++) {
         for (int j = 0 ; j < colLen(map1) ; j++) {
-            occupiedAt(map1,i,j) = false;
-            entityAt(map1,i,j) = 0; // Let ID 0 as nothing
-            buildingAt(map1,i,j) = NULL;
+            occupiedAt(map1,i,j) = occupiedAt(map2,i,j) = occupiedAt(map3,i,j) = occupiedAt(map4,i,j) = false;
+            entityAt(map1,i,j) = entityAt(map2,i,j) = entityAt(map3,i,j) = entityAt(map4,i,j) = 0;
+            buildingAt(map1,i,j) = buildingAt(map2,i,j) = buildingAt(map3,i,j) = buildingAt(map4,i,j) = NULL;
         }
     }
 
@@ -87,20 +102,11 @@ void loadDatabase() {
     materialCount = ReadFromBahan(&materialDatabase);
 }
 
-void printBuildList() {
-    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
-    // TODO : Puts build title
-    puts(BUILD_LIST_1);
-    puts(BUILD_LIST_2);
-    puts(BUILD_LIST_3);
-    for (int i = 0 ; i < buildingCount ; i++) // TODO : Print everything
-        printf(BUILD_LIST_4, buildingDatabase[i].ID-19, buildingDatabase[i].nama, buildingDatabase[i].harga, buildingDatabase[i].durasi, buildingDatabase[i].kapasitas, buildingDatabase[i].deskripsi);
-    puts(BUILD_LIST_5);
-    puts("Masukkan ID yang ingin dibangun :");
-    printf(">> ");
-}
 
-// TODO : Fix this
+
+
+
+// ----- Frame update function -----
 void infoUpdate(int tp) {
     // ---- Username ---
     for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
@@ -199,34 +205,70 @@ void infoUpdate(int tp) {
             nframe[INFO_OFFSET_Y+i][INFO_OFFSET_X+j] = infoframe[i][j];
 }
 
-// TODO : cleanup
+void mapUpdate(int tp) {
+    // DEBUG
+    for (int i = 0 ; i < MAP_SIZE_Y ; i++)
+        for (int j = 0 ; j < MAP_SIZE_X ; j++)
+            switch (entityAt(map1,i,j)) {
+                case 0:
+                    mapframe[i][j] = '.'; // Nothing
+                    break;
+                case 1:
+                    mapframe[i][j] = '@'; // Player
+                    break;
+                default:
+                    if (entityAt(map1,i,j) > 19)
+                        mapframe[i][j] = buildingAt(map1,i,j)->gambar;
+                    break;
+            }
+    // Draw cursor only on preparation phase
+    if (tp == 1)
+        mapframe[Ordinat(cursorLocation)][Absis(cursorLocation)] = '*';
+
+     // TODO : Let unique UNICODE char print as '*' at background
+    // if (random()%2)
+    //     mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 43;
+    // else
+    //     mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 79;
+    // DEBUG STOP
+    for (int i = 0 ; i < MAP_SIZE_Y ; i++)
+        for (int j = 0 ; j < MAP_SIZE_X ; j++)
+            nframe[MAP_OFFSET_Y+i][MAP_OFFSET_X+j] = mapframe[i][j];
+}
+
+
+
+
+
+// ----- Game function -----
 boolean startGame() {
     puts(START_MENU_ASCII_ART);
     puts("1. New Game");
-    // puts("2. Continue");
+    // puts("2. Continue"); // TODO : Bonus
     // puts("3. Load game");
     puts("2. Quit");
 
     printf(">> ");
     wordInput();
     if (stringCompare("new",CurrentInput) || CurrentInput[0] == '1') {
+        // Name prompt and ASCII art
         printf("Masukkan nama : ");
         wordInput();
         stringCopy(CurrentInput,username);
-        loadDatabase();
-        loadMap();
         puts(HAVE_FUN_ASCII_ART);
         puts(WILLY_WANGKY_ASCII_ART);
+
+        // Variable Initialization
+        CreateEmpty(&actionStack);
+        loadMap();
+        loadDatabase();
         cPlayTime = MakeJAM(START_PLAY,0);
         cPrepTime = currentTime = MakeJAM(START_PREP,0);
         cursorLocation = MakePOINT(CURSOR_REST_X,CURSOR_REST_Y);
-        CreateEmpty(&actionStack);
+        playerLocation = MakePOINT(PLAYER_START_X,PLAYER_START_Y);
+        occupiedAt(map1,PLAYER_START_X,PLAYER_START_Y) = true;
+        entityAt(map1,PLAYER_START_X,PLAYER_START_Y) = 1;
 
-        // DEBUG : temp
-        playerLocation = MakePOINT(5,5);
-        occupiedAt(map1,5,5) = true;
-        entityAt(map1,5,5) = 1;
-        // DEBUG STOP
         return true;
     }
     else if (stringCompare("quit", CurrentInput) || CurrentInput[0] == '2')
@@ -284,8 +326,10 @@ void prepDay() {
         }
         // else if (stringCompare("upgrade",CurrentInput))
         //
-        // else if (stringCompare("buy",CurrentInput))
-        //
+        else if (stringCompare("buy",CurrentInput)) {
+
+        }
+
         // else if (stringCompare("undo",CurrentInput))
         //
 
@@ -297,19 +341,19 @@ void prepDay() {
             // ADD Colision detection
             switch (CurrentInput[0]) {
                 case 'w':
-                    if (0 < Ordinat(cursorLocation))
+                    if (1 < Ordinat(cursorLocation))
                         Geser(&cursorLocation,0,-1);
                     break;
                 case 'a':
-                    if (0 < Absis(cursorLocation))
+                    if (1 < Absis(cursorLocation))
                         Geser(&cursorLocation,-1,0);
                     break;
                 case 's':
-                    if (Ordinat(cursorLocation) < MAP_SIZE_Y - 1)
+                    if (Ordinat(cursorLocation) < MAP_SIZE_Y - 2)
                         Geser(&cursorLocation,0,1);
                     break;
                 case 'd':
-                    if (Absis(cursorLocation) < MAP_SIZE_X - 1)
+                    if (Absis(cursorLocation) < MAP_SIZE_X - 2)
                         Geser(&cursorLocation,1,0);
                     break;
             }
@@ -328,51 +372,24 @@ void playDay() {
     currentDay++;
 }
 
-void mapUpdate(int tp) {
-    // DEBUG
-    for (int i = 0 ; i < MAP_SIZE_Y ; i++)
-        for (int j = 0 ; j < MAP_SIZE_X ; j++)
-            switch (entityAt(map1,i,j)) {
-                case 0:
-                    mapframe[i][j] = '.'; // Nothing
-                    break;
-                case 1:
-                    mapframe[i][j] = '@'; // Player
-                    break;
-                default:
-                    if (entityAt(map1,i,j) > 19)
-                        mapframe[i][j] = buildingAt(map1,i,j)->gambar;
-                    break;
-            }
-    // Draw cursor only on preparation phase
-    if (tp == 1)
-        mapframe[Ordinat(cursorLocation)][Absis(cursorLocation)] = '*';
 
-     // TODO : Let unique UNICODE char print as '*' at background
-    // if (random()%2)
-    //     mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 43;
-    // else
-    //     mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 79;
-    // DEBUG STOP
-    for (int i = 0 ; i < MAP_SIZE_Y ; i++)
-        for (int j = 0 ; j < MAP_SIZE_X ; j++)
-            nframe[MAP_OFFSET_Y+i][MAP_OFFSET_X+j] = mapframe[i][j];
+
+
+
+// ----- Draw function set -----
+void printBuildList() {
+    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
+    // TODO : Puts build title
+    puts(BUILD_LIST_1);
+    puts(BUILD_LIST_2);
+    puts(BUILD_LIST_3);
+    for (int i = 0 ; i < buildingCount ; i++) // TODO : Print everything
+        printf(BUILD_LIST_4, buildingDatabase[i].ID-19, buildingDatabase[i].nama, buildingDatabase[i].harga, buildingDatabase[i].durasi, buildingDatabase[i].kapasitas, buildingDatabase[i].deskripsi);
+    puts(BUILD_LIST_5);
+    puts("Masukkan ID yang ingin dibangun :");
+    printf(">> ");
 }
 
-// Delaying by counting
-void delay(int limit) {
-    long long int clock = 0, count = 0;
-    while (count != limit) {
-        while (clock != IC)
-            clock++;
-        clock = 0;
-        count++;
-    }
-}
-
-
-
-// Engine implementation
 void frameSet(int tp) { // TODO : Possible merge with other frame function
     // 0 Initialization
     // 1 Preparation
@@ -464,7 +481,6 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
     // DEBUG STOP
 }
 
-
 void unicodeDraw(int tp) {
     switch (tp) {
         case 0:
@@ -479,9 +495,6 @@ void unicodeDraw(int tp) {
             break;
     }
 }
-
-
-
 
 void forceDraw() {
     system(CLSCRN);
