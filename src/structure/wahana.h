@@ -60,4 +60,6 @@ Wahana* createWahanaByID(Wahana* w, int ID);
 
 boolean searchWahanaByID(Wahana* w, int ID);
 
+int getHargaWahanaByID(Wahana* w, int ID);
+
 #endif
