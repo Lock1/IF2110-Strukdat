@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "boolean.h"
 #include "wahana.h"
-#include <math.h>
 
 Wahana MakeWahana(int id, int harga, int durasi, int kapasitas, char nama[999], char deskripsi, char gambar) {
   Wahana W;
