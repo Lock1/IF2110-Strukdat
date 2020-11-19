@@ -584,16 +584,75 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
 }
 
 void unicodeDraw(int tp) {
+    // Map UNICODE overwrite
+    setCursorPosition(0,0);
+    puts(TOP_BORDER);
+    setCursorPosition(0,RES_Y-1);
+    puts(BOTTOM_BORDER);
+    for (int i = 1 ; i < RES_Y-1 ; i++) {
+        setCursorPosition(0,i);
+        puts("\u2503");
+        setCursorPosition(RES_X+3,i);
+        puts("\u2503");
+    }
+    setCursorPosition(3,1);
+    puts(MAP_UNICODE);
+    for (int i = 2 ; i < MAP_SIZE_Y+2 ; i++) {
+        setCursorPosition(3,i);
+        puts(MAP_VERTICAL_BORDER);
+        setCursorPosition(MAP_SIZE_X+4,i);
+        puts(MAP_VERTICAL_BORDER);
+    }
+    setCursorPosition(3,RES_Y-2);
+    puts(MAP_BOTTOM_UNICODE);
+
+    // Information UNICODE overwrite
+    setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y-1);
+    puts(INFO_UNICODE);
+
+    for (int i = 0 ; i < 12 ; i++) {
+        if (i == 6)
+            continue;
+        setCursorPosition(INFO_OFFSET_X+15,INFO_OFFSET_Y+i);
+        puts(INFO_SEPARATOR);
+    }
+    for (int i = 0 ; i < INFO_SIZE_Y ; i++) {
+        if (i%6 || !i) {
+            setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y+i);
+            puts(INFO_VERTICAL_BORDER);
+            setCursorPosition(INFO_OFFSET_X+INFO_SIZE_X,INFO_OFFSET_Y+i);
+            puts(INFO_VERTICAL_BORDER);
+        }
+        else {
+            setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y+i);
+            puts(INFO_VERTICAL_DASH);
+            setCursorPosition(INFO_OFFSET_X+INFO_SIZE_X,INFO_OFFSET_Y+i);
+            puts(INFO_VERTICAL_DASH);
+        }
+    }
+    setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y+12);
+    puts(INFO_WINDOW_SEP);
+    setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y+13);
+    puts(INFO_BROKEN_BUILDING);
+    setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y+INFO_SIZE_Y);
+    puts(INFO_BOTTOM_UNICODE);
+
     switch (tp) {
         case 0:
         case 1:
+            setCursorPosition(INFO_OFFSET_X+10,INFO_OFFSET_Y-4);
+            puts(PLAY_DAY_TITLE_1);
+            setCursorPosition(INFO_OFFSET_X+10,INFO_OFFSET_Y-3);
+            puts(PLAY_DAY_TITLE_2);
+            setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y+6);
+            puts(INFO_PREP_WINDOW);
+
+            break;
+        case 2:
             setCursorPosition(INFO_OFFSET_X-3,INFO_OFFSET_Y-4);
             puts(PREP_DAY_TITLE_1);
             setCursorPosition(INFO_OFFSET_X-3,INFO_OFFSET_Y-3);
             puts(PREP_DAY_TITLE_2);
-            break;
-        case 2:
-
             break;
     }
 }
