@@ -1,3 +1,6 @@
+//13519146 - Fadel Ananda Dotty
+//13519110 - M. Akromi Afif
+
 #ifndef _WAHANA_H_
 #define _WAHANA_H_
 

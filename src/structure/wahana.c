@@ -1,3 +1,6 @@
+//13519146 - Fadel Ananda Dotty
+//13519110 - M. Akromi Afif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "boolean.h"
