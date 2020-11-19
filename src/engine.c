@@ -2,7 +2,14 @@
 ----- Self note -----
 Useful UTF-8 Char for map
 \u2588 -> Solid block
+
+Internal reference in engine.c
+Preparation phase -> Prep
+Main phase -> Play
+
 */
+
+
 
 // Library
 #include "engine.h"
@@ -21,7 +28,7 @@ char mapframe[MAP_SIZE_Y][MAP_SIZE_X];
 char infoframe[INFO_SIZE_Y][INFO_SIZE_X];
 
 matrix map1; // TODO : multiple map, FIXME : Debug version
-POINT playerLocation;// TODO : Cleanup
+POINT cursorLocation;// TODO : Cleanup and Preferably to split cursorLocation for prep phase
 char username[STRING_LENGTH] = "";
 int money = START_MONEY;
 int currentDay = 1;
@@ -191,7 +198,7 @@ boolean startGame() {
         puts(WILLY_WANGKY_ASCII_ART);
         cPlayTime = MakeJAM(START_PLAY,0);
         cPrepTime = currentTime = MakeJAM(START_PREP,0);
-        MakePOINT(3,3); // DEBUG : temp
+        cursorLocation = MakePOINT(3,3); // DEBUG : temp
         loadMap();
         loadDatabase();
         return true;
@@ -209,42 +216,63 @@ void prepDay() {
         infoUpdate(1);
         mapUpdate();
         draw();
-        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y);
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
         puts("Masukkan perintah :                        ");
-        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+24, MAP_OFFSET_Y + MAP_SIZE_Y);
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+24, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+
 
         wordInput();
         // DEBUG
         if (stringCompare("build",CurrentInput))
-            puts("bu");
+            puts("build command registered");
         // else if (stringCompare("upgrade",CurrentInput))
         //
         // else if (stringCompare("buy",CurrentInput))
         //
         // else if (stringCompare("build",CurrentInput))
         //
+        // else if (stringCompare("undo",CurrentInput))
+        //
         else if (stringCompare("main",CurrentInput))
             break;
         else if (stringCompare("dbg",CurrentInput))
             currentTime = NextNMenit(currentTime,5);
-        else {
+        else if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd') {
+            occupiedAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = false;
+            entityAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = 0;
+            // ADD Colision detection
+            boolean moveRegistered = false;
             switch (CurrentInput[0]) {
                 case 'w':
-                    Geser(&playerLocation,0,1);
+                    if (0 < Ordinat(cursorLocation)) {
+                        Geser(&cursorLocation,0,-1);
+                        moveRegistered = true;
+                    }
                     break;
                 case 'a':
-                    Geser(&playerLocation,-1,0);
+                    if (0 < Absis(cursorLocation)) {
+                        Geser(&cursorLocation,-1,0);
+                        moveRegistered = true;
+                    }
                     break;
                 case 's':
-                    Geser(&playerLocation,0,-1);
+                    if (Ordinat(cursorLocation) < MAP_SIZE_Y - 1) {
+                        Geser(&cursorLocation,0,1);
+                        moveRegistered = true;
+                    }
                     break;
                 case 'd':
-                    // ADD Colision detection
-                    Geser(&playerLocation,1,0);
+                    if (Absis(cursorLocation) < MAP_SIZE_X - 1) {
+                        Geser(&cursorLocation,1,0);
+                        moveRegistered = true;
+                    }
                     break;
             }
+            if (moveRegistered)
+                currentTime = NextNMenit(currentTime,5);
             // DEBUG
-            TulisPOINT(playerLocation);
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+            TulisPOINT(cursorLocation);
             // forceDraw();
             // unicodeDraw(0);
             // DEBUG STOP
@@ -264,8 +292,20 @@ void playDay() {
 }
 
 void mapUpdate() {
-    // TODO : Need actual matrix of building to properly update
     // DEBUG
+    // TODO : split to prep and play
+    occupiedAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = true;
+    entityAt(map1,Ordinat(cursorLocation),Absis(cursorLocation)) = 1;
+    for (int i = 0 ; i < MAP_SIZE_Y ; i++)
+        for (int j = 0 ; j < MAP_SIZE_X ; j++)
+            switch (entityAt(map1,i,j)) {
+                case 0:
+                    mapframe[i][j] = ' ';
+                    break;
+                case 1:
+                    mapframe[i][j] = '*';
+                    break;
+            }
 
     // if (random()%2)
     //     mapframe[random()%MAP_SIZE_Y][random()%MAP_SIZE_X] = 43;
