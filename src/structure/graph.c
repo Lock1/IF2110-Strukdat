@@ -33,3 +33,20 @@ void printList(){
     }
     printf("\n");
 }
+
+void linkMapGraph(){
+    for (int i=0; i<maxNode; i++){
+        adjlist[i]=(List*)malloc(sizeof(List));
+        adjlist[i]->head=NULL;
+    }
+addNode(1,2);
+addNode(1,3);
+addNode(2,1);
+addNode(2,4);
+addNode(3,4);
+addNode(3,1);
+addNode(4,3);
+addNode(4,2);
+printList();
+getch();
+}

@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define maxNode 5
+#define maxNode 4
 
 typedef struct Node *address;
 
