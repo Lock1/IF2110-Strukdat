@@ -20,7 +20,7 @@ int ReadFromWahana(Wahana** database){
 	fgets(buffer, 200, file);
 	do {
 		Wahana w;
-		sscanf(buffer,"%d %s %d %d %d %s %c", &w.ID, w.nama, &w.harga, &w.durasi, &w.kapasitas, w.deskripsi, &w.gambar);
+		sscanf(buffer,"%d %s %d %d %d %s %c %d %d %d %d", &w.ID, w.nama, &w.harga, &w.durasi, &w.kapasitas, w.deskripsi, &w.gambar, &w.kayu, &w.besi, &w.bata, &w.semen);
 		fgets(buffer, 200, file);
 		Frekuensi(w)=0;
 		Penghasilan(w)=0;
