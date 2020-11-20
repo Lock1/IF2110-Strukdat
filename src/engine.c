@@ -129,8 +129,8 @@ void loadMap() {
 }
 
 void loadDatabase() {
-    buildingCount = ReadFromWahana(&buildingDatabase);
     materialCount = ReadFromBahan(&materialDatabase);
+    buildingCount = ReadFromWahana(&buildingDatabase,materialCount);
     // MakePohonUpgrade(&upgradeDatabase,buildingCount);
     // List test = MakeListDaun(upgradeDatabase[0]);
     // // PrintList(test);
@@ -681,10 +681,12 @@ void playDay() {
     forceDraw();
     unicodeDraw(2);
     // LOOP
-    // exit(0);// DEBUG
+
+    // DEBUG
     setCursorPosition(0, MAP_OFFSET_Y + MAP_SIZE_Y+2);
     drawLoading(800);
     // DEBUG STOP
+
     currentDay++;
 }
 
@@ -695,6 +697,7 @@ void playDay() {
 // ----- Draw function set -----
 void printBuildList() {
     setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+3);
+    // First table
     puts(BUILD_TITLE);
     puts(BUILD_LIST_1);
     puts(BUILD_LIST_2);
@@ -702,7 +705,39 @@ void printBuildList() {
     for (int i = 0 ; i < buildingCount ; i++)
         if (buildingDatabase[i].ID < 120)
             printf(BUILD_LIST_4, buildingDatabase[i].ID-19, buildingDatabase[i].nama, buildingDatabase[i].harga, buildingDatabase[i].durasi, buildingDatabase[i].kapasitas, buildingDatabase[i].deskripsi);
+
     puts(BUILD_LIST_5);
+    // Second table
+    printf(BUILD_MATERIAL_1);
+    for (int i = 0 ; i < materialCount - 1 ; i++)
+        printf(BUILD_MATERIAL_PROC_1);
+    puts(BUILD_MATERIAL_PROC_1_END);
+    printf(BUILD_MATERIAL_2);
+    for (int i = 0 ; i < materialCount ; i++)
+        printf(BUILD_MATERIAL_PROC_2,materialDatabase[i].nama);
+    puts("");
+    printf(BUILD_MATERIAL_3);
+    for (int i = 0 ; i < materialCount - 1 ; i++)
+        printf(BUILD_MATERIAL_PROC_3);
+    printf(BUILD_MATERIAL_PROC_3_END);
+
+
+    for (int i = 0 ; i < buildingCount ; i++) {
+        if (buildingDatabase[i].ID < 120) {
+            printf(BUILD_MATERIAL_4,buildingDatabase[i].ID-19, buildingDatabase[i].nama);
+            for (int j = 0 ; j < materialCount ; j++)
+                printf(BUILD_MATERIAL_PROC_INNER,buildingDatabase[i].materialArray[j]);
+            printf("\n");
+        }
+    }
+    printf(BUILD_MATERIAL_5);
+    for (int i = 0 ; i < materialCount - 1 ; i++) {
+        printf(BUILD_MATERIAL_PROC_4);
+
+    }
+    printf(BUILD_MATERIAL_PROC_4_END);
+
+
     puts("Masukkan ID yang ingin dibangun :");
 }
 

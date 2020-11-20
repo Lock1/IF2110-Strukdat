@@ -8,7 +8,7 @@
 
 typedef struct {
 	int ID, harga, durasi, kapasitas, frekuensiTotal, penghasilanTotal, penghasilanHari, frekuensiHari, statusWahana;
-	int kayu, besi, bata, semen;
+	int* materialArray;
 	char nama[999];
 	char deskripsi[999];
     char gambar;

@@ -1,13 +1,13 @@
-ID-NAMA-HARGA-KAPASITAS-DURASI-DESKRIPSI-KAYU-BESI-BATA-SEMEN
-20 Chocolate-tornado 5 2 5 Meningkatkan-adrenalin T 1 1 0 1
-21 Candy-house  10 1 15 Cocok-untuk-orang-rakus H 2 0 1 1
-22 Chocolate-factory 6 4 3 Melihat-proses-pembuatan-cokelat F 3 2 1 1
-23 Wanky-wonderland 8 2 5 Spot-foto-paling-gaulzzz W 2 2 1 0
-24 Chocolate-eater 7 2 10 Kumpulan-cokelat-diseluruh-dunia E 1 3 0 0
-25 Dip-train 12 3 20 Masuk-dunia-fantasi D 1 2 3 1
-120 Chocolate-disaster 5 3 7 T 1 3 2 1
-121 Lollipop-lolicon 15 2 25 H 2 2 2 2
-122 Chocolate-world 10 5 10 F 1 3 4 1
-123 Wangky-universe 12 3 12 W 2 2 1 1
-124 Greedy-eater 10 4 15 E 2 3 0 0
-125 Fun-train 15 3 25 D 2 3 4 1
+ID-NAMA-        HARGA-KAPASITAS-DURASI-DESKRIPSI-                  KAYU-BESI-BATA-SEMEN-BAJA
+20 Chocolate-tornado     5 2 5     Meningkatkan-adrenalin           T     1 1 0 1 1
+21 Candy-house           10 1 15   Cocok-untuk-orang-rakus          H     2 0 1 1 1
+22 Chocolate-factory     6 4 3     Melihat-proses-pembuatan-cokelat F     3 2 1 1 0
+23 Wanky-wonderland      8 2 5     Spot-foto-paling-gaulzzz         W     2 2 1 0 0
+24 Chocolate-eater       7 2 10    Kumpulan-cokelat-diseluruh-dunia E     1 3 0 0 1
+25 Dip-train             12 3 20   Masuk-dunia-fantasi              D     1 2 3 1 0
+120 Chocolate-disaster   5 3 7 T 1 3 2 1
+121 Lollipop-lolicon     15 2 25 H 2 2 2 2
+122 Chocolate-world      10 5 10 F 1 3 4 1
+123 Wangky-universe      12 3 12 W 2 2 1 1
+124 Greedy-eater         10 4 15 E 2 3 0 0
+125 Fun-train            15 3 25 D 2 3 4 1

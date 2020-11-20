@@ -7,7 +7,7 @@
 #include "config.h"
 #include "fileio.h"
 
-int ReadFromWahana(Wahana** database){
+int ReadFromWahana(Wahana** database, int materialCount){
 	FILE* file=fopen("data/wahana.txt", "r");
 	if (!file)
 		return 0;
@@ -20,7 +20,15 @@ int ReadFromWahana(Wahana** database){
 	fgets(buffer, 200, file);
 	do {
 		Wahana w;
-		sscanf(buffer,"%d %s %d %d %d %s %c %d %d %d %d", &w.ID, w.nama, &w.harga, &w.durasi, &w.kapasitas, w.deskripsi, &w.gambar, &w.kayu, &w.besi, &w.bata, &w.semen);
+		char *temp;
+		sscanf(buffer,"%d %s %d %d %d %s %c", &w.ID, w.nama, &w.harga, &w.durasi, &w.kapasitas, w.deskripsi, &w.gambar);
+		w.materialArray = (int *) malloc(materialCount*sizeof(int));
+		if (w.ID < 120)
+			for (int i = 0 ; i < materialCount ; i++) {
+				temp = &buffer[73+i*2];
+				sscanf(temp,"%d",&w.materialArray[i]);
+			}
+
 		fgets(buffer, 200, file);
 		Frekuensi(w)=0;
 		Penghasilan(w)=0;

@@ -93,6 +93,7 @@ Wahana* createWahanaByID(Wahana* w, int ID){
   return hasil;
 }
 void destroyWahana(Wahana* w) {
+    free(w->materialArray);
     free(w);
 }
 
