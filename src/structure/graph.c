@@ -51,3 +51,19 @@ addNode(4,2);
 // printList();
 // getc();
 }
+
+boolean isGraphConnected(int src, int dest){
+    for(int i=0; i<maxNode; i++){
+        address p=adjlist[i]->head;
+        while(p){
+            if (p->vertexNum==src){
+            	p=p->next;
+            	while(p){
+            		if (p->vertexNum==dest)
+                    return true;
+				}
+            }
+        }
+    }
+    return false;
+}
