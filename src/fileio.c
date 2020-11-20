@@ -75,9 +75,9 @@ void MakePohonUpgrade(BinTree** database, int wahanacount){
 	BinTree* array=(BinTree*)malloc(WAHANA_MAX*sizeof(BinTree));
 	for(int i=0;i<(wahanacount/3);i++){
 		BinTree P = AlokNode(i+20);
-		AddDaunTerkiri(&P, 120+i);
-		AddDaun(&P,120+i,220+i,false);
-
+		AddDaunTerkiri(&P, 20+i);
+		// AddDaun(&P,20+i,220+i,false);
+		// AddDaun(&P,20+i,120+i,false);
 		array[i] = P;
 	}
 	*database = array;
@@ -92,24 +92,24 @@ POINT* ReadFromMap(){
 	point=(POINT*)malloc(3*sizeof(POINT));
 	char buffer[200];
 	for (int i=0; i<3; i++){
-		point[i].x=0;
-		point[i].y=0;
+		Absis(point[i])=0;
+		Ordinat(point[i])=0;
 	}
 	for (int i=0; i<25; i++){
 		fgets(buffer, 200, file);
 		for(int j=0; j<50; j++){
 			switch(buffer[j]){
 				case '@':
-					point[0].x=i;
-					point[0].y=j;
+					Absis(point[0])=i;
+					Ordinat(point[0])=j;
 					break;
 				case 'a':
-					point[1].x=i;
-					point[1].y=j;
+					Absis(point[1])=i;
+					Ordinat(point[1])=j;
 					break;
 				case 'o':
-					point[2].x=i;
-					point[2].y=j;
+					Absis(point[2])=i;
+					Ordinat(point[2])=j;
 					break;
 			}
 		}

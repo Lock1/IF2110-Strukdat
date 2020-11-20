@@ -100,8 +100,8 @@ boolean integerInput(int *store) {
 
 // ----- Load function -----
 void loadMap() {
-    // TODO : Load actual map.txt
-    linkMapGraph();
+    POINT* initialLocation = ReadFromMap();
+    linkMapGraph(); // TODO : Link
     for (int i = 0 ; i < 4 ; i++)
         makeMatrix(MAP_SIZE_X,MAP_SIZE_Y,&map[i]);
     for (int a = 0 ; a < 4 ; a++) {
@@ -119,12 +119,22 @@ void loadMap() {
             }
         }
     }
+    playerLocation = MakePOINT(Absis(initialLocation[0]),Ordinat(initialLocation[0])); // FIXME : Potential problem on Play day
+    entityAt(map[0],Absis(initialLocation[0]),Ordinat(initialLocation[0])) = 1;
+    occupiedAt(map[0],Absis(initialLocation[0]),Ordinat(initialLocation[0])) = true;
+    entityAt(map[0],Absis(initialLocation[1]),Ordinat(initialLocation[1])) = 7;
+    occupiedAt(map[0],Absis(initialLocation[1]),Ordinat(initialLocation[1])) = true;
+    entityAt(map[0],Absis(initialLocation[2]),Ordinat(initialLocation[2])) = 8;
+    occupiedAt(map[0],Absis(initialLocation[2]),Ordinat(initialLocation[2])) = true;
 }
 
 void loadDatabase() {
     buildingCount = ReadFromWahana(&buildingDatabase);
     materialCount = ReadFromBahan(&materialDatabase);
-    MakePohonUpgrade(&upgradeDatabase,buildingCount);
+    // MakePohonUpgrade(&upgradeDatabase,buildingCount);
+    // List test = MakeListDaun(upgradeDatabase[0]);
+    // // PrintList(test);
+    // // printf("%d", NbElmt(upgradeDatabase[0]));
 }
 
 
@@ -306,6 +316,12 @@ void mapUpdate(int tp) {
                 case 2:
                     mapframe[i][j] = '#'; // Wall
                     break;
+                case 7:
+                    mapframe[i][j] = 'o'; // Office
+                    break;
+                case 8:
+                    mapframe[i][j] = 'a'; // Queue
+                    break;
                 default:
                     if (entityAt(map[currentMap],i,j) > 19)
                         mapframe[i][j] = buildingAt(map[currentMap],i,j)->gambar;
@@ -359,9 +375,6 @@ boolean startGame() {
             cPlayTime = MakeJAM(START_PLAY,0);
             cPrepTime = currentTime = MakeJAM(START_PREP,0);
             cursorLocation = MakePOINT(CURSOR_REST_X,CURSOR_REST_Y);
-            playerLocation = MakePOINT(PLAYER_START_X,PLAYER_START_Y);
-            occupiedAt(map[currentMap],PLAYER_START_X,PLAYER_START_Y) = true;
-            entityAt(map[currentMap],PLAYER_START_X,PLAYER_START_Y) = 1;
 
             return true;
         }
@@ -725,7 +738,7 @@ void printLegendList(int tp) {
         for (int j = 0 ; j < MAP_SIZE_X ; j++)
             switch (entityAt(map[currentMap],i,j)) {
                 case 1:
-                    printf(LEGEND_LIST_4,'@', "Pemain");
+                    printf(LEGEND_LIST_4,'@', "Pemain"); // TODO Maybe unsorted
                     break;
                 default:
                     if ((entityAt(map[currentMap],i,j) > 19) && !isAlreadyPrinted[entityAt(map[currentMap],i,j)-19]) {
