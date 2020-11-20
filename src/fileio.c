@@ -17,6 +17,7 @@ int ReadFromWahana(Wahana** database){
 	Wahana* array = (Wahana*) malloc(WAHANA_MAX*sizeof(Wahana));
 
 	int i=0;
+	fgets(buffer, 200, file);
 	do {
 		Wahana w;
 		sscanf(buffer,"%d %s %d %d %d %s %c", &w.ID, w.nama, &w.harga, &w.durasi, &w.kapasitas, w.deskripsi, &w.gambar);
@@ -54,6 +55,7 @@ int ReadFromBahan(Material**database){
 
 	// while(!feof(file)){
 	int i=0;
+	fgets(buffer, 200, file);
 	do{
 		Material m;
 		sscanf(buffer,"%d %s %d", &m.ID, m.nama, &m.harga);
