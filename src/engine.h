@@ -69,6 +69,8 @@ void frameSet();
 
 void loadMap();
 
+int actionUndo();
+
 void printBuildList();
 
 void printMaterialList();
