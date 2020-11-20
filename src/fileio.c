@@ -71,6 +71,25 @@ int ReadFromBahan(Material**database){
 	return i;
 }
 
-void ReadFromUpgrade(){
-	// FILE* file=fopen("data/upgradelist.txt");
+POINT* ReadFromMap(){
+	FILE* file=fopen("data/map.txt");
+	if (!file)
+		return 0;
+	POINT* point;
+	point=(POINT*)malloc(3*sizeof(POINT));
+	char buffer[200];
+	for (int i=0; i<3; i++){
+		point[i]->x=0;
+		point[i]->y=0;
+	}
+	for (int i=0; i<25; i++){
+		fgets(buffer, 200, file);
+		for(int j=0; j<50; j++){
+			if(buffer[j]=='a'){
+				point[i]->x=i;
+				point[j]->y=j;
+			}
+		}
+	}
+	return point;
 }
