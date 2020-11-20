@@ -2,22 +2,27 @@
 // 13519146 / Fadel Ananda Dotty
 #include <stdio.h>
 #include <stdlib.h>
+#include "boolean.h"
 
-#define maxNode 4
+#define maxgraphNode 4
 
-typedef struct Node *address;
+typedef struct graphNode *graphAddress;
 
-typedef struct Node{
+typedef struct graphNode{
     int vertexNum;
-    address next;
-}Node;
+    graphAddress next;
+}graphNode;
 
-typedef struct List{
-    address head;
-}List;
+typedef struct graphList{
+    graphAddress head;
+}graphList;
 
-List *adjlist[maxNode]={0};
+graphList *adjgraphList[maxgraphNode];
 
-void addNode(int s, int d);
+void addgraphNode(int s, int d);
 
-void printList();
+void printgraphList();
+
+void linkMapGraph();
+
+boolean isGraphConnected(int src, int dest);

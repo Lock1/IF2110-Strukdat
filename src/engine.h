@@ -21,6 +21,7 @@ source: from my shitty C++ and windows-based game lul
 #include "structure/matrix.h"
 #include "structure/point.h"
 #include "structure/stack.h"
+#include "structure/graph.h"
 
 
 #include "fileio.h"

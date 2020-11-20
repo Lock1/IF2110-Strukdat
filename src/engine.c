@@ -100,6 +100,7 @@ boolean integerInput(int *store) {
 // ----- Load function -----
 void loadMap() {
     // TODO : Load actual map.txt
+    linkMapGraph();
     for (int i = 0 ; i < 4 ; i++)
         makeMatrix(MAP_SIZE_X,MAP_SIZE_Y,&map[i]);
     for (int a = 0 ; a < 4 ; a++) {
@@ -117,8 +118,6 @@ void loadMap() {
             }
         }
     }
-
-
 }
 
 void loadDatabase() {
@@ -132,7 +131,6 @@ void loadDatabase() {
 
 // ----- Frame update function -----
 void infoUpdate(int tp) {
-
     // ---- Wipe ----
     // Frame wipe
     for (int i = 0 ; i < INFO_SIZE_X - INFO_BLOCK_SIZE ; i++)
@@ -294,7 +292,6 @@ void infoUpdate(int tp) {
 }
 
 void mapUpdate(int tp) {
-    // DEBUG
     for (int i = 0 ; i < MAP_SIZE_Y ; i++)
         for (int j = 0 ; j < MAP_SIZE_X ; j++)
             switch (entityAt(map[currentMap],i,j)) {
@@ -367,8 +364,7 @@ boolean startGame() {
             return true;
         }
         else if (stringCompare("color", CurrentInput) || CurrentInput[0] == '2') {
-            colorSchemeChange();
-            drawLoading(30);
+            colorSchemeChange(30);
             system(CLSCRN);
         }
         else if (stringCompare("quit", CurrentInput) || CurrentInput[0] == '3')
@@ -604,8 +600,7 @@ void prepDay() {
             }
         }
         else if (stringCompare("color",CurrentInput)) {
-            colorSchemeChange();
-            drawLoading(30);
+            colorSchemeChange(30);
             forceDraw();
             unicodeDraw(1);
         }
@@ -690,7 +685,7 @@ void printBuildList() {
     puts(BUILD_LIST_1);
     puts(BUILD_LIST_2);
     puts(BUILD_LIST_3);
-    for (int i = 0 ; i < buildingCount ; i++) // TODO : Print everything
+    for (int i = 0 ; i < buildingCount ; i++)
         printf(BUILD_LIST_4, buildingDatabase[i].ID-19, buildingDatabase[i].nama, buildingDatabase[i].harga, buildingDatabase[i].durasi, buildingDatabase[i].kapasitas, buildingDatabase[i].deskripsi);
     puts(BUILD_LIST_5);
     puts("Masukkan ID yang ingin dibangun :");
@@ -702,7 +697,7 @@ void printMaterialList() {
     puts(MATERIAL_LIST_1);
     puts(MATERIAL_LIST_2);
     puts(MATERIAL_LIST_3);
-    for (int i = 0 ; i < materialCount ; i++) // TODO : Print everything
+    for (int i = 0 ; i < materialCount ; i++)
         printf(MATERIAL_LIST_4, materialDatabase[i].ID-9, materialDatabase[i].nama, materialDatabase[i].harga, materialDatabase[i].material_count);
     puts(MATERIAL_LIST_5);
     puts("Masukkan ID yang ingin dibeli :");
@@ -742,7 +737,7 @@ void printLegendList(int tp) {
     puts(LEGEND_LIST_5);
 }
 
-void colorSchemeChange() {
+void colorSchemeChange(int tdelay) {
     system(CLSCRN);
     setCursorPosition(0,0);
     puts("Color scheme :");
@@ -752,11 +747,13 @@ void colorSchemeChange() {
     wordInput();
     if (stringCompare("black",CurrentInput) || CurrentInput[0] == '1') {
         puts("Processing ...");
+        drawLoading(tdelay);
         puts(colorScheme[1]);
         currentColorScheme = 1;
     }
     else if (stringCompare("white",CurrentInput) || CurrentInput[0] == '2') {
         puts("Processing ...");
+        drawLoading(tdelay);
         puts(colorScheme[2]);
         currentColorScheme = 2;
     }
@@ -820,7 +817,6 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
 
     for (int i = 0 ; i < 5 ; i++)
         infoframe[4][INFO_BLOCK_SIZE+i+1] = endTime[i]; // FIXME : ??
-
 
     for (int i = 0 ; i < INFO_SIZE_X ; i++) {
         infoframe[6][i] = infoBlock[6][i];
