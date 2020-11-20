@@ -368,7 +368,7 @@ boolean startGame() {
         }
         else if (stringCompare("color", CurrentInput) || CurrentInput[0] == '2') {
             colorSchemeChange();
-            drawLoading(100);
+            drawLoading(30);
             system(CLSCRN);
         }
         else if (stringCompare("quit", CurrentInput) || CurrentInput[0] == '3')
@@ -416,6 +416,8 @@ void prepDay() {
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
         puts("                                                 ");
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+        // Set cursor pos for repeated input, which can cause weird overwrite
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
 
         // If input too long, force draw everything
         if (LengthInput > 15) {
@@ -454,7 +456,7 @@ void prepDay() {
                 }
                 else
                     puts("Pembangunan dibatalkan");
-                drawLoading(100);
+                drawLoading(40);
                 forceDraw();
                 unicodeDraw(1);
             }
@@ -497,7 +499,7 @@ void prepDay() {
             }
             else
                 puts("Pembelian dibatalkan");
-            drawLoading(100);
+            drawLoading(40);
             forceDraw();
             unicodeDraw(1);
         }
@@ -539,7 +541,7 @@ void prepDay() {
             break;
         else if (stringCompare("color",CurrentInput)) {
             colorSchemeChange();
-            drawLoading(40);
+            drawLoading(30);
             forceDraw();
             unicodeDraw(1);
         }
@@ -787,17 +789,19 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
 }
 
 void drawLoading(int fdelay) {
-    for (int bar = 0; bar < 10 ; bar++) {
+    for (int bar = 0; bar < LOADING_LENGTH ; bar++) {
         printf("\033[1000D");
         fflush(stdout);
-        putchar('[');
+        printf(LOADING_OPEN_BRACKET);
         for (int i = 0; i < bar ; i++)
-            printf("\u2500");
+            printf(LOADING_PROGRESS);
+        for (int i = bar; i < LOADING_LENGTH ; i++)
+            printf(LOADING_NOTHING);
         printf("\033[1000D");
         fflush(stdout);
-        printf("\033[10C");
+        printf("\033[20C"); // Have to set for loading length
         fflush(stdout);
-        putchar(']');
+        printf(LOADING_CLOSE_BRACKET);
         printf(" ");
         switch (bar%3) {
             case 0:
