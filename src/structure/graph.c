@@ -4,27 +4,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void addNode(int s, int d){
-    address dest, temp, src;
-    if(adjlist[s]->head==NULL){
-        src=(address)malloc(sizeof(Node));
+void addgraphNode(int s, int d){
+    graphAddress dest, temp, src;
+    if(adjgraphList[s]->head==NULL){
+        src=(graphAddress)malloc(sizeof(graphNode));
         src->vertexNum=s;
         src->next=NULL;
-        adjlist[s]->head=src;
+        adjgraphList[s]->head=src;
     }
-    dest=(address)malloc(sizeof(Node));
+    dest=(graphAddress)malloc(sizeof(graphNode));
     dest->vertexNum=d;
     dest->next=NULL;
-    temp=adjlist[s]->head;
+    temp=adjgraphList[s]->head;
     while (temp->next!=NULL)
         temp=temp->next;
     temp->next=dest;
 }
 
-void printList(){
-    for(int i=0; i<maxNode; i++){
-        address p=adjlist[i]->head;
-        printf("List for vertex %d: ", i);
+void printgraphList(){
+    for(int i=0; i<maxgraphNode; i++){
+        graphAddress p=adjgraphList[i]->head;
+        printf("graphList for vertex %d: ", i);
         while(p){
             printf("%d ", p->vertexNum);
             p=p->next;
@@ -34,27 +34,26 @@ void printList(){
     printf("\n");
 }
 
-// TODO : re review
 void linkMapGraph(){
-    for (int i=0; i<maxNode; i++){
-        adjlist[i]=(List*)malloc(sizeof(List));
-        adjlist[i]->head=NULL;
+    for (int i=0; i<maxgraphNode; i++){
+        adjgraphList[i]=(graphList*)malloc(sizeof(graphList));
+        adjgraphList[i]->head=NULL;
     }
-addNode(1,2);
-addNode(1,3);
-addNode(2,1);
-addNode(2,4);
-addNode(3,4);
-addNode(3,1);
-addNode(4,3);
-addNode(4,2);
-// printList();
+    addgraphNode(0,1);
+    addgraphNode(0,2);
+    addgraphNode(1,0);
+    addgraphNode(1,3);
+    addgraphNode(2,3);
+    addgraphNode(2,0);
+    addgraphNode(3,2);
+    addgraphNode(3,1);
+// printgraphList();
 // getc();
 }
 
 boolean isGraphConnected(int src, int dest){
-    for(int i=0; i<maxNode; i++){
-        address p=adjlist[i]->head;
+    for(int i=0; i<maxgraphNode; i++){
+        graphAddress p=adjgraphList[i]->head;
         while(p){
             if (p->vertexNum==src){
             	p=p->next;
