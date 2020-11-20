@@ -367,8 +367,7 @@ boolean startGame() {
             return true;
         }
         else if (stringCompare("color", CurrentInput) || CurrentInput[0] == '2') {
-            colorSchemeChange();
-            drawLoading(30);
+            colorSchemeChange(30);
             system(CLSCRN);
         }
         else if (stringCompare("quit", CurrentInput) || CurrentInput[0] == '3')
@@ -604,8 +603,7 @@ void prepDay() {
             }
         }
         else if (stringCompare("color",CurrentInput)) {
-            colorSchemeChange();
-            drawLoading(30);
+            colorSchemeChange(30);
             forceDraw();
             unicodeDraw(1);
         }
@@ -742,7 +740,7 @@ void printLegendList(int tp) {
     puts(LEGEND_LIST_5);
 }
 
-void colorSchemeChange() {
+void colorSchemeChange(int tdelay) {
     system(CLSCRN);
     setCursorPosition(0,0);
     puts("Color scheme :");
@@ -752,11 +750,13 @@ void colorSchemeChange() {
     wordInput();
     if (stringCompare("black",CurrentInput) || CurrentInput[0] == '1') {
         puts("Processing ...");
+        drawLoading(tdelay);
         puts(colorScheme[1]);
         currentColorScheme = 1;
     }
     else if (stringCompare("white",CurrentInput) || CurrentInput[0] == '2') {
         puts("Processing ...");
+        drawLoading(tdelay);
         puts(colorScheme[2]);
         currentColorScheme = 2;
     }

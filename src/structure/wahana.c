@@ -1,5 +1,6 @@
 //13519146 - Fadel Ananda Dotty
 //13519110 - M. Akromi Afif
+//13519046 - Dwianditya Hanif Raharjanto 
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -110,38 +111,40 @@ int getHargaWahanaByID(Wahana* w, int ID){
             return w[i].harga;
         }
     }
+    return 0;
 }
 int getWahanaDurasiByID(Wahana* w, int ID){
    for (int i=0; i<20; i++){
      if (w[i].ID==ID){
-       return w[i].WahanaDurasi;
+       return w[i].durasi;
      }
    }
+    return 0;
 }
 
 int getKapasitasByID(Wahana* w, int ID){
   for (int i=0; i<20; i++){
     if (w[i].ID==ID){
-      return w[i].Kapasitas;
+      return w[i].kapasitas;
     }
   }
+return 0;
 }
 
 int getFrekuensiByID(Wahana* w, int ID){
   for (int i=0; i<20; i++){
     if (w[i].ID==ID){
-      return w[i].Frekuensi;
+      return w[i].frekuensiHari;
     }
   }
+   return 0;
 }
 
-int getStatusWahanaiByID(Wahana* w, int ID){
+int getStatusWahanaByID(Wahana* w, int ID){
   for (int i=0; i<20; i++){
     if (w[i].ID==ID){
-      return w[i].StatusWahana;
+      return w[i].statusWahana;
     }
   }
-}
-
-    return 0;
+   return 0;
 }
