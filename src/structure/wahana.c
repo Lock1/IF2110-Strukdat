@@ -1,6 +1,6 @@
 //13519146 - Fadel Ananda Dotty
 //13519110 - M. Akromi Afif
-//13519046 - Dwianditya Hanif Raharjanto 
+//13519046 - Dwianditya Hanif Raharjanto
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -114,31 +114,31 @@ int getHargaWahanaByID(Wahana* w, int ID){
     return 0;
 }
 
-// menghitung jumlah wahana level 1
-int CountWahana(){
-  FILE* file=fopen("data/wahana.txt", "r");
-	if (!file)
-		return 0;
-  int i=0;
-	do{
-    Wahana w;
-    if(w.ID<100)
-		  i++;
-	}while(!feof(file));
-  return i;
-}
-
-// menghitung seluruh wahana
-int CountAllWahana(){
-  FILE* file=fopen("data/wahana.txt", "r");
-	if (!file)
-		return 0;
-  int i=0;
-	do{
-		i++;
-	}while(!feof(file));
-  return i;
-}
+// // menghitung jumlah wahana level 1
+// int CountWahana(){
+//   FILE* file=fopen("data/wahana.txt", "r");
+// 	if (!file)
+// 		return 0;
+//   int i=0;
+// 	do{
+//     Wahana w;
+//     if(w.ID<100)
+// 		  i++;
+// 	}while(!feof(file));
+//   return i;
+// }
+//
+// // menghitung seluruh wahana
+// int CountAllWahana(){
+//   FILE* file=fopen("data/wahana.txt", "r");
+// 	if (!file)
+// 		return 0;
+//   int i=0;
+// 	do{
+// 		i++;
+// 	}while(!feof(file));
+//   return i;
+// }
 int getWahanaDurasiByID(Wahana* w, int ID){
    for (int i=0; i<20; i++){
      if (w[i].ID==ID){

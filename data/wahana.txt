@@ -11,3 +11,9 @@ ID-NAMA-HARGA-KAPASITAS-DURASI-DESKRIPSI
 123 Wangky-universe 12 3 12 W
 124 Greedy-eater 10 4 15 E
 125 Fun-train 15 3 25 D
+220 Chocolate-quake 5 2 3 T
+221 Sugar-rush 15 2 25 H
+222 Chocolate-universe 10 5 10 F
+223 Wangky-planet 12 3 12 W
+224 Chocolate-maker 10 4 15 E
+225 Awe 15 3 25 D

@@ -46,6 +46,7 @@ int currentColorScheme = 1;
 
 Wahana* buildingDatabase;
 Material* materialDatabase;
+BinTree* upgradeDatabase;
 
 
 // -------------------------------------------------------
@@ -123,6 +124,7 @@ void loadMap() {
 void loadDatabase() {
     buildingCount = ReadFromWahana(&buildingDatabase);
     materialCount = ReadFromBahan(&materialDatabase);
+    MakePohonUpgrade(&upgradeDatabase,buildingCount);
 }
 
 
@@ -480,7 +482,7 @@ void prepDay() {
                     int tempID;
                     setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
                     if (integerInput(&tempID)) {
-                        if (searchWahanaByID(buildingDatabase,tempID+19)) {
+                        if ((tempID < 120) && searchWahanaByID(buildingDatabase,tempID+19)) {
                             int buildCost = getHargaWahanaByID(buildingDatabase,tempID+19);
                             if (money >= buildCost) {
                                 actionTuple buildLog = { 1,tempID+19,Ordinat(cursorLocation),Absis(cursorLocation),buildCost };
@@ -625,14 +627,13 @@ void prepDay() {
                 unicodeDraw(1);
             }
         }
-
         else if (stringCompare(key,CurrentInput)) {
             system(CLSCRN);
             money += 1000;
             setCursorPosition(0,0);
             puts(wait);
             puts(pressf);
-            delay(500);
+            delay(1500);
             forceDraw();
             unicodeDraw(1);
         }
@@ -686,7 +687,8 @@ void printBuildList() {
     puts(BUILD_LIST_2);
     puts(BUILD_LIST_3);
     for (int i = 0 ; i < buildingCount ; i++)
-        printf(BUILD_LIST_4, buildingDatabase[i].ID-19, buildingDatabase[i].nama, buildingDatabase[i].harga, buildingDatabase[i].durasi, buildingDatabase[i].kapasitas, buildingDatabase[i].deskripsi);
+        if (buildingDatabase[i].ID < 120)
+            printf(BUILD_LIST_4, buildingDatabase[i].ID-19, buildingDatabase[i].nama, buildingDatabase[i].harga, buildingDatabase[i].durasi, buildingDatabase[i].kapasitas, buildingDatabase[i].deskripsi);
     puts(BUILD_LIST_5);
     puts("Masukkan ID yang ingin dibangun :");
 }
