@@ -21,7 +21,7 @@ int main(void) {
     system(CLSCRN);
     if (startGame()) {
         // Give user time to seeing ASCII ART
-        drawLoading(40);
+        drawLoading(20);
 
         // Initial frame setup
         frameSet(0);

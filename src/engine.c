@@ -486,17 +486,21 @@ void prepDay() {
                     if (searchWahanaByID(buildingDatabase,tempID+19)) {
                         int buildCost = getHargaWahanaByID(buildingDatabase,tempID+19);
                         if (money >= buildCost) {
-                            actionTuple buildLog = { 1,tempID+19,Ordinat(cursorLocation),Absis(cursorLocation),buildCost };
-                            Push(&actionStack,buildLog);
-                            currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
-                            occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = true;
-                            entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
-                            buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = createWahanaByID(buildingDatabase,tempID+19);
-                            money -= buildCost;
-                            actionGoldSum += buildCost;
-                            actionCount++;
-                            actionTime += BUILD_TIME;
-                            puts("Wahana telah dibangun!");
+                            if ((Durasi(currentTime,cPlayTime) - BUILD_TIME) >= 0) {
+                                actionTuple buildLog = { 1,tempID+19,Ordinat(cursorLocation),Absis(cursorLocation),buildCost };
+                                Push(&actionStack,buildLog);
+                                currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
+                                occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = true;
+                                entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
+                                buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = createWahanaByID(buildingDatabase,tempID+19);
+                                money -= buildCost;
+                                actionGoldSum += buildCost;
+                                actionCount++;
+                                actionTime += BUILD_TIME;
+                                puts("Wahana telah dibangun!");
+                            }
+                            else
+                                puts("Maaf durasi waktu tidak cukup");
                         }
                         else
                             puts("Maaf uang tidak cukup");
@@ -655,8 +659,6 @@ void prepDay() {
             }
         }
     }
-    // forceDraw();
-
 }
 
 void playDay() {

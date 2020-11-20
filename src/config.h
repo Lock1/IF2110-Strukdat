@@ -22,7 +22,7 @@
 #define CURSOR_REST_Y 1
 #define PLAYER_START_X 5
 #define PLAYER_START_Y 5
-#define BUILD_TIME 30
+#define BUILD_TIME 180
 #define BUY_TIME 15
 
 #define LOADING_LENGTH 20
@@ -30,6 +30,9 @@
 #define LOADING_PROGRESS "\u2501"
 #define LOADING_NOTHING "\u2504"
 #define LOADING_CLOSE_BRACKET "\u2528"
+
+#define WAHANA_MAX 20
+#define BAHAN_MAX 20
 
 // Debugging feature
 #define DEBUG 1
