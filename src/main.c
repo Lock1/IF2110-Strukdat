@@ -36,5 +36,7 @@ int main(void) {
             playDay();
         }
     }
+    else
+        endGame();
     return 0;
 }

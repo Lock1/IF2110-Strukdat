@@ -55,6 +55,8 @@ boolean stringCompare(char* st1, char* st2);
 boolean startGame();
 // Checking for save and newgame
 
+void endGame();
+
 void prepDay();
 
 void playDay();

@@ -348,6 +348,13 @@ boolean startGame() {
         return false;
     return false;
 }
+
+void endGame() {
+    system(CLSCRN);
+    puts(QUIT_SCREEN_1);
+    puts(QUIT_SCREEN_2);
+    exit(0);
+}
 // TODO : Move between map
 void prepDay() {
     // Preparation day references
@@ -493,12 +500,33 @@ void prepDay() {
             else
                 puts("Tidak ada aksi yang dapat diundo");
         }
-
-
         else if (stringCompare("main",CurrentInput)) // TODO
             break;
-        else if (stringCompare("dbg",CurrentInput)) // DEBUG
-            currentTime = NextNMenit(currentTime,5);
+        else if (stringCompare("quit",CurrentInput)) {
+            // TODO ADD ASCII
+            system(CLSCRN);
+            setCursorPosition(0,0);
+
+            puts("Are you sure? (y/n)");
+            wordInput();
+            if (CurrentInput[0] == 'y')
+                endGame();
+            else {
+                forceDraw();
+                unicodeDraw(1);
+            }
+        }
+
+        else if (stringCompare(key,CurrentInput)) {
+            system(CLSCRN);
+            money += 1000;
+            setCursorPosition(0,0);
+            puts(wait);
+            puts(pressf);
+            delay(500);
+            forceDraw();
+            unicodeDraw(1);
+        }
         else if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd') {
             // ADD Colision detection
             switch (CurrentInput[0]) {
