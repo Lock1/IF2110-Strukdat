@@ -26,10 +26,10 @@
 #define BUY_TIME 15
 
 #define LOADING_LENGTH 20
-#define LOADING_OPEN_BRACKET "\u25C0"
+#define LOADING_OPEN_BRACKET "\u2523"
 #define LOADING_PROGRESS "\u2501"
 #define LOADING_NOTHING "\u2504"
-#define LOADING_CLOSE_BRACKET "\u25B6"
+#define LOADING_CLOSE_BRACKET "\u2528"
 
 // Debugging feature
 #define DEBUG 1

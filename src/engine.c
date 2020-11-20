@@ -815,9 +815,9 @@ void drawLoading(int fdelay) {
                 break;
         }
         puts(" ");
+        delay(fdelay);
         printf("\033[1A");
         fflush(stdout);
-        delay(fdelay);
     }
     printf("\033[1B");
     fflush(stdout);
