@@ -77,7 +77,42 @@ void MakePohonUpgrade(BinTree** database, int wahanacount){
 		BinTree P = AlokNode(i+20);
 		AddDaunTerkiri(&P, 120+i);
 		AddDaun(&P,120+i,220+i,false);
+
 		array[i] = P;
 	}
 	*database = array;
+}
+
+POINT* ReadFromMap(){
+	// 0 player, 1 queue, 2 office
+	FILE* file=fopen("data/map.txt","r");
+	if (!file)
+		return 0;
+	POINT* point;
+	point=(POINT*)malloc(3*sizeof(POINT));
+	char buffer[200];
+	for (int i=0; i<3; i++){
+		point[i].x=0;
+		point[i].y=0;
+	}
+	for (int i=0; i<25; i++){
+		fgets(buffer, 200, file);
+		for(int j=0; j<50; j++){
+			switch(buffer[j]){
+				case '@':
+					point[0].x=i;
+					point[0].y=j;
+					break;
+				case 'a':
+					point[1].x=i;
+					point[1].y=j;
+					break;
+				case 'o':
+					point[2].x=i;
+					point[2].y=j;
+					break;
+			}
+		}
+	}
+	return point;
 }
