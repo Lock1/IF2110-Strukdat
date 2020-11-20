@@ -71,6 +71,8 @@ void printBuildList();
 
 void printMaterialList();
 
+void printLegendList();
+
 void loadDatabase();
 
 void infoUpdate();

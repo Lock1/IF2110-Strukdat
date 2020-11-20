@@ -519,12 +519,19 @@ void prepDay() {
         }
         else if (stringCompare("main",CurrentInput)) // TODO
             break;
+        else if (stringCompare("legend",CurrentInput)) {
+            printLegendList(1);
+            puts("Tekan enter untuk melanjutkan");
+            wordInput();
+            forceDraw();
+            unicodeDraw(1);
+        }
         else if (stringCompare("quit",CurrentInput)) {
             // TODO ADD ASCII
             system(CLSCRN);
             setCursorPosition(0,0);
 
-            printf("Are you sure? (y/n)");
+            puts("Are you sure? (y/n)");
             wordInput();
             if (CurrentInput[0] == 'y')
                 endGame();
@@ -608,6 +615,43 @@ void printMaterialList() {
     puts(MATERIAL_LIST_5);
     puts("Masukkan ID yang ingin dibeli :");
     printf(">> ");
+}
+
+void printLegendList(int tp) {
+    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+3);
+    puts(LEGEND_TITLE);
+    puts(LEGEND_LIST_1);
+    puts(LEGEND_LIST_2);
+    puts(LEGEND_LIST_3);
+    if (tp == 0 || tp == 1)
+        printf(LEGEND_LIST_4,'*', "Kursor");
+    printf(LEGEND_LIST_4,'.', "Kosong");
+    printf(LEGEND_LIST_4,'#', "Dinding");
+
+    // TODO other internal reserved ID
+    // Scan for current map
+    boolean *isAlreadyPrinted = (boolean *) malloc(buildingCount*sizeof(boolean));
+    for (int i = 0 ; i < buildingCount ; i++)
+        isAlreadyPrinted[i] = false;
+    for (int i = 0 ; i < MAP_SIZE_Y ; i++)
+        for (int j = 0 ; j < MAP_SIZE_X ; j++)
+            switch (entityAt(map[currentMap],i,j)) {
+                case '@':
+                    printf(LEGEND_LIST_4,'@', "Pemain");
+                    break;
+                default:
+                    if ((entityAt(map[currentMap],i,j) > 19) && !isAlreadyPrinted[entityAt(map[currentMap],i,j)-19]) {
+                        printf(LEGEND_LIST_4,buildingAt(map[currentMap],i,j)->gambar,buildingAt(map[currentMap],i,j)->nama);
+                        isAlreadyPrinted[entityAt(map[currentMap],i,j)-19] = true;
+                    }
+                    break;
+            }
+    free(isAlreadyPrinted); // TODO cleanup
+
+    // for (int i = 0 ; i < materialCount ; i++) // TODO : Print everything
+    //     printf(MATERIAL_LIST_4, materialDatabase[i].ID-9, materialDatabase[i].nama, materialDatabase[i].harga, materialDatabase[i].material_count);
+    // puts(MATERIAL_LIST_5);
+    puts(LEGEND_LIST_5);
 }
 
 void colorSchemeChange() {
