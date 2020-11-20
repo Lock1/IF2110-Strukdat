@@ -104,6 +104,9 @@ int Tinggi (BinTree P);
    Mengirim "height" yaitu tinggi dari pohon */
 
 /* *** Operasi lain *** */
+void AddDaunTerkiri (BinTree *P, listrekInfotype X);
+/* I.S. P boleh kosong */
+/* F.S. P bertambah simpulnya, dengan X sebagai simpul daun terkiri */
 void AddDaun (BinTree *P, listrekInfotype X, listrekInfotype Y, boolean Kiri);
 /* I.S. P tidak kosong, X adalah salah satu daun Pohon Biner P */
 /* F.S. P bertambah simpulnya, dengan Y sebagai anak kiri X (jika Kiri = true), atau

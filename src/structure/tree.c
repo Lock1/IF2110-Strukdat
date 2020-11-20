@@ -185,6 +185,17 @@ int Tinggi (BinTree P)
 }
 
 /* *** Operasi lain *** */
+void AddDaunTerkiri (BinTree *P, listrekInfotype X)
+{
+
+    if (IsTreeEmpty(*P)){
+        *P = Tree(X, ListNil, ListNil);
+    }
+    else{
+        AddDaunTerkiri(&Left(*P), X);
+    }
+}
+
 void AddDaun (BinTree *P, listrekInfotype X, listrekInfotype Y, boolean Kiri)
 {
     if (IsTreeOneElmt(*P) && Akar(*P) == X){

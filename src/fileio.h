@@ -8,3 +8,4 @@
 int ReadFromWahana(Wahana** database);
 int ReadFromBahan(Material** database);
 POINT* ReadFromMap();
+void MakePohonUpgrade(BinTree** database);
