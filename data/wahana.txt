@@ -1,6 +1,6 @@
-20 Chocolate-tornado 5 2 5 Meningkatkan-adrenalin w
-21 Candy-house  10 1 15 Cocok-untuk-orang-rakus w
-22 Chocolate-factory 6 10 3 Melihat-proses-pembuatan-cokelat w
-23 Wanky-wonderland 8 2 5 Spot-foto-paling-gaulzzz w
-24 Chocolate-eater 7 2 10 Kumpulan-cokelat-diseluruh-dunia w
-25 Dip-train 12 3 20 Masuk-dunia-fantasi w
+20 Chocolate-tornado 5 2 5 Meningkatkan-adrenalin T
+21 Candy-house  10 1 15 Cocok-untuk-orang-rakus H
+22 Chocolate-factory 6 4 3 Melihat-proses-pembuatan-cokelat F
+23 Wanky-wonderland 8 2 5 Spot-foto-paling-gaulzzz W
+24 Chocolate-eater 7 2 10 Kumpulan-cokelat-diseluruh-dunia E
+25 Dip-train 12 3 20 Masuk-dunia-fantasi D
