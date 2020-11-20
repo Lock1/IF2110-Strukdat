@@ -67,6 +67,6 @@ int ReadFromBahan(Material**database){
 	return i;
 }
 
-BinTree(){
-	FILE* file=fopen("data/upgradelist.txt");
+void ReadFromUpgrade(){
+	// FILE* file=fopen("data/upgradelist.txt");
 }

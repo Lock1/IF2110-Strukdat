@@ -7,24 +7,24 @@
 #include <stdio.h>
 
 /* *** Manajemen Memori *** */
-address Alokasi (infotype X)
-/* Mengirimkan address hasil alokasi sebuah elemen */
-/* Jika alokasi berhasil, maka address tidak Nil, dan misalnya menghasilkan P,
-  maka Info(P) = X, Next(P) = Nil */
-/* Jika alokasi gagal, mengirimkan Nil */
+listRekAddress Alokasi (listrekInfotype X)
+/* Mengirimkan listRekAddress hasil alokasi sebuah elemen */
+/* Jika alokasi berhasil, maka listRekAddress tidak ListNil, dan misalnya menghasilkan P,
+  maka Info(P) = X, Next(P) = ListNil */
+/* Jika alokasi gagal, mengirimkan ListNil */
 {
-    address P = (address) malloc(sizeof(ElmtList));
+    listRekAddress P = (listRekAddress) malloc(sizeof(ElmtList));
 
-    if(P!=Nil){
+    if(P!=ListNil){
         Info(P) = X;
-        Next(P) = Nil;
+        Next(P) = ListNil;
     }
     return P;
 }
-void Dealokasi (address P)
+void Dealokasi (listRekAddress P)
 /* I.S. P terdefinisi */
 /* F.S. P dikembalikan ke sistem */
-/* Melakukan dealokasi/pengembalian address P */
+/* Melakukan dealokasi/pengembalian listRekAddress P */
 {
     free(P);
 }
@@ -34,7 +34,7 @@ void Dealokasi (address P)
 int RekIsEmpty(List L)
 /* Mengirimkan 1 jika L kosong dan 0 jika L tidak kosong */
 {
-    if(L==Nil){
+    if(L==ListNil){
         return 1;
     }
     else{
@@ -52,7 +52,7 @@ int IsOneElmt(List L)
     }
 }
 /* *** Selektor *** */
-infotype FirstElmt (List L)
+listrekInfotype FirstElmt (List L)
 /* Mengirimkan elemen pertama sebuah list L yang tidak kosong */
 {
     return Info(L);
@@ -63,12 +63,12 @@ List Tail(List L)
     return Next(L);
 }
 /* *** Konstruktor *** */
-List Konso(infotype e, List L)
+List Konso(listrekInfotype e, List L)
 /* Mengirimkan list L dengan tambahan e sebagai elemen pertamanya.
 e dialokasi terlebih dahulu. Jika alokasi gagal, mengirimkan L. */
 {
-    address P = Alokasi(e);
-    if(P==Nil){
+    listRekAddress P = Alokasi(e);
+    if(P==ListNil){
         return L;
     }
     else{
@@ -76,7 +76,7 @@ e dialokasi terlebih dahulu. Jika alokasi gagal, mengirimkan L. */
         return P;
     }
 }
-List KonsB(List L, infotype e)
+List KonsB(List L, listrekInfotype e)
 /* Mengirimkan list L dengan tambahan e sebagai elemen terakhirnya */
 /* e harus dialokasi terlebih dahulu */
 /* Jika alokasi e gagal, mengirimkan L */
@@ -95,7 +95,7 @@ List Copy (List L)
 /* Mengirimkan salinan list L (menjadi list baru) */
 /* Jika ada alokasi gagal, mengirimkan L */ {
     if(RekIsEmpty(L)){
-        return Nil;
+        return ListNil;
     }
     else{
         return Konso(FirstElmt(L), Copy(Tail(L)));
@@ -108,7 +108,7 @@ void MCopy (List Lin, List *Lout)
 {
     List LTemp;
     if(RekIsEmpty(Lin)){
-        *Lout =  Nil;
+        *Lout =  ListNil;
     }
     else{
         MCopy(Tail(Lin), &LTemp);
@@ -117,7 +117,7 @@ void MCopy (List Lin, List *Lout)
 }
 List Concat (List L1, List L2)
 /* Mengirimkan salinan hasil konkatenasi list L1 dan L2 (menjadi list baru) */
-/* Jika ada alokasi gagal, menghasilkan Nil */
+/* Jika ada alokasi gagal, menghasilkan ListNil */
 {
     if(RekIsEmpty(L1)){
         return Copy(L2);
@@ -160,7 +160,7 @@ int NbElmtList (List L)
     }
 }
 /* Mengirimkan banyaknya elemen list L, Nol jika L kosong */
-boolean Search (List L, infotype X)
+boolean Search (List L, listrekInfotype X)
 /* Mengirim true jika X adalah anggota list, false jika tidak */
 {
     if(RekIsEmpty(L)){

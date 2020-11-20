@@ -8,11 +8,11 @@
 /* *** PROTOTYPE *** */
 
 /* *** Konstruktor *** */
-BinTree Tree (infotype Akar, BinTree L, BinTree R)
+BinTree Tree (listrekInfotype Akar, BinTree L, BinTree R)
 {
     BinTree New_tree = (BinTree) malloc(sizeof(BinTree));
 
-    if (New_tree != Nil){
+    if (New_tree != ListNil){
         Akar(New_tree) = Akar;
         Left(New_tree) = L;
         Right(New_tree) = R;
@@ -21,20 +21,20 @@ BinTree Tree (infotype Akar, BinTree L, BinTree R)
 }
 
 
-void MakeTree (infotype Akar, BinTree L, BinTree R, BinTree *P)
+void MakeTree (listrekInfotype Akar, BinTree L, BinTree R, BinTree *P)
 {
     *P = Tree(Akar, L, R);
 }
 
 /* Manajemen Memory */
-addrNode AlokNode (infotype X)
+addrNode AlokNode (listrekInfotype X)
 {
     addrNode New_node = (addrNode) malloc(sizeof(Node));
 
-    if (New_node != Nil){
+    if (New_node != ListNil){
         Akar(New_node) = X;
-        Left(New_node) = Nil;
-        Right(New_node) = Nil;
+        Left(New_node) = ListNil;
+        Right(New_node) = ListNil;
     }
     return New_node;
 }
@@ -47,13 +47,13 @@ void DealokNode (addrNode P)
 /* *** Predikat-Predikat Penting *** */
 boolean IsTreeEmpty (BinTree P)
 {
-    return P == Nil;
+    return P == ListNil;
 }
 
 boolean IsTreeOneElmt (BinTree P)
 {
     if (!IsTreeEmpty(P)){
-        return ((Left(P) == Nil) && (Right(P) == Nil));
+        return ((Left(P) == ListNil) && (Right(P) == ListNil));
     }
     else{
         return false;
@@ -63,7 +63,7 @@ boolean IsTreeOneElmt (BinTree P)
 boolean IsUnerLeft (BinTree P)
 {
     if (!IsTreeEmpty(P)){
-        return ((Left(P) != Nil) && (Right(P) == Nil));
+        return ((Left(P) != ListNil) && (Right(P) == ListNil));
     }
     else{
         return false;
@@ -73,7 +73,7 @@ boolean IsUnerLeft (BinTree P)
 boolean IsUnerRight (BinTree P)
 {
     if (!IsTreeEmpty(P)){
-        return ((Left(P) == Nil) && (Right(P) != Nil));
+        return ((Left(P) == ListNil) && (Right(P) != ListNil));
     }
     else{
         return false;
@@ -83,7 +83,7 @@ boolean IsUnerRight (BinTree P)
 boolean IsBiner (BinTree P)
 {
     if (!IsTreeEmpty(P)){
-        return ((Left(P) != Nil) && (Right(P) != Nil));
+        return ((Left(P) != ListNil) && (Right(P) != ListNil));
     }
     else{
         return false;
@@ -109,8 +109,8 @@ void PrintTree (BinTree P, int h)
 }
 
 /* *** Searching *** */
-boolean SearchTree (BinTree P, infotype X)
-/* Mengirimkan true jika ada node dari P yang bernilai X */
+boolean SearchTree (BinTree P, listrekInfotype X)
+/* Mengirimkan true jika ada node dari P yang berListNilai X */
 {
     if (IsTreeEmpty(P)){
         return false;
@@ -152,7 +152,7 @@ int NbDaun (BinTree P)
 }
 
 
-int Level (BinTree P, infotype X)
+int Level (BinTree P, listrekInfotype X)
 {
     if (SearchTree(Left(P), X)){
         return 1 + Level(Left(P), X);
@@ -185,15 +185,15 @@ int Tinggi (BinTree P)
 }
 
 /* *** Operasi lain *** */
-void AddDaun (BinTree *P, infotype X, infotype Y, boolean Kiri)
+void AddDaun (BinTree *P, listrekInfotype X, listrekInfotype Y, boolean Kiri)
 {
     if (IsTreeOneElmt(*P) && Akar(*P) == X){
 
         if (Kiri){
-            Left(*P) = Tree(Y, Nil, Nil);
+            Left(*P) = Tree(Y, ListNil, ListNil);
         }
         else{
-            Right(*P) = Tree(Y, Nil, Nil);
+            Right(*P) = Tree(Y, ListNil, ListNil);
         }
     }
     else{
@@ -206,13 +206,13 @@ void AddDaun (BinTree *P, infotype X, infotype Y, boolean Kiri)
     }
 }
 
-void DelDaun (BinTree *P, infotype X)
+void DelDaun (BinTree *P, listrekInfotype X)
 {
     if (!IsTreeEmpty(*P)){
 
         if (IsTreeOneElmt(*P) && Akar(*P) == X){
             addrNode temp = *P;
-            *P = Nil;
+            *P = ListNil;
             DealokNode(temp);
         }
         else {
@@ -226,7 +226,7 @@ void DelDaun (BinTree *P, infotype X)
 List MakeListDaun (BinTree P)
 {
     if (IsTreeEmpty(P)){
-        return Nil;
+        return ListNil;
     }
 
     else if (IsTreeOneElmt(P)){
@@ -245,7 +245,7 @@ List MakeListDaun (BinTree P)
 List MakeListPreorder (BinTree P)
 {
    if (IsTreeEmpty(P)){
-        return Nil;
+        return ListNil;
    }
    else{
 
@@ -259,7 +259,7 @@ List MakeListPreorder (BinTree P)
 List MakeListLevel (BinTree P, int N)
 {
     if (IsTreeEmpty(P)){
-        return Nil;
+        return ListNil;
     }
     else if (N == 1){
         return Alokasi(Akar(P));

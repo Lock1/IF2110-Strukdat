@@ -318,10 +318,11 @@ void mapUpdate(int tp) {
 // ----- Game function -----
 boolean startGame() {
     while (true) {
-        if (currentColorScheme != 0)
-            puts(colorScheme[0]);
+        if (currentColorScheme != 1)
+            puts(colorScheme[1]);
+        system(CLSCRN);
         puts(START_MENU_ASCII_ART);
-        if (currentColorScheme != 0)
+        if (currentColorScheme != 1)
             puts(colorScheme[currentColorScheme]);
 
         puts("1. New Game");
@@ -365,6 +366,7 @@ boolean startGame() {
 
 void endGame() {
     puts(colorScheme[0]);
+    puts(colorScheme[1]);
     system(CLSCRN);
     puts(QUIT_SCREEN_1);
     puts(QUIT_SCREEN_2);
