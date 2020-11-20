@@ -399,6 +399,7 @@ void prepDay() {
     check stack.h for more information
     */
     frameSet(1);
+    forceDraw();
     unicodeDraw(1);
     Absis(cursorLocation) = CURSOR_REST_X;
     Ordinat(cursorLocation) = CURSOR_REST_Y;
@@ -456,7 +457,7 @@ void prepDay() {
                 }
                 else
                     puts("Pembangunan dibatalkan");
-                drawLoading(40);
+                drawLoading(20);
                 forceDraw();
                 unicodeDraw(1);
             }
@@ -499,7 +500,7 @@ void prepDay() {
             }
             else
                 puts("Pembelian dibatalkan");
-            drawLoading(40);
+            drawLoading(20);
             forceDraw();
             unicodeDraw(1);
         }
@@ -523,6 +524,7 @@ void prepDay() {
                         puts("Wahana telah dibakar");
                         break;
                     case 2:
+                        // TODO : Upgrade
                         break;
                     case 3:
                         currentTime = NextNMenit(currentTime,1440-BUY_TIME);
@@ -537,8 +539,57 @@ void prepDay() {
             else
                 puts("Tidak ada aksi yang dapat diundo");
         }
-        else if (stringCompare("main",CurrentInput)) // TODO
-            break;
+        else if (stringCompare("execute",CurrentInput)) {
+            etCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+            puts("Apakah anda yakin untuk eksekusi aksi? (y/n)");
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+            wordInput();
+            if (CurrentInput[0] == 'y') {
+                actionTuple tempTrash;
+                while (!IsEmpty(actionStack)) {
+                    Pop(&actionStack,&tempTrash);
+                    actionCount--;
+                }
+                break;
+            }
+        }
+        else if (stringCompare("main",CurrentInput)) {
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+            puts("Apakah anda yakin untuk masuk play tanpa eksekusi? (y/n)");
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+            wordInput();
+            if (CurrentInput[0] == 'y') {
+                while (!IsEmpty(actionStack)) {
+                    actionTuple lastAction;
+                    Pop(&actionStack,&lastAction);
+                    actionCount--;
+                    switch (lastAction.actID) {
+                        case 1:
+                            currentTime = NextNMenit(currentTime,1440-BUILD_TIME);
+                            money += lastAction.actIdentifier;
+                            actionGoldSum -= lastAction.actIdentifier;
+                            actionTime -= BUILD_TIME;
+                            destroyWahana(buildingAt(map[currentMap],lastAction.eventPosX,lastAction.eventPosY));
+                            buildingAt(map[currentMap],lastAction.eventPosX,lastAction.eventPosY) = NULL;
+                            entityAt(map[currentMap],lastAction.eventPosX,lastAction.eventPosY) = 0;
+                            occupiedAt(map[currentMap],lastAction.eventPosX,lastAction.eventPosY) = false;
+                            break;
+                        case 2:
+                            // TODO : Upgrade
+                            break;
+                        case 3:
+                            currentTime = NextNMenit(currentTime,1440-BUY_TIME);
+                            money += lastAction.actIdentifier * getHargaMaterialByID(materialDatabase,lastAction.entityID);
+                            actionGoldSum -= lastAction.actIdentifier * getHargaMaterialByID(materialDatabase,lastAction.entityID);
+                            actionTime -= BUY_TIME;
+                            setCountMaterialByID(materialDatabase,lastAction.entityID,getCountMaterialByID(materialDatabase,lastAction.entityID)-lastAction.actIdentifier);
+                            break;
+                    }
+                }
+                break;
+            }
+
+        }
         else if (stringCompare("color",CurrentInput)) {
             colorSchemeChange();
             drawLoading(30);
@@ -605,10 +656,15 @@ void prepDay() {
 
 void playDay() {
     frameSet(2);
+    infoUpdate(2);
+    mapUpdate(2);
+    forceDraw();
     unicodeDraw(2);
-    draw();
     // LOOP
-
+    // exit(0);// DEBUG
+    setCursorPosition(0, MAP_OFFSET_Y + MAP_SIZE_Y+2);
+    drawLoading(800);
+    // DEBUG STOP
     currentDay++;
 }
 
