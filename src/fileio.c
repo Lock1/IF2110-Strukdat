@@ -71,6 +71,15 @@ int ReadFromBahan(Material**database){
 	return i;
 }
 
-void ReadFromUpgrade(){
-	// FILE* file=fopen("data/upgradelist.txt");
+void MakePohonUpgrade(BinTree** database){
+	BinTree* array=(BinTree*)malloc(30*sizeof(BinTree));
+	for(int i=20;i<20+CountWahana();i++){
+		int upgrade = (CountAllWahana() - CountWahana())/CountWahana();
+		BinTree P = AlokNode(i);
+		for(int j=1;j<=upgrade;j++){
+			AddDaunTerkiri(&P, (100*j)+i);
+		}
+		array[i] = P;
+	}
+	*database = array;
 }

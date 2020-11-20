@@ -6,3 +6,4 @@
 
 int ReadFromWahana(Wahana** database);
 int ReadFromBahan(Material** database);
+void MakePohonUpgrade(BinTree** database);
