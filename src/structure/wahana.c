@@ -110,5 +110,38 @@ int getHargaWahanaByID(Wahana* w, int ID){
             return w[i].harga;
         }
     }
+}
+int getWahanaDurasiByID(Wahana* w, int ID){
+   for (int i=0; i<20; i++){
+     if (w[i].ID==ID){
+       return w[i].WahanaDurasi;
+     }
+   }
+}
+
+int getKapasitasByID(Wahana* w, int ID){
+  for (int i=0; i<20; i++){
+    if (w[i].ID==ID){
+      return w[i].Kapasitas;
+    }
+  }
+}
+
+int getFrekuensiByID(Wahana* w, int ID){
+  for (int i=0; i<20; i++){
+    if (w[i].ID==ID){
+      return w[i].Frekuensi;
+    }
+  }
+}
+
+int getStatusWahanaiByID(Wahana* w, int ID){
+  for (int i=0; i<20; i++){
+    if (w[i].ID==ID){
+      return w[i].StatusWahana;
+    }
+  }
+}
+
     return 0;
 }
