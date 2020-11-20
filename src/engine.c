@@ -41,6 +41,8 @@ Stack actionStack;
 int actionCount = 0;
 int actionGoldSum = 0;
 int currentMap = 0;
+char *colorScheme[3] = {COLOR_RESET,COLOR_BLACK,COLOR_WHITE};
+int currentColorScheme = 1;
 
 Wahana* buildingDatabase;
 Material* materialDatabase;
@@ -315,41 +317,54 @@ void mapUpdate(int tp) {
 
 // ----- Game function -----
 boolean startGame() {
-    puts(START_MENU_ASCII_ART);
-    puts("1. New Game");
-    // puts("2. Continue"); // TODO : Bonus
-    // puts("3. Load game");
-    puts("2. Quit");
+    while (true) {
+        if (currentColorScheme != 0)
+            puts(colorScheme[0]);
+        puts(START_MENU_ASCII_ART);
+        if (currentColorScheme != 0)
+            puts(colorScheme[currentColorScheme]);
 
-    printf(">> ");
-    wordInput();
-    if (stringCompare("new",CurrentInput) || CurrentInput[0] == '1') {
-        // Name prompt and ASCII art
-        printf("Masukkan nama : ");
+        puts("1. New Game");
+        // puts("2. Continue"); // TODO : Bonus
+        // puts("3. Load game");
+        puts("2. Color settings");
+        puts("3. Quit");
+
+        printf(">> ");
         wordInput();
-        stringCopy(CurrentInput,username);
-        puts(HAVE_FUN_ASCII_ART);
-        puts(WILLY_WANGKY_ASCII_ART);
+        if (stringCompare("new",CurrentInput) || CurrentInput[0] == '1') {
+            // Name prompt and ASCII art
+            printf("Masukkan nama : ");
+            wordInput();
+            stringCopy(CurrentInput,username);
+            puts(HAVE_FUN_ASCII_ART);
+            puts(WILLY_WANGKY_ASCII_ART);
 
-        // Variable Initialization
-        CreateEmpty(&actionStack);
-        loadMap();
-        loadDatabase();
-        cPlayTime = MakeJAM(START_PLAY,0);
-        cPrepTime = currentTime = MakeJAM(START_PREP,0);
-        cursorLocation = MakePOINT(CURSOR_REST_X,CURSOR_REST_Y);
-        playerLocation = MakePOINT(PLAYER_START_X,PLAYER_START_Y);
-        occupiedAt(map[currentMap],PLAYER_START_X,PLAYER_START_Y) = true;
-        entityAt(map[currentMap],PLAYER_START_X,PLAYER_START_Y) = 1;
+            // Variable Initialization
+            CreateEmpty(&actionStack);
+            loadMap();
+            loadDatabase();
+            cPlayTime = MakeJAM(START_PLAY,0);
+            cPrepTime = currentTime = MakeJAM(START_PREP,0);
+            cursorLocation = MakePOINT(CURSOR_REST_X,CURSOR_REST_Y);
+            playerLocation = MakePOINT(PLAYER_START_X,PLAYER_START_Y);
+            occupiedAt(map[currentMap],PLAYER_START_X,PLAYER_START_Y) = true;
+            entityAt(map[currentMap],PLAYER_START_X,PLAYER_START_Y) = 1;
 
-        return true;
+            return true;
+        }
+        else if (stringCompare("color", CurrentInput) || CurrentInput[0] == '2') {
+            colorSchemeChange();
+            system(CLSCRN);
+        }
+        else if (stringCompare("quit", CurrentInput) || CurrentInput[0] == '3')
+            return false;
     }
-    else if (stringCompare("quit", CurrentInput) || CurrentInput[0] == '2')
-        return false;
     return false;
 }
 
 void endGame() {
+    puts(colorScheme[0]);
     system(CLSCRN);
     puts(QUIT_SCREEN_1);
     puts(QUIT_SCREEN_2);
@@ -507,7 +522,7 @@ void prepDay() {
             system(CLSCRN);
             setCursorPosition(0,0);
 
-            puts("Are you sure? (y/n)");
+            printf("Are you sure? (y/n)");
             wordInput();
             if (CurrentInput[0] == 'y')
                 endGame();
@@ -593,6 +608,25 @@ void printMaterialList() {
     printf(">> ");
 }
 
+void colorSchemeChange() {
+    system(CLSCRN);
+    puts("Color scheme :");
+    puts("1. Black");
+    puts("2. White");
+    printf(">> ");
+    wordInput();
+    if (stringCompare("black",CurrentInput) || CurrentInput[0] == '1') {
+        puts(colorScheme[1]);
+        currentColorScheme = 1;
+    }
+    else if (stringCompare("white",CurrentInput) || CurrentInput[0] == '2') {
+        puts(colorScheme[2]);
+        currentColorScheme = 2;
+    }
+    else
+        puts("Masukkan tidak diketahui");
+    delay(200);
+}
 
 void frameSet(int tp) { // TODO : Possible merge with other frame function
     // 0 Initialization

@@ -57,6 +57,8 @@ boolean startGame();
 
 void endGame();
 
+void colorSchemeChange();
+
 void prepDay();
 
 void playDay();
