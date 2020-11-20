@@ -85,7 +85,7 @@ void mapUpdate();
 
 void delay(int limit);
 // Delaying by count
-
+void drawLoading();
 void unicodeDraw();
 
 void draw();

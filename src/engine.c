@@ -329,6 +329,7 @@ void mapUpdate(int tp) {
 // ----- Game function -----
 boolean startGame() {
     while (true) {
+        setCursorPosition(0,0);
         if (currentColorScheme != 1)
             puts(colorScheme[1]);
         system(CLSCRN);
@@ -367,6 +368,7 @@ boolean startGame() {
         }
         else if (stringCompare("color", CurrentInput) || CurrentInput[0] == '2') {
             colorSchemeChange();
+            drawLoading(100);
             system(CLSCRN);
         }
         else if (stringCompare("quit", CurrentInput) || CurrentInput[0] == '3')
@@ -452,7 +454,7 @@ void prepDay() {
                 }
                 else
                     puts("Pembangunan dibatalkan");
-                delay(300);
+                drawLoading(100);
                 forceDraw();
                 unicodeDraw(1);
             }
@@ -495,7 +497,7 @@ void prepDay() {
             }
             else
                 puts("Pembelian dibatalkan");
-            delay(300);
+            drawLoading(100);
             forceDraw();
             unicodeDraw(1);
         }
@@ -535,6 +537,12 @@ void prepDay() {
         }
         else if (stringCompare("main",CurrentInput)) // TODO
             break;
+        else if (stringCompare("color",CurrentInput)) {
+            colorSchemeChange();
+            drawLoading(40);
+            forceDraw();
+            unicodeDraw(1);
+        }
         else if (stringCompare("legend",CurrentInput)) {
             printLegendList(1);
             puts("Tekan enter untuk melanjutkan");
@@ -667,22 +675,24 @@ void printLegendList(int tp) {
 
 void colorSchemeChange() {
     system(CLSCRN);
+    setCursorPosition(0,0);
     puts("Color scheme :");
     puts("1. Black");
     puts("2. White");
     printf(">> ");
     wordInput();
     if (stringCompare("black",CurrentInput) || CurrentInput[0] == '1') {
+        puts("Processing ...");
         puts(colorScheme[1]);
         currentColorScheme = 1;
     }
     else if (stringCompare("white",CurrentInput) || CurrentInput[0] == '2') {
+        puts("Processing ...");
         puts(colorScheme[2]);
         currentColorScheme = 2;
     }
     else
         puts("Masukkan tidak diketahui");
-    delay(200);
 }
 
 void frameSet(int tp) { // TODO : Possible merge with other frame function
@@ -774,6 +784,39 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
         nframe[INFO_OFFSET_Y+INFO_SIZE_Y][INFO_OFFSET_X-1+i] = infobb[i];
     }
     // DEBUG STOP
+}
+
+void drawLoading(int fdelay) {
+    for (int bar = 0; bar < 10 ; bar++) {
+        printf("\033[1000D");
+        fflush(stdout);
+        putchar('[');
+        for (int i = 0; i < bar ; i++)
+            printf("\u2500");
+        printf("\033[1000D");
+        fflush(stdout);
+        printf("\033[10C");
+        fflush(stdout);
+        putchar(']');
+        printf(" ");
+        switch (bar%3) {
+            case 0:
+                putchar('-');
+                break;
+            case 1:
+                putchar('\\');
+                break;
+            case 2:
+                putchar('/');
+                break;
+        }
+        puts(" ");
+        printf("\033[1A");
+        fflush(stdout);
+        delay(fdelay);
+    }
+    printf("\033[1B");
+    fflush(stdout);
 }
 
 void unicodeDraw(int tp) {
