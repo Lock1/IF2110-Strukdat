@@ -41,6 +41,8 @@ void stringCopy(char* src, char* dst);
 // Copying string to destination
 boolean stringCompare(char* st1, char* st2);
 // Comparing 2 string and return true if equal
+boolean integerInput(int *store);
+// Asking for user input
 // xxx------------------------------------xxx
 
 

@@ -82,7 +82,18 @@ void delay(int limit) {
     }
 }
 
-
+boolean integerInput(int *store) {
+    while (true) {
+        printf(">> ");
+        wordInput();
+        if (sscanf(CurrentInput,"%d",store))
+            return true;
+        else if (stringCompare("cancel",CurrentInput))
+            return false;
+        else
+            puts("Masukkan input angka");
+    }
+}
 
 
 
@@ -414,31 +425,33 @@ void prepDay() {
         if (stringCompare("build",CurrentInput)) { // TODO : Add double pointer to store build result in play phase
             boolean isAreaBuildable = !occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation));
             if (isAreaBuildable) {
-                printBuildList();
-                wordInput(); // WARNING : BUILDING ID START FROM 20
+                printBuildList();// WARNING : BUILDING ID START FROM 20
                 int tempID;
-                sscanf(CurrentInput,"%d",&tempID);
                 setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
-                if (searchWahanaByID(buildingDatabase,tempID+19)) {
-                    int buildCost = getHargaWahanaByID(buildingDatabase,tempID+19);
-                    if (money >= buildCost) {
-                        actionTuple buildLog = { 1,tempID+19,Ordinat(cursorLocation),Absis(cursorLocation),buildCost };
-                        Push(&actionStack,buildLog);
-                        currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
-                        occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = true;
-                        entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
-                        buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = createWahanaByID(buildingDatabase,tempID+19);
-                        money -= buildCost;
-                        actionGoldSum += buildCost;
-                        actionCount++;
-                        actionTime += BUILD_TIME;
-                        puts("Wahana telah dibangun!");
+                if (integerInput(&tempID)) {
+                    if (searchWahanaByID(buildingDatabase,tempID+19)) {
+                        int buildCost = getHargaWahanaByID(buildingDatabase,tempID+19);
+                        if (money >= buildCost) {
+                            actionTuple buildLog = { 1,tempID+19,Ordinat(cursorLocation),Absis(cursorLocation),buildCost };
+                            Push(&actionStack,buildLog);
+                            currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
+                            occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = true;
+                            entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
+                            buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = createWahanaByID(buildingDatabase,tempID+19);
+                            money -= buildCost;
+                            actionGoldSum += buildCost;
+                            actionCount++;
+                            actionTime += BUILD_TIME;
+                            puts("Wahana telah dibangun!");
+                        }
+                        else
+                            puts("Maaf uang tidak cukup");
                     }
                     else
-                        puts("Maaf uang tidak cukup");
+                        puts("ID Wahana tidak dapat ditemukan");
                 }
                 else
-                    puts("ID Wahana tidak dapat ditemukan");
+                    puts("Pembangunan dibatalkan");
                 delay(300);
                 forceDraw();
                 unicodeDraw(1);
@@ -451,34 +464,37 @@ void prepDay() {
         // else if (stringCompare("upgrade",CurrentInput))
         //
         else if (stringCompare("buy",CurrentInput)) {
-            printMaterialList();
-            wordInput(); // WARNING : Material ID START FROM 10
+            printMaterialList(); // WARNING : Material ID START FROM 10
             int tempID, buyQuantity;
-            sscanf(CurrentInput,"%d",&tempID);
-            if (searchMaterialByID(materialDatabase,tempID+9)) {
-                setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
-                puts("Masukkan jumlah yang akan dibeli");
-                printf(">> ");
-                wordInput();
-                sscanf(CurrentInput,"%d",&buyQuantity);
-                setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+4);
-                int buyCost = buyQuantity * getHargaMaterialByID(materialDatabase,tempID+9);
-                if (money >= buyCost) {
-                    actionTuple buyLog = { 3,tempID+9,-1,-1,buyQuantity };
-                    Push(&actionStack,buyLog);
-                    setCountMaterialByID(materialDatabase,tempID+9,buyQuantity+getCountMaterialByID(materialDatabase,tempID+9));
-                    currentTime = NextNMenit(currentTime,BUY_TIME); // Buy time
-                    money -= buyCost;
-                    actionGoldSum += buyCost;
-                    actionCount++;
-                    actionTime += BUY_TIME;
-                    puts("Material telah dibeli!");
+            if (integerInput(&tempID)) {
+                if (searchMaterialByID(materialDatabase,tempID+9)) {
+                    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
+                    puts("Masukkan jumlah yang akan dibeli");
+                    if (integerInput(&buyQuantity)) {
+                        setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+4);
+                        int buyCost = buyQuantity * getHargaMaterialByID(materialDatabase,tempID+9);
+                        if (money >= buyCost) {
+                            actionTuple buyLog = { 3,tempID+9,-1,-1,buyQuantity };
+                            Push(&actionStack,buyLog);
+                            setCountMaterialByID(materialDatabase,tempID+9,buyQuantity+getCountMaterialByID(materialDatabase,tempID+9));
+                            currentTime = NextNMenit(currentTime,BUY_TIME); // Buy time
+                            money -= buyCost;
+                            actionGoldSum += buyCost;
+                            actionCount++;
+                            actionTime += BUY_TIME;
+                            puts("Material telah dibeli!");
+                        }
+                        else
+                        puts("Maaf uang tidak cukup");
+                    }
+                    else
+                    puts("Pembelian dibatalkan");
                 }
                 else
-                    puts("Maaf uang tidak cukup");
+                puts("ID Material tidak dapat ditemukan");
             }
             else
-                puts("ID Material tidak dapat ditemukan");
+                puts("Pembelian dibatalkan");
             delay(300);
             forceDraw();
             unicodeDraw(1);
@@ -601,7 +617,6 @@ void printBuildList() {
         printf(BUILD_LIST_4, buildingDatabase[i].ID-19, buildingDatabase[i].nama, buildingDatabase[i].harga, buildingDatabase[i].durasi, buildingDatabase[i].kapasitas, buildingDatabase[i].deskripsi);
     puts(BUILD_LIST_5);
     puts("Masukkan ID yang ingin dibangun :");
-    printf(">> ");
 }
 
 void printMaterialList() {
@@ -614,7 +629,6 @@ void printMaterialList() {
         printf(MATERIAL_LIST_4, materialDatabase[i].ID-9, materialDatabase[i].nama, materialDatabase[i].harga, materialDatabase[i].material_count);
     puts(MATERIAL_LIST_5);
     puts("Masukkan ID yang ingin dibeli :");
-    printf(">> ");
 }
 
 void printLegendList(int tp) {
@@ -627,8 +641,8 @@ void printLegendList(int tp) {
         printf(LEGEND_LIST_4,'*', "Kursor");
     printf(LEGEND_LIST_4,'.', "Kosong");
     printf(LEGEND_LIST_4,'#', "Dinding");
-
     // TODO other internal reserved ID
+
     // Scan for current map
     boolean *isAlreadyPrinted = (boolean *) malloc(buildingCount*sizeof(boolean));
     for (int i = 0 ; i < buildingCount ; i++)
@@ -636,7 +650,7 @@ void printLegendList(int tp) {
     for (int i = 0 ; i < MAP_SIZE_Y ; i++)
         for (int j = 0 ; j < MAP_SIZE_X ; j++)
             switch (entityAt(map[currentMap],i,j)) {
-                case '@':
+                case 1:
                     printf(LEGEND_LIST_4,'@', "Pemain");
                     break;
                 default:
@@ -646,11 +660,8 @@ void printLegendList(int tp) {
                     }
                     break;
             }
-    free(isAlreadyPrinted); // TODO cleanup
+    free(isAlreadyPrinted); // TODO cleanup not here
 
-    // for (int i = 0 ; i < materialCount ; i++) // TODO : Print everything
-    //     printf(MATERIAL_LIST_4, materialDatabase[i].ID-9, materialDatabase[i].nama, materialDatabase[i].harga, materialDatabase[i].material_count);
-    // puts(MATERIAL_LIST_5);
     puts(LEGEND_LIST_5);
 }
 
