@@ -5,5 +5,3 @@ ID-NAMA-HARGA-KAPASITAS-DURASI-DESKRIPSI
 23 Wanky-wonderland 8 2 5 Spot-foto-paling-gaulzzz W
 24 Chocolate-eater 7 2 10 Kumpulan-cokelat-diseluruh-dunia E
 25 Dip-train 12 3 20 Masuk-dunia-fantasi D
-24 Chocolate-eater 7 2 10 Kumpulan-cokelat-diseluruh-dunia E
-24 Chocolate-eater 7 2 10 Kumpulan-cokelat-diseluruh-dunia E
