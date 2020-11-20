@@ -22,8 +22,8 @@
 #define CURSOR_REST_Y 1
 #define PLAYER_START_X 5
 #define PLAYER_START_Y 5
-#define BUILD_TIME 180
-#define BUY_TIME 15
+#define BUILD_TIME 120
+#define BUY_TIME 90
 
 #define LOADING_LENGTH 20
 #define LOADING_OPEN_BRACKET "\u2523"

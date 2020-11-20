@@ -474,19 +474,19 @@ void prepDay() {
             forceDraw();
             unicodeDraw(1);
         }
-
         // Input check
         if (stringCompare("build",CurrentInput)) { // TODO : Add double pointer to store build result in play phase
             boolean isAreaBuildable = !occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation));
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
             if (isAreaBuildable) {
-                printBuildList();// WARNING : BUILDING ID START FROM 20
-                int tempID;
-                setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
-                if (integerInput(&tempID)) {
-                    if (searchWahanaByID(buildingDatabase,tempID+19)) {
-                        int buildCost = getHargaWahanaByID(buildingDatabase,tempID+19);
-                        if (money >= buildCost) {
-                            if ((Durasi(currentTime,cPlayTime) - BUILD_TIME) >= 0) {
+                if ((Durasi(currentTime,cPlayTime)%1440 - BUILD_TIME) >= 0) {
+                    printBuildList();// WARNING : BUILDING ID START FROM 20
+                    int tempID;
+                    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
+                    if (integerInput(&tempID)) {
+                        if (searchWahanaByID(buildingDatabase,tempID+19)) {
+                            int buildCost = getHargaWahanaByID(buildingDatabase,tempID+19);
+                            if (money >= buildCost) {
                                 actionTuple buildLog = { 1,tempID+19,Ordinat(cursorLocation),Absis(cursorLocation),buildCost };
                                 Push(&actionStack,buildLog);
                                 currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
@@ -500,62 +500,66 @@ void prepDay() {
                                 puts("Wahana telah dibangun!");
                             }
                             else
-                                puts("Maaf durasi waktu tidak cukup");
+                            puts("Maaf uang tidak cukup");
                         }
                         else
-                            puts("Maaf uang tidak cukup");
+                        puts("ID Wahana tidak dapat ditemukan");
                     }
                     else
-                        puts("ID Wahana tidak dapat ditemukan");
+                    puts("Pembangunan dibatalkan");
+                    drawLoading(20);
+                    forceDraw();
+                    unicodeDraw(1);
                 }
                 else
-                    puts("Pembangunan dibatalkan");
-                drawLoading(20);
-                forceDraw();
-                unicodeDraw(1);
+                    puts("Maaf durasi waktu tidak cukup");
             }
             else {
-                setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
                 puts("Lokasi terpilih tidak dapat dibangun");
             }
         }
         // else if (stringCompare("upgrade",CurrentInput))
         //
         else if (stringCompare("buy",CurrentInput)) {
-            printMaterialList(); // WARNING : Material ID START FROM 10
-            int tempID, buyQuantity;
-            if (integerInput(&tempID)) {
-                if (searchMaterialByID(materialDatabase,tempID+9)) {
-                    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
-                    puts("Masukkan jumlah yang akan dibeli");
-                    if (integerInput(&buyQuantity)) {
-                        setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+4);
-                        int buyCost = buyQuantity * getHargaMaterialByID(materialDatabase,tempID+9);
-                        if (money >= buyCost) {
-                            actionTuple buyLog = { 3,tempID+9,-1,-1,buyQuantity };
-                            Push(&actionStack,buyLog);
-                            setCountMaterialByID(materialDatabase,tempID+9,buyQuantity+getCountMaterialByID(materialDatabase,tempID+9));
-                            currentTime = NextNMenit(currentTime,BUY_TIME); // Buy time
-                            money -= buyCost;
-                            actionGoldSum += buyCost;
-                            actionCount++;
-                            actionTime += BUY_TIME;
-                            puts("Material telah dibeli!");
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+            if ((Durasi(currentTime,cPlayTime)%1440 - BUY_TIME) >= 0) {
+                printMaterialList(); // WARNING : Material ID START FROM 10
+                int tempID, buyQuantity;
+                if (integerInput(&tempID)) {
+                    if (searchMaterialByID(materialDatabase,tempID+9)) {
+                        setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
+                        puts("Masukkan jumlah yang akan dibeli");
+                        if (integerInput(&buyQuantity)) {
+                            setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+4);
+                            int buyCost = buyQuantity * getHargaMaterialByID(materialDatabase,tempID+9);
+                            if (money >= buyCost) {
+                                actionTuple buyLog = { 3,tempID+9,-1,-1,buyQuantity };
+                                Push(&actionStack,buyLog);
+                                setCountMaterialByID(materialDatabase,tempID+9,buyQuantity+getCountMaterialByID(materialDatabase,tempID+9));
+                                currentTime = NextNMenit(currentTime,BUY_TIME); // Buy time
+                                money -= buyCost;
+                                actionGoldSum += buyCost;
+                                actionCount++;
+                                actionTime += BUY_TIME;
+                                puts("Material telah dibeli!");
+                            }
+                            else
+                            puts("Maaf uang tidak cukup");
                         }
                         else
-                        puts("Maaf uang tidak cukup");
+                        puts("Pembelian dibatalkan");
                     }
                     else
-                    puts("Pembelian dibatalkan");
+                        puts("ID Material tidak dapat ditemukan");
                 }
                 else
-                puts("ID Material tidak dapat ditemukan");
+                    puts("Pembelian dibatalkan");
+                drawLoading(20);
+                forceDraw();
+                unicodeDraw(1);
             }
             else
-                puts("Pembelian dibatalkan");
-            drawLoading(20);
-            forceDraw();
-            unicodeDraw(1);
+                puts("Maaf durasi waktu tidak cukup");
         }
 
         else if (stringCompare("undo",CurrentInput)) {
