@@ -45,8 +45,8 @@ void linkMapGraph(){
     addgraphNode(1,3);
     addgraphNode(2,3);
     addgraphNode(2,0);
-    addgraphNode(3,2);
     addgraphNode(3,1);
+    addgraphNode(3,2);
 // printgraphList();
 // getc();
 }
@@ -54,15 +54,17 @@ void linkMapGraph(){
 boolean isGraphConnected(int src, int dest){
     for(int i=0; i<maxgraphNode; i++){
         graphAddress p=adjgraphList[i]->head;
-        while(p){
+        // while(p){
             if (p->vertexNum==src){
             	p=p->next;
             	while(p){
             		if (p->vertexNum==dest)
-                    return true;
+                        return true;
+                    p = p->next;
 				}
             }
-        }
+        //     p=p->next;
+        // }
     }
     return false;
 }

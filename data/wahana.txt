@@ -1,4 +1,4 @@
-ID-NAMA-        HARGA-KAPASITAS-DURASI-DESKRIPSI-                  KAYU-BESI-BATA-SEMEN-BAJA
+ID-NAMA-                HARGA-KAPASITAS-DURASI-DESKRIPSI-GAMBAR    KAYU-BESI-BATA-SEMEN-BAJA
 20 Chocolate-tornado     5 2 5     Meningkatkan-adrenalin           T     1 1 0 1 1
 21 Candy-house           10 1 15   Cocok-untuk-orang-rakus          H     2 0 1 1 1
 22 Chocolate-factory     6 4 3     Melihat-proses-pembuatan-cokelat F     3 2 1 1 0

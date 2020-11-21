@@ -1,12 +1,19 @@
 /* 13519214
 ----- Self note -----
-Useful UTF-8 Char for map
+Useful Unicode Char for map
 \u2588 -> Solid block
+Check box-drawing character in wikipedia for other
+
+\33[ <ANSI Escape codes>
+Check ANSI Escape codes for more details
 
 Internal reference in engine.c
 Preparation phase -> Prep
 Main phase -> Play
 
+// FIXME : Consistency of coordinate space
+// TODO : Massive function call refactor
+// TODO : Unicode - ASCII Settings
 */
 
 
@@ -101,7 +108,7 @@ boolean integerInput(int *store) {
 // ----- Load function -----
 void loadMap() {
     POINT* initialLocation = ReadFromMap();
-    linkMapGraph(); // TODO : Link
+    linkMapGraph();
     for (int i = 0 ; i < 4 ; i++)
         makeMatrix(MAP_SIZE_X,MAP_SIZE_Y,&map[i]);
     for (int a = 0 ; a < 4 ; a++) {
@@ -126,6 +133,7 @@ void loadMap() {
     occupiedAt(map[0],Absis(initialLocation[1]),Ordinat(initialLocation[1])) = true;
     entityAt(map[0],Absis(initialLocation[2]),Ordinat(initialLocation[2])) = 8;
     occupiedAt(map[0],Absis(initialLocation[2]),Ordinat(initialLocation[2])) = true;
+    free(initialLocation); // NOTE : Not here
 }
 
 void loadDatabase() {
@@ -331,6 +339,22 @@ void mapUpdate(int tp) {
     if (tp == 1)
         mapframe[Ordinat(cursorLocation)][Absis(cursorLocation)] = '*';
 
+    // Move map checking
+    if (tp == 1 || tp == 2) {
+        for (int i = 0 ; i < 3 ; i++) {
+            // Due the way graph implemented,
+            // theres no way to convey a position with it
+            // if (isGraphConnected(2,1)) {
+                // mapframe[MAP_SIZE_Y/2][MAP_SIZE_X-1] = '>';
+                // mapframe[MAP_SIZE_Y/2-1][MAP_SIZE_X-1] = '>';
+                // mapframe[MAP_SIZE_Y/2+1][MAP_SIZE_X-1] = '>';
+                // FIXME BUGGED CALL
+            // }
+        }
+
+    }
+
+
      // TODO : Let unique UNICODE char print as '*' at background
     for (int i = 0 ; i < MAP_SIZE_Y ; i++)
         for (int j = 0 ; j < MAP_SIZE_X ; j++)
@@ -375,7 +399,6 @@ boolean startGame() {
             cPlayTime = MakeJAM(START_PLAY,0);
             cPrepTime = currentTime = MakeJAM(START_PREP,0);
             cursorLocation = MakePOINT(CURSOR_REST_X,CURSOR_REST_Y);
-
             return true;
         }
         else if (stringCompare("color", CurrentInput) || CurrentInput[0] == '2') {
@@ -498,6 +521,7 @@ void prepDay() {
                         if ((tempID < 120) && searchWahanaByID(buildingDatabase,tempID+19)) {
                             int buildCost = getHargaWahanaByID(buildingDatabase,tempID+19);
                             if (money >= buildCost) {
+                                // TODO : another layer of material checking
                                 actionTuple buildLog = { 1,tempID+19,Ordinat(cursorLocation),Absis(cursorLocation),buildCost };
                                 Push(&actionStack,buildLog);
                                 currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
@@ -695,6 +719,12 @@ void playDay() {
 
 
 // ----- Draw function set -----
+// Every draw function which using argument,
+// these are meaning of those int values
+// 0 Initialization
+// 1 Preparation
+// 2 Play
+
 void printBuildList() {
     setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+3);
     // First table
@@ -708,6 +738,7 @@ void printBuildList() {
 
     puts(BUILD_LIST_5);
     // Second table
+    // Procedural table generator
     printf(BUILD_MATERIAL_1);
     for (int i = 0 ; i < materialCount - 1 ; i++)
         printf(BUILD_MATERIAL_PROC_1);
@@ -720,8 +751,6 @@ void printBuildList() {
     for (int i = 0 ; i < materialCount - 1 ; i++)
         printf(BUILD_MATERIAL_PROC_3);
     printf(BUILD_MATERIAL_PROC_3_END);
-
-
     for (int i = 0 ; i < buildingCount ; i++) {
         if (buildingDatabase[i].ID < 120) {
             printf(BUILD_MATERIAL_4,buildingDatabase[i].ID-19, buildingDatabase[i].nama);
@@ -736,7 +765,6 @@ void printBuildList() {
 
     }
     printf(BUILD_MATERIAL_PROC_4_END);
-
 
     puts("Masukkan ID yang ingin dibangun :");
 }
@@ -760,7 +788,7 @@ void printLegendList(int tp) {
     puts(LEGEND_LIST_2);
     puts(LEGEND_LIST_3);
     if (tp == 0 || tp == 1)
-        printf(LEGEND_LIST_4,'*', "Kursor");
+        printf(LEGEND_LIST_4,'*', "Kursor Pembangun");
     printf(LEGEND_LIST_4,'.', "Kosong");
     printf(LEGEND_LIST_4,'#', "Dinding");
     // TODO other internal reserved ID
@@ -812,10 +840,6 @@ void colorSchemeChange(int tdelay) {
 }
 
 void frameSet(int tp) { // TODO : Possible merge with other frame function
-    // 0 Initialization
-    // 1 Preparation
-    // 2 Play
-
     if (tp == 0) {
         for (int i = 0 ; i < RES_Y ; i++)
             for (int j = 0 ; j < RES_X ; j++)
@@ -827,7 +851,6 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
             for (int j = 0 ; j < INFO_SIZE_X ; j++)
                 infoframe[i][j] = '\0';
     }
-
 
     char *infoBlock[9], endTime[5];
     if (tp == 1 || tp == 0) {
@@ -874,13 +897,6 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
         infoframe[13][i] = infoBlock[8][i];
     }
 
-
-    // for (int i = 0 ; i < 50 ; i++)
-    //     infoframe[11][i] = qb[i];
-    // char bb[] = "ajur nggeh";
-    // for (int i = 0 ; i < 15 ; i++)
-    //     infoframe[12][i] = bb[i];
-
     char commandPrompt[] = "Masukkan perintah :                     ";
     for (int i = 0 ; i < 40 ; i++)
         nframe[MAP_OFFSET_Y+MAP_SIZE_Y-2][MAP_OFFSET_X+MAP_SIZE_X+5+i] = commandPrompt[i]; // DEBUG
@@ -898,7 +914,7 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
         nframe[INFO_OFFSET_Y-1][INFO_OFFSET_X-1+i] = infotb[i];
         nframe[INFO_OFFSET_Y+INFO_SIZE_Y][INFO_OFFSET_X-1+i] = infobb[i];
     }
-    // DEBUG STOP
+
 }
 
 void drawLoading(int fdelay) {
