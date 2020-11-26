@@ -79,16 +79,20 @@ int ReadFromBahan(Material**database){
 	return i;
 }
 
-void MakePohonUpgrade(BinTree** database, int wahanacount){
+int MakePohonUpgrade(BinTree** database, int wahanacount){
 	BinTree* array=(BinTree*)malloc(WAHANA_MAX*sizeof(BinTree));
 	for(int i=0;i<(wahanacount/3);i++){
-		BinTree P = AlokNode(i+20);
-		AddDaunTerkiri(&P, 20+i);
-		// AddDaun(&P,20+i,220+i,false);
+		// BinTree P = AlokNode(i+20);
+		// AddDaunTerkiri(&P, 120+i);
+		// AddDaun(&P,120+i,220+i,false);
 		// AddDaun(&P,20+i,120+i,false);
-		array[i] = P;
+		addrNode L = AlokNode(120+i);
+	    addrNode R = AlokNode(220+i); // TODO : Upgrade
+	    BinTree P = Tree(i+20, L, R);
+	    array[i] = P;
 	}
 	*database = array;
+	return wahanacount/3;
 }
 
 POINT* ReadFromMap(){

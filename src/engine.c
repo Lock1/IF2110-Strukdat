@@ -43,6 +43,7 @@ int money = START_MONEY;
 int currentDay = 1;
 int buildingCount = 0;
 int materialCount = 0;
+int upgradeCount = 0;
 JAM currentTime;
 Stack actionStack;
 int actionCount = 0;
@@ -76,7 +77,7 @@ void stringCopy(char src[STRING_LENGTH], char dst[STRING_LENGTH]) {
 boolean stringCompare(char st1[STRING_LENGTH], char st2[STRING_LENGTH]) {
     for (int i = 0 ; st1[i] != '\0' ; i++)
         if (st1[i] != st2[i])
-            return false;
+            return false; // FIXME : Both Constant strings
     return true;
 }
 // Delaying by counting
@@ -139,10 +140,14 @@ void loadMap() {
 void loadDatabase() {
     materialCount = ReadFromBahan(&materialDatabase);
     buildingCount = ReadFromWahana(&buildingDatabase,materialCount);
-    // MakePohonUpgrade(&upgradeDatabase,buildingCount);
+    upgradeCount = MakePohonUpgrade(&upgradeDatabase,buildingCount);
+    for (int i = 0 ; i < upgradeCount ; i++)
+        PrintTree(upgradeDatabase[i],5);
+    // printf("%d",upgradeDatabase[0])
+    // exit(1);
     // List test = MakeListDaun(upgradeDatabase[0]);
-    // // PrintList(test);
-    // // printf("%d", NbElmt(upgradeDatabase[0]));
+    // PrintList(test);
+    // printf("%d", NbElmt(upgradeDatabase[0]));
 }
 
 
@@ -300,9 +305,6 @@ void infoUpdate(int tp) {
                 break;
             else
                 infoframe[9][INFO_BLOCK_SIZE+i+1] = actionString[i];
-
-
-
     }
 
     // Moving info frame to next frame buffer
@@ -336,21 +338,60 @@ void mapUpdate(int tp) {
                     break;
             }
     // Draw cursor only on preparation phase
-    if (tp == 1)
-        mapframe[Ordinat(cursorLocation)][Absis(cursorLocation)] = '*';
+    if (tp == 1) {
+        mapframe[Ordinat(cursorLocation)][Absis(cursorLocation)] = 'x';
+        // setCursorPosition(Absis(cursorLocation)+MAP_OFFSET_X,Ordinat(cursorLocation)+MAP_OFFSET_Y);
+        // puts("\u2588");
+    }
 
     // Move map checking
     if (tp == 1 || tp == 2) {
-        for (int i = 0 ; i < 3 ; i++) {
+        // for (int i = 0 ; i < 3 ; i++) {
             // Due the way graph implemented,
             // theres no way to convey a position with it
-            // if (isGraphConnected(2,1)) {
-                // mapframe[MAP_SIZE_Y/2][MAP_SIZE_X-1] = '>';
-                // mapframe[MAP_SIZE_Y/2-1][MAP_SIZE_X-1] = '>';
-                // mapframe[MAP_SIZE_Y/2+1][MAP_SIZE_X-1] = '>';
-                // FIXME BUGGED CALL
+            // if (isGraphConnected(2,1));
+            // {
+                // switch (currentMap) {
+                //     case 0:
+                //         mapframe[MAP_SIZE_Y/2][MAP_SIZE_X-1] = '>';
+                //         mapframe[MAP_SIZE_Y/2-1][MAP_SIZE_X-1] = '>';
+                //         mapframe[MAP_SIZE_Y/2+1][MAP_SIZE_X-1] = '>';
+                //
+                //         mapframe[MAP_SIZE_Y-1][MAP_SIZE_X/2] = 'v';
+                //         mapframe[MAP_SIZE_Y-1][MAP_SIZE_X/2-1] = 'v';
+                //         mapframe[MAP_SIZE_Y-1][MAP_SIZE_X/2-2] = 'v';
+                //         break;
+                //     case 1:
+                //         mapframe[MAP_SIZE_Y/2][0] = '<';
+                //         mapframe[MAP_SIZE_Y/2-1][0] = '<';
+                //         mapframe[MAP_SIZE_Y/2+1][0] = '<';
+                //
+                //         mapframe[MAP_SIZE_Y-1][MAP_SIZE_X/2] = 'v';
+                //         mapframe[MAP_SIZE_Y-1][MAP_SIZE_X/2-1] = 'v';
+                //         mapframe[MAP_SIZE_Y-1][MAP_SIZE_X/2-2] = 'v';
+                //         break;
+                //     case 2:
+                //         mapframe[0][MAP_SIZE_X/2] = '^';
+                //         mapframe[0][MAP_SIZE_X/2-1] = '^';
+                //         mapframe[0][MAP_SIZE_X/2-2] = '^';
+                //
+                //         mapframe[MAP_SIZE_Y/2][MAP_SIZE_X-1] = '>';
+                //         mapframe[MAP_SIZE_Y/2-1][MAP_SIZE_X-1] = '>';
+                //         mapframe[MAP_SIZE_Y/2+1][MAP_SIZE_X-1] = '>';
+                //         break;
+                //     case 3:
+                //         mapframe[0][MAP_SIZE_X/2] = '^';
+                //         mapframe[0][MAP_SIZE_X/2-1] = '^';
+                //         mapframe[0][MAP_SIZE_X/2-2] = '^';
+                //
+                //         mapframe[MAP_SIZE_Y/2][0] = '<';
+                //         mapframe[MAP_SIZE_Y/2-1][0] = '<';
+                //         mapframe[MAP_SIZE_Y/2+1][0] = '<';
+                //         break;
+                // }
+                // FIXME : BUGGED CALL
             // }
-        }
+        // }
 
     }
 
@@ -466,6 +507,113 @@ int actionUndo() {
     }
     else
         return 0;
+}
+
+void moveCursor(char input) {
+    switch (input) {
+        case 'w':
+            if (1 < Ordinat(cursorLocation))
+                Geser(&cursorLocation,0,-1);
+            break;
+        case 'a':
+            if (Absis(cursorLocation) > 1 && input == 'a')
+                Geser(&cursorLocation,-1,0);
+            break;
+        case 's':
+            if (Ordinat(cursorLocation) < MAP_SIZE_Y - 2)
+                Geser(&cursorLocation,0,1);
+            break;
+        case 'd':
+            if (Absis(cursorLocation) < MAP_SIZE_X - 2)
+                Geser(&cursorLocation,1,0);
+            break;
+    }
+}
+
+void moveMap(char input) {
+    switch (currentMap) {
+        case 0:
+            // Right arrow
+            if (Absis(cursorLocation) == (MAP_SIZE_X - 2) && input == 'd') {
+                if ((MAP_SIZE_Y / 2 - 1) <= Ordinat(cursorLocation) && Ordinat(cursorLocation) <= (MAP_SIZE_Y / 2 + 1)) {
+                    currentMap = 1;
+                    Geser(&cursorLocation,3-MAP_SIZE_X,0); //-= (MAP_SIZE_X - 3);
+                    unicodeDraw(1);
+                }
+            }
+            // Down arrow
+            else if (Ordinat(cursorLocation) == (MAP_SIZE_Y - 2) && input == 's') {
+                if ((MAP_SIZE_X / 2 - 3) <= Absis(cursorLocation) && Absis(cursorLocation) <= (MAP_SIZE_X / 2 + 1)) {
+                    currentMap = 2;
+                    Geser(&cursorLocation,0,3-MAP_SIZE_Y);
+                    unicodeDraw(1);
+                }
+            }
+            else
+                moveCursor(input);
+            break;
+        case 1:
+            // Left arrow
+            if (Absis(cursorLocation) == 1 && input == 'a') {
+                if ((MAP_SIZE_Y / 2 - 1) <= Ordinat(cursorLocation) && Ordinat(cursorLocation) <= (MAP_SIZE_Y / 2 + 1)) {
+                    currentMap = 0;
+                    Geser(&cursorLocation,MAP_SIZE_X-3,0);
+                    unicodeDraw(1);
+                }
+            }
+            // Down arrow
+            else if (Ordinat(cursorLocation) == (MAP_SIZE_Y - 2) && input == 's') {
+                if ((MAP_SIZE_X / 2 - 3) <= Absis(cursorLocation) && Absis(cursorLocation) <= (MAP_SIZE_X / 2 + 1)) {
+                    currentMap = 3;
+                    Geser(&cursorLocation,0,3-MAP_SIZE_Y);
+                    unicodeDraw(1);
+                }
+            }
+            else
+                moveCursor(input);
+
+            break;
+        case 2:
+            // Right arrow
+            if (Absis(cursorLocation) == (MAP_SIZE_X - 2) && input == 'd') {
+                if ((MAP_SIZE_Y / 2 - 1) <= Ordinat(cursorLocation) && Ordinat(cursorLocation) <= (MAP_SIZE_Y / 2 + 1)) {
+                    currentMap = 3;
+                    Geser(&cursorLocation,3-MAP_SIZE_X,0); //-= (MAP_SIZE_X - 3);
+                    unicodeDraw(1);
+                }
+            }
+            // Up arrow
+            else if (Ordinat(cursorLocation) == 1 && input == 'w') {
+                if ((MAP_SIZE_X / 2 - 3) <= Absis(cursorLocation) && Absis(cursorLocation) <= (MAP_SIZE_X / 2 + 1)) {
+                    currentMap = 0;
+                    Geser(&cursorLocation,0,MAP_SIZE_Y-3);
+                    unicodeDraw(1);
+                }
+            }
+            else
+                moveCursor(input);
+            break;
+        case 3:
+            // Top arrow
+            if (Ordinat(cursorLocation) == 1 && input == 'w') {
+                if ((MAP_SIZE_X / 2 - 3) <= Absis(cursorLocation) && Absis(cursorLocation) <= (MAP_SIZE_X / 2 + 1)) {
+                    currentMap = 1;
+                    Geser(&cursorLocation,0,MAP_SIZE_Y-3);
+                    unicodeDraw(1);
+                }
+            }
+            // Left arrow
+            else if (Absis(cursorLocation) == 1 && input == 'a') {
+                if ((MAP_SIZE_Y / 2 - 1) <= Ordinat(cursorLocation) && Ordinat(cursorLocation) <= (MAP_SIZE_Y / 2 + 1)) {
+                    currentMap = 2;
+                    Geser(&cursorLocation,MAP_SIZE_X-3,0);
+                    unicodeDraw(1);
+                }
+            }
+            else
+                moveCursor(input);
+            break;
+    }
 }
 
 // TODO : Move between map
@@ -625,7 +773,8 @@ void prepDay() {
                     Pop(&actionStack,&tempTrash);
                     actionCount--;
                 }
-                break;
+                currentMap = 0;
+                break; // Break entire preparation day loop
             }
         }
         else if (stringCompare("main",CurrentInput)) {
@@ -674,27 +823,8 @@ void prepDay() {
             forceDraw();
             unicodeDraw(1);
         }
-        else if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd') {
-            // ADD Colision detection
-            switch (CurrentInput[0]) {
-                case 'w':
-                    if (1 < Ordinat(cursorLocation))
-                        Geser(&cursorLocation,0,-1);
-                    break;
-                case 'a':
-                    if (1 < Absis(cursorLocation))
-                        Geser(&cursorLocation,-1,0);
-                    break;
-                case 's':
-                    if (Ordinat(cursorLocation) < MAP_SIZE_Y - 2)
-                        Geser(&cursorLocation,0,1);
-                    break;
-                case 'd':
-                    if (Absis(cursorLocation) < MAP_SIZE_X - 2)
-                        Geser(&cursorLocation,1,0);
-                    break;
-            }
-        }
+        else if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd')
+            moveMap(CurrentInput[0]);
     }
 }
 
@@ -708,7 +838,7 @@ void playDay() {
 
     // DEBUG
     setCursorPosition(0, MAP_OFFSET_Y + MAP_SIZE_Y+2);
-    drawLoading(800);
+    drawLoading(40);
     // DEBUG STOP
 
     currentDay++;
@@ -889,7 +1019,8 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
             infoframe[i][j] = infoBlock[i][j];
 
     for (int i = 0 ; i < 5 ; i++)
-        infoframe[4][INFO_BLOCK_SIZE+i+1] = endTime[i]; // FIXME : ??
+        infoframe[4][INFO_BLOCK_SIZE+i+1] = endTime[i];
+    // FIXME : ??
 
     for (int i = 0 ; i < INFO_SIZE_X ; i++) {
         infoframe[6][i] = infoBlock[6][i];
@@ -975,6 +1106,78 @@ void unicodeDraw(int tp) {
     setCursorPosition(3,RES_Y-2);
     puts(MAP_BOTTOM_UNICODE);
 
+    // Border
+    for (int i = 0 ; i < MAP_SIZE_Y ; i++) {
+        setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X - 1, MAP_OFFSET_Y + i);
+        puts("\33\[90m\u2588\33\[m");
+        setCursorPosition(MAP_OFFSET_X, MAP_OFFSET_Y + i);
+        puts("\33\[90m\u2588\33\[m");
+    }
+
+    for (int i = 0 ; i < MAP_SIZE_X ; i++) {
+        setCursorPosition(MAP_OFFSET_X + i, MAP_OFFSET_Y);
+        puts("\33\[90m\u2584\33\[m");
+        setCursorPosition(MAP_OFFSET_X + i, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+        puts("\33\[90m\u2580\33\[m");
+    }
+
+
+    switch (currentMap) {
+        case 0:
+            // Right arrow
+            setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X - 1, MAP_OFFSET_Y + MAP_SIZE_Y/2);
+            puts("\33\[93m\33\[1m\u2192\33\[m");
+            setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X - 1, MAP_OFFSET_Y + MAP_SIZE_Y/2 - 1);
+            puts("\33\[93m\33\[1m\u2192\33\[m");
+            setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X - 1, MAP_OFFSET_Y + MAP_SIZE_Y/2 + 1);
+            puts("\33\[93m\33\[1m\u2192\33\[m");
+
+            // Down arrow
+            setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X / 2 - 3, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+            puts("\33\[93m\33\[1m\u2193\u2193\u2193\u2193\u2193\33\[m");
+            break;
+        case 1:
+            // Down arrow
+            setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X / 2 - 3, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+            puts("\33\[93m\33\[1m\u2193\u2193\u2193\u2193\u2193\33\[m");
+
+            // Left arrow
+            setCursorPosition(MAP_OFFSET_X, MAP_OFFSET_Y + MAP_SIZE_Y/2);
+            puts("\33\[93m\33\[1m\u2190\33\[m");
+            setCursorPosition(MAP_OFFSET_X, MAP_OFFSET_Y + MAP_SIZE_Y/2 - 1);
+            puts("\33\[93m\33\[1m\u2190\33\[m");
+            setCursorPosition(MAP_OFFSET_X, MAP_OFFSET_Y + MAP_SIZE_Y/2 + 1);
+            puts("\33\[93m\33\[1m\u2190\33\[m");
+            break;
+        case 2:
+            // Top arrow
+            setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X / 2 - 3, MAP_OFFSET_Y);
+            puts("\33\[93m\33\[1m\u2191\u2191\u2191\u2191\u2191\33\[m");
+
+            // Down arrow
+            setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X - 1, MAP_OFFSET_Y + MAP_SIZE_Y/2);
+            puts("\33\[93m\33\[1m\u2192\33\[m");
+            setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X - 1, MAP_OFFSET_Y + MAP_SIZE_Y/2 - 1);
+            puts("\33\[93m\33\[1m\u2192\33\[m");
+            setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X - 1, MAP_OFFSET_Y + MAP_SIZE_Y/2 + 1);
+            puts("\33\[93m\33\[1m\u2192\33\[m");
+            break;
+        case 3:
+            // Top arrow
+            setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X / 2 - 3, MAP_OFFSET_Y);
+            puts("\33\[93m\33\[1m\u2191\u2191\u2191\u2191\u2191\33\[m");
+
+            // Left arrow
+            setCursorPosition(MAP_OFFSET_X, MAP_OFFSET_Y + MAP_SIZE_Y/2);
+            puts("\33\[93m\33\[1m\u2190\33\[m");
+            setCursorPosition(MAP_OFFSET_X, MAP_OFFSET_Y + MAP_SIZE_Y/2 - 1);
+            puts("\33\[93m\33\[1m\u2190\33\[m");
+            setCursorPosition(MAP_OFFSET_X, MAP_OFFSET_Y + MAP_SIZE_Y/2 + 1);
+            puts("\33\[93m\33\[1m\u2190\33\[m");
+            break;
+    }
+
+
     // Information UNICODE overwrite
     setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y-1);
     puts(INFO_UNICODE);
@@ -1042,7 +1245,7 @@ void forceDraw() {
     setCursorPosition(cRestX,cRestY);
 }
 
-void draw(){
+void draw() {
     fflush(stdout);
     setCursorPosition(0,0);
     for (int i = 0 ; i < RES_Y ; i++)

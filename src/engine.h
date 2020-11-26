@@ -53,7 +53,6 @@ boolean integerInput(int *store);
 
 // TODO : Whole lot of update function
 
-// TODO : Maybe also tick update
 // TODO : Use some seed for rng (probably username also fine lul)
 
 boolean startGame();
