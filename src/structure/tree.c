@@ -10,14 +10,13 @@
 /* *** Konstruktor *** */
 BinTree Tree (listrekInfotype Akar, BinTree L, BinTree R)
 {
-    BinTree New_tree = (BinTree) malloc(sizeof(BinTree));
-
-    if (New_tree != ListNil){
-        Akar(New_tree) = Akar;
-        Left(New_tree) = L;
-        Right(New_tree) = R;
+    BinTree P = (BinTree)malloc(sizeof(BinTree));
+    if(P!=ListNil){
+        Akar(P) = Akar;
+        Left(P) = L;
+        Right(P) = R;
     }
-    return New_tree;
+    return P;
 }
 
 
@@ -29,14 +28,13 @@ void MakeTree (listrekInfotype Akar, BinTree L, BinTree R, BinTree *P)
 /* Manajemen Memory */
 addrNode AlokNode (listrekInfotype X)
 {
-    addrNode New_node = (addrNode) malloc(sizeof(Node));
-
-    if (New_node != ListNil){
-        Akar(New_node) = X;
-        Left(New_node) = ListNil;
-        Right(New_node) = ListNil;
+    addrNode P = (addrNode)malloc(sizeof(Node));
+    if(P!=ListNil){
+        Akar(P) = X;
+        Left(P) = ListNil;
+        Right(P) = ListNil;
     }
-    return New_node;
+    return P;
 }
 
 void DealokNode (addrNode P)
@@ -52,135 +50,80 @@ boolean IsTreeEmpty (BinTree P)
 
 boolean IsTreeOneElmt (BinTree P)
 {
-    if (!IsTreeEmpty(P)){
-        return ((Left(P) == ListNil) && (Right(P) == ListNil));
-    }
-    else{
-        return false;
-    }
+    return (!IsTreeEmpty(P))?(Left(P)==ListNil && Right(P)==ListNil): false;
 }
 
 boolean IsUnerLeft (BinTree P)
 {
-    if (!IsTreeEmpty(P)){
-        return ((Left(P) != ListNil) && (Right(P) == ListNil));
-    }
-    else{
-        return false;
-    }
+    return (!IsTreeEmpty(P))?(Left(P)!=ListNil && Right(P)==ListNil): false;
 }
 
 boolean IsUnerRight (BinTree P)
 {
-    if (!IsTreeEmpty(P)){
-        return ((Left(P) == ListNil) && (Right(P) != ListNil));
-    }
-    else{
-        return false;
-    }
+   return (!IsTreeEmpty(P))?(Left(P)==ListNil && Right(P)!=ListNil): false;
 }
 
 boolean IsBiner (BinTree P)
 {
-    if (!IsTreeEmpty(P)){
-        return ((Left(P) != ListNil) && (Right(P) != ListNil));
-    }
-    else{
-        return false;
-    }
+   return (!IsTreeEmpty(P))?(Left(P)!=ListNil && Right(P)!=ListNil): false;
 }
 
-void PrintTree2(BinTree P, int h, int current_indent)
+void PrintTree(BinTree P, int h)
 {
-  if (!IsTreeEmpty(P))
-  {
-
-    printf("%*s%d\n", current_indent, "", Akar(P));
-
-    PrintTree2(Left(P), h, current_indent + h);
-    PrintTree2(Right(P), h, current_indent + h);
-  }
-}
-
-/* *** Traversal *** */
-void PrintTree (BinTree P, int h)
-{
-  PrintTree2(P, h, 0);
+   if(!IsTreeEmpty(P)){
+      printf("%d\n", Akar(P));
+      if(Left(P)!=ListNil){
+         for(int i = 0;i<h;i++){
+            printf(" ");
+         }
+         PrintTree(Left(P), h+h);
+      }
+      if(Right(P)!=ListNil){
+         for(int i = 0;i<h;i++){
+            printf(" ");
+         }
+         PrintTree(Right(P), h+h);
+      }
+   }
 }
 
 /* *** Searching *** */
 boolean SearchTree (BinTree P, listrekInfotype X)
-/* Mengirimkan true jika ada node dari P yang berListNilai X */
+/* Mengirimkan true jika ada node dari P yang berListListNilai X */
 {
-    if (IsTreeEmpty(P)){
-        return false;
-    }
-    else{
-        if (Akar(P) == X){
-            return true;
-        }
-        else{
-            return SearchTree(Left(P), X) || SearchTree(Right(P), X);
-        }
-    }
+   if(IsTreeEmpty(P)) return false;
+   else if(Akar(P)!=X) return ((SearchTree(Left(P), X)) || (SearchTree(Right(P), X)));
+   else return true;
 }
 
 /* *** Fungsi-Fungsi Lain *** */
 int NbElmt (BinTree P)
 {
-    if (IsTreeEmpty(P)){
-        return 0;
-    }
-    else {
-        return NbElmt(Left(P)) + NbElmt(Right(P)) + 1 ;
-    }
+   return (IsTreeEmpty(P))? 0: (NbElmt(Left(P))+NbElmt(Right(P))+1);
 }
 
 int NbDaun (BinTree P)
 {
-    if (IsTreeEmpty(P)){
-        return 0;
-    }
-    else {
-        if (IsTreeOneElmt(P)){
-            return 1;
-        }
-        else{
-            return NbDaun(Left(P)) + NbDaun(Right(P));
-        }
-    }
+   if(IsTreeEmpty(P)) return 0;
+   else if(IsTreeOneElmt(P)) return 1;
+   else return (NbDaun(Left(P))+NbDaun(Right(P)));
 }
 
 
 int Level (BinTree P, listrekInfotype X)
 {
-    if (SearchTree(Left(P), X)){
-        return 1 + Level(Left(P), X);
-    }
-
-    else if (SearchTree(Right(P), X)){
-        return 1 + Level(Right(P), X);
-    }
-    else {
-        return 1;
-    }
+   if(SearchTree(Left(P), X)) return 1+Level(Left(P), X);
+   else if(SearchTree(Right(P), X)) return 1+Level(Right(P), X);
+   else return 1;
 }
 
 int Tinggi (BinTree P)
 {
-   if (IsTreeEmpty(P)){
-        return 0;
-   }
-   else{
-        int Tinggi_l = Tinggi(Left(P));
-        int Tinggi_r = Tinggi(Right(P));
-
-        if (Tinggi_l > Tinggi_r){
-            return Tinggi_l + 1;
-        }
-        else{
-            return Tinggi_r + 1;
-        }
+   if(IsTreeEmpty(P)) return 0;
+   else {
+      int Tinggi_L = Tinggi(Left(P));
+      int Tinggi_R = Tinggi(Right(P));
+      return (Tinggi_L>Tinggi_R)? Tinggi_L+1 : Tinggi_R+1;
    }
 }
 
@@ -188,46 +131,32 @@ int Tinggi (BinTree P)
 void AddDaunTerkiri (BinTree *P, listrekInfotype X)
 {
 
-    if (IsTreeEmpty(*P)){
-        *P = Tree(X, ListNil, ListNil);
-    }
-    else{
-        AddDaunTerkiri(&Left(*P), X);
-    }
+   if(IsTreeEmpty(*P)) 
+      *P = Tree(X, ListNil, ListNil);
+   else AddDaunTerkiri(&Left(*P), X);
 }
 
 void AddDaun (BinTree *P, listrekInfotype X, listrekInfotype Y, boolean Kiri)
 {
-    if (IsTreeOneElmt(*P) && Akar(*P) == X){
-
-        if (Kiri){
-            Left(*P) = Tree(Y, ListNil, ListNil);
-        }
-        else{
-            Right(*P) = Tree(Y, ListNil, ListNil);
-        }
-    }
-    else{
-        if (SearchTree(Left(*P), X)){
-            AddDaun(&Left(*P), X, Y, Kiri);
-        }
-        else if (SearchTree(Right(*P), X)){
-            AddDaun(&Right(*P), X, Y, Kiri);
-        }
-    }
+   if(IsTreeOneElmt(*P)&&Akar(*P)==X){
+      if(Kiri) Left(*P)=Tree(Y, ListNil, ListNil);
+      else Right(*P)=Tree(Y, ListNil, ListNil);
+   }
+   else{
+      if(SearchTree(Left(*P), X)) AddDaun(&Left(*P), X, Y, Kiri);
+      else if(SearchTree(Right(*P), X)) AddDaun(&Right(*P), X, Y, Kiri);
+   }
 }
 
 void DelDaun (BinTree *P, listrekInfotype X)
 {
-    if (!IsTreeEmpty(*P)){
-
-        if (IsTreeOneElmt(*P) && Akar(*P) == X){
-            addrNode temp = *P;
+    if(!IsTreeEmpty(*P)){
+        if(IsTreeOneElmt(*P) && Akar(*P)==X){
+            addrNode tmp = *P;
             *P = ListNil;
-            DealokNode(temp);
+            DealokNode(tmp);
         }
-        else {
-
+        else{
             DelDaun(&Left(*P), X);
             DelDaun(&Right(*P), X);
         }
@@ -236,50 +165,32 @@ void DelDaun (BinTree *P, listrekInfotype X)
 
 List MakeListDaun (BinTree P)
 {
-    if (IsTreeEmpty(P)){
-        return ListNil;
-    }
-
-    else if (IsTreeOneElmt(P)){
-        return Alokasi(Akar(P));
-    }
-
+    if(IsTreeEmpty(P)) return ListNil;
+    else if(IsTreeOneElmt(P)) return Alokasi(Akar(P));
     else{
-
-        List Left_l = MakeListDaun(Left(P));
-        List Right_l = MakeListDaun(Right(P));
-        return Concat(Left_l, Right_l);
+        List Kiri = MakeListDaun(Left(P));
+        List Kanan = MakeListDaun(Right(P));
+        return Concat(Kiri, Kanan);
     }
-
 }
 
 List MakeListPreorder (BinTree P)
 {
-   if (IsTreeEmpty(P)){
-        return ListNil;
-   }
+   if(IsTreeEmpty(P)) return ListNil;
    else{
-
-        List Left_l = MakeListPreorder(Left(P));
-        List Right_l = MakeListPreorder(Right(P));
-
-        return Concat(Konso(Akar(P), Left_l), Right_l);
+      List Kiri = MakeListPreorder(Left(P));
+      List Kanan = MakeListPreorder(Right(P));
+      return Concat(Konso(Akar(P), Kiri), Kanan);
    }
 }
 
 List MakeListLevel (BinTree P, int N)
 {
-    if (IsTreeEmpty(P)){
-        return ListNil;
-    }
-    else if (N == 1){
-        return Alokasi(Akar(P));
-    }
-    else {
-        List Left_l = MakeListLevel(Left(P), N-1);
-        List Right_l = MakeListLevel(Right(P), N-1);
-
-        return Concat(Left_l, Right_l);
-
-    }
+   if(IsTreeEmpty(P)) return ListNil;
+   else if (N==1) return Alokasi(Akar(P));
+   else{
+      List Kiri = MakeListLevel(Left(P), N-1);
+      List Kanan = MakeListLevel(Right(P), N-1);
+      return Concat(Kiri, Kanan);
+   }
 }

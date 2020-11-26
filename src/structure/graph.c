@@ -4,67 +4,65 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void addgraphNode(int s, int d){
-    graphAddress dest, temp, src;
-    if(adjgraphList[s]->head==NULL){
-        src=(graphAddress)malloc(sizeof(graphNode));
-        src->vertexNum=s;
-        src->next=NULL;
-        adjgraphList[s]->head=src;
-    }
-    dest=(graphAddress)malloc(sizeof(graphNode));
-    dest->vertexNum=d;
-    dest->next=NULL;
-    temp=adjgraphList[s]->head;
-    while (temp->next!=NULL)
-        temp=temp->next;
-    temp->next=dest;
+// Adjascency List representation in C
+
+// Create a node
+struct node* createNode(int v) {
+  struct node* newNode = malloc(sizeof(struct node));
+  newNode->vertex = v;
+  newNode->next = NULL;
+  return newNode;
 }
 
-void printgraphList(){
-    for(int i=0; i<maxgraphNode; i++){
-        graphAddress p=adjgraphList[i]->head;
-        printf("graphList for vertex %d: ", i);
-        while(p){
-            printf("%d ", p->vertexNum);
-            p=p->next;
-        }
-        printf("\n");
+// Create a graph
+struct Graph* createAGraph(int vertices) {
+  struct Graph* graph = malloc(sizeof(struct Graph));
+  graph->numVertices = vertices;
+
+  graph->adjLists = malloc(vertices * sizeof(struct node*));
+
+  int i;
+  for (i = 0; i < vertices; i++)
+    graph->adjLists[i] = NULL;
+
+  return graph;
+}
+
+// Add edge
+void addEdge(struct Graph* graph, int s, int d) {
+  // Add edge from s to d
+  struct node* newNode = createNode(d);
+  newNode->next = graph->adjLists[s];
+  graph->adjLists[s] = newNode;
+
+  // Add edge from d to s
+  newNode = createNode(s);
+  newNode->next = graph->adjLists[d];
+  graph->adjLists[d] = newNode;
+}
+
+// Print the graph
+void printGraph(struct Graph* graph) {
+  int v;
+  for (v = 0; v < graph->numVertices; v++) {
+    struct node* temp = graph->adjLists[v];
+    printf("\n Vertex %d\n: ", v);
+    while (temp) {
+      printf("%d -> ", temp->vertex);
+      temp = temp->next;
     }
     printf("\n");
+  }
 }
 
-void linkMapGraph(){
-    for (int i=0; i<maxgraphNode; i++){
-        adjgraphList[i]=(graphList*)malloc(sizeof(graphList));
-        adjgraphList[i]->head=NULL;
-    }
-    addgraphNode(0,1);
-    addgraphNode(0,2);
-    addgraphNode(1,0);
-    addgraphNode(1,3);
-    addgraphNode(2,3);
-    addgraphNode(2,0);
-    addgraphNode(3,1);
-    addgraphNode(3,2);
-// printgraphList();
-// getc();
-}
+// int main() {
+//   struct Graph* graph = createAGraph(4);
+//   addEdge(graph, 0, 1);
+//   addEdge(graph, 0, 2);
+//   addEdge(graph, 0, 3);
+//   addEdge(graph, 1, 2);
 
-boolean isGraphConnected(int src, int dest){
-    for(int i=0; i<maxgraphNode; i++){
-        graphAddress p=adjgraphList[i]->head;
-        // while(p){
-            if (p->vertexNum==src){
-            	p=p->next;
-            	while(p){
-            		if (p->vertexNum==dest)
-                        return true;
-                    p = p->next;
-				}
-            }
-        //     p=p->next;
-        // }
-    }
-    return false;
-}
+//   printGraph(graph);
+
+//   return 0;
+// }

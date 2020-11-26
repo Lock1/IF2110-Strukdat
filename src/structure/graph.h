@@ -1,28 +1,22 @@
 // ADT Graf
 // 13519146 / Fadel Ananda Dotty
+#ifndef graph_H
+#define graph_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "boolean.h"
+#include "listlinear.h"
 
-#define maxgraphNode 4
+struct node {
+  int vertex;
+  struct node* next;
+};
+struct node* createNode(int);
 
-typedef struct graphNode *graphAddress;
+struct Graph {
+  int numVertices;
+  struct node** adjLists;
+};
 
-typedef struct graphNode{
-    int vertexNum;
-    graphAddress next;
-}graphNode;
-
-typedef struct graphList{
-    graphAddress head;
-}graphList;
-
-graphList *adjgraphList[maxgraphNode];
-
-void addgraphNode(int s, int d);
-
-void printgraphList();
-
-void linkMapGraph();
-
-boolean isGraphConnected(int src, int dest);
+#endif
