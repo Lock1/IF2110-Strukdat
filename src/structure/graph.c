@@ -55,14 +55,14 @@ void printGraph(struct Graph* graph) {
   }
 }
 
-int main() {
-  struct Graph* graph = createAGraph(4);
-  addEdge(graph, 0, 1);
-  addEdge(graph, 0, 2);
-  addEdge(graph, 0, 3);
-  addEdge(graph, 1, 2);
+// int main() {
+//   struct Graph* graph = createAGraph(4);
+//   addEdge(graph, 0, 1);
+//   addEdge(graph, 0, 2);
+//   addEdge(graph, 0, 3);
+//   addEdge(graph, 1, 2);
 
-  printGraph(graph);
+//   printGraph(graph);
 
-  return 0;
-}
+//   return 0;
+// }
