@@ -41,18 +41,15 @@ void addEdge(struct Graph* graph, int s, int d) {
   graph->adjLists[d] = newNode;
 }
 
-// Print the graph
-void printGraph(struct Graph* graph) {
-  int v;
-  for (v = 0; v < graph->numVertices; v++) {
-    struct node* temp = graph->adjLists[v];
-    printf("\n Vertex %d\n: ", v);
-    while (temp) {
-      printf("%d -> ", temp->vertex);
-      temp = temp->next;
-    }
-    printf("\n");
+boolean isGraphConnected(struct Graph G, int s, int d){
+  struct node* P=G->adjList[s];
+  while (P!=NULL){
+    if (P->Next==G->adjList[d])
+      return true;
+    else
+      P=P->Next;
   }
+  return false;
 }
 
 // int main() {
