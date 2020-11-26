@@ -90,22 +90,23 @@ boolean IsBiner (BinTree P)
     }
 }
 
-void PrintTree2(BinTree P, int h, int current_indent)
+void PrintTree(BinTree P, int h)
 {
-  if (!IsTreeEmpty(P))
-  {
-
-    printf("%*s%d\n", current_indent, "", Akar(P));
-
-    PrintTree2(Left(P), h, current_indent + h);
-    PrintTree2(Right(P), h, current_indent + h);
-  }
-}
-
-/* *** Traversal *** */
-void PrintTree (BinTree P, int h)
-{
-  PrintTree2(P, h, 0);
+   if(!IsTreeEmpty(P)){
+      printf("%d\n", Akar(P));
+      if(Left(P)!=ListNil){
+         for(int i = 0;i<h;i++){
+            printf(" ");
+         }
+         PrintTree(Left(P), h+h);
+      }
+      if(Right(P)!=ListNil){
+         for(int i = 0;i<h;i++){
+            printf(" ");
+         }
+         PrintTree(Right(P), h+h);
+      }
+   }
 }
 
 /* *** Searching *** */
