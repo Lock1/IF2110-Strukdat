@@ -108,7 +108,7 @@ boolean integerInput(int *store) {
 // ----- Load function -----
 void loadMap() {
     POINT* initialLocation = ReadFromMap();
-    linkMapGraph();
+    // linkMapGraph();
     for (int i = 0 ; i < 4 ; i++)
         makeMatrix(MAP_SIZE_X,MAP_SIZE_Y,&map[i]);
     for (int a = 0 ; a < 4 ; a++) {
@@ -600,7 +600,7 @@ void prepDay() {
         else if (stringCompare("undo",CurrentInput)) {
             setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
             switch (actionUndo()) {
-                case 0:
+                case 0: // FIXME : Multimap undo
                     puts("Tidak ada aksi yang dapat diundo");
                     break;
                 case 1:

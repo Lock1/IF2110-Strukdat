@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "boolean.h"
-#include "listlinear.h"
+// #include "listlinear.h"
 
 struct node {
   int vertex;
