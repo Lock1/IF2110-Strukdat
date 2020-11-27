@@ -1,22 +1,37 @@
 // ADT Graf
 // 13519146 / Fadel Ananda Dotty
-#ifndef graph_H
-#define graph_H
+#ifndef GRAPH_H
+#define GRAPH_H
 
 #include <stdio.h>
 #include <stdlib.h>
 #include "boolean.h"
-#include "listlinear.h"
 
-struct node {
+typedef struct node* addrNode;
+
+typedef struct node {
   int vertex;
-  struct node* next;
-};
-struct node* createNode(int);
+  addrNode next;
+}node;
 
-struct Graph {
+typedef struct node** LIST;
+
+typedef struct Graph* addrGraph;
+
+typedef struct Graph {
   int numVertices;
-  struct node** adjLists;
-};
+  LIST adjLists;
+}Graph;
+
+#define Vertex(P) (P)->vertex
+#define Next(P) (P)->next
+#define NumVertices(G) (G)->numVertices
+#define AdjList(G) (G)->adjLists
+
+addrNode createNode(int);
+addrGraph createAGraph(int vertices);
+void addEdge(addrGraph graph, int src, int dst);
+void printGraph(addrGraph graph);
+boolean isGraphConnected(addrGraph graph, int src, int dest);
 
 #endif

@@ -4,65 +4,64 @@
 #include <stdio.h>
 #include <stdlib.h>
  
-// Adjascency List representation in C
-
-// Create a node
-struct node* createNode(int v) {
-  struct node* newNode = malloc(sizeof(struct node));
-  newNode->vertex = v;
-  newNode->next = NULL;
+// Membuat sebuah node dengan info berupa v
+addrNode createNode(int X) {
+  addrNode newNode = malloc(sizeof(node));
+  Vertex(newNode) = X;
+  Next(newNode) = NULL;
   return newNode;
 }
 
-// Create a graph
-struct Graph* createAGraph(int vertices) {
-  struct Graph* graph = malloc(sizeof(struct Graph));
-  graph->numVertices = vertices;
+// Membuat graph kosong dengan simpul sebanyak vertices
+addrGraph createAGraph(int vertices) {
+  addrGraph graph = malloc(sizeof(Graph));
+  NumVertices(graph) = vertices;
 
-  graph->adjLists = malloc(vertices * sizeof(struct node*));
+  AdjList(graph) = malloc(vertices * sizeof(addrNode));
 
-  int i;
-  for (i = 0; i < vertices; i++)
-    graph->adjLists[i] = NULL;
+  for (int i = 0; i < vertices; i++)
+    AdjList(graph)[i] = NULL;
 
   return graph;
 }
 
-// Add edge
-void addEdge(struct Graph* graph, int s, int d) {
-  // Add edge from s to d
-  struct node* newNode = createNode(d);
-  newNode->next = graph->adjLists[s];
-  graph->adjLists[s] = newNode;
+// Membuat sisi dari src ke dest
+void addEdge(addrGraph graph, int src, int dst) {
+  // dari src ke dest
+  addrNode newNode = createNode(dst);
+  Next(newNode) = AdjList(graph)[src];
+  AdjList(graph)[src] = newNode;
 
-  // Add edge from d to s
-  newNode = createNode(s);
-  newNode->next = graph->adjLists[d];
-  graph->adjLists[d] = newNode;
+  // dari dest ke src
+  newNode = createNode(src);
+  Next(newNode) = AdjList(graph)[dst];
+  AdjList(graph)[dst] = newNode;
 }
 
-// Print the graph
-void printGraph(struct Graph* graph) {
-  int v;
-  for (v = 0; v < graph->numVertices; v++) {
-    struct node* temp = graph->adjLists[v];
-    printf("\n Vertex %d\n: ", v);
+// Mengeprint graph yang telah dibuat
+void printGraph(addrGraph graph) {
+  for (int ver = 0; ver < NumVertices(graph); ver++) {
+    addrNode temp = AdjList(graph)[ver];
+    printf("\n Vertex %d\n: ", ver);
     while (temp) {
-      printf("%d -> ", temp->vertex);
-      temp = temp->next;
+      printf("%d -> ", Vertex(temp));
+      temp = Next(temp);
     }
     printf("\n");
   }
 }
 
-int main() {
-  struct Graph* graph = createAGraph(4);
-  addEdge(graph, 0, 1);
-  addEdge(graph, 0, 2);
-  addEdge(graph, 0, 3);
-  addEdge(graph, 1, 2);
-
-  printGraph(graph);
-
-  return 0;
+boolean isGraphConnected(addrGraph graph, int src, int dest){
+  for (int i=0; i < graph->numVertices; i++){
+    addrNode temp = AdjList(graph)[i];
+    if(i==src){
+      while(temp){
+        if (Vertex(temp)==dest)
+          return true;
+        else
+          temp=Next(temp);
+      }
+    }
+  }
+  return false;
 }
