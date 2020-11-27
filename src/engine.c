@@ -139,7 +139,7 @@ void loadMap() {
         }
     }
 
-    playerLocation = MakePOINT(Ordinat(initialLocation[0]), Absis(initialLocation[0])); // FIXME : Potential problem on Play day
+    playerLocation = MakePOINT(Ordinat(initialLocation[0]), Absis(initialLocation[0]));
     entityAt(map[0],Absis(initialLocation[0]),Ordinat(initialLocation[0])) = 1; // Player location
     occupiedAt(map[0],Absis(initialLocation[0]),Ordinat(initialLocation[0])) = true;
     entityAt(map[0],Absis(initialLocation[1]),Ordinat(initialLocation[1])) = 7; // Office location
@@ -153,9 +153,12 @@ void loadDatabase() {
     materialCount = ReadFromBahan(&materialDatabase);
     buildingCount = ReadFromWahana(&buildingDatabase,materialCount);
     upgradeCount = MakePohonUpgrade(&upgradeDatabase,buildingCount);
-    for (int i = 0 ; i < upgradeCount ; i++)
-        PrintTree(upgradeDatabase[i],5);
-    // printf("%d",upgradeDatabase[0])
+    // for (int i = 0 ; i < upgradeCount ; i++)
+    //     PrintTree(upgradeDatabase[i],5);
+    // printf("%d fffffffffffff\n",Akar(Left(upgradeDatabase[0])));
+    // printf("%d fffffffffffff\n",Akar(Right(upgradeDatabase[0])));
+    // printf("%d fffffffffffff\n",Akar(upgradeDatabase[0]));
+    // exit(1);
     // exit(1);
     // List test = MakeListDaun(upgradeDatabase[0]);
     // PrintList(test);
@@ -688,7 +691,6 @@ void prepDay() {
                 puts("Lokasi terpilih tidak dapat dibangun");
             }
         }
-
         else if (stringCompare("upgrade",CurrentInput)){
             boolean isEntityAt=occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation));
             setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
@@ -1102,7 +1104,6 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
         nframe[INFO_OFFSET_Y-1][INFO_OFFSET_X-1+i] = infotb[i];
         nframe[INFO_OFFSET_Y+INFO_SIZE_Y][INFO_OFFSET_X-1+i] = infobb[i];
     }
-
 }
 
 void drawLoading(int fdelay) {
