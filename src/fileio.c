@@ -23,6 +23,8 @@ int ReadFromWahana(Wahana** database, int materialCount){
 		char *temp;
 		sscanf(buffer,"%d %s %d %d %d %s %c", &w.ID, w.nama, &w.harga, &w.durasi, &w.kapasitas, w.deskripsi, &w.gambar);
 		w.materialArray = (int *) malloc(materialCount*sizeof(int));
+		// list L; // TODO : List ?
+		// w.materialArray = makeList(materialCount, &L);
 		if (w.ID < 120)
 			for (int i = 0 ; i < materialCount ; i++) {
 				temp = &buffer[73+i*2];
