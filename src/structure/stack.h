@@ -15,6 +15,7 @@ typedef struct acttpl {
     int eventPosX;
     int eventPosY;
     int actIdentifier;
+    int actionMap;
 } actionTuple;
 // Non used value set with -1
 

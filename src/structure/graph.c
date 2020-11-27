@@ -42,12 +42,12 @@ void addEdge(struct Graph* graph, int s, int d) {
 }
 
 boolean isGraphConnected(struct Graph G, int s, int d){
-  struct node* P=G->adjList[s];
+  struct node* P=G.adjLists[s];
   while (P!=NULL){
-    if (P->Next==G->adjList[d])
+    if (P->vertex==G.adjLists[d]->vertex)
       return true;
     else
-      P=P->Next;
+      P=P->next;
   }
   return false;
 }
@@ -55,9 +55,9 @@ boolean isGraphConnected(struct Graph G, int s, int d){
 // int main() {
 //   struct Graph* graph = createAGraph(4);
 //   addEdge(graph, 0, 1);
-//   addEdge(graph, 0, 2);
-//   addEdge(graph, 0, 3);
 //   addEdge(graph, 1, 2);
+//   addEdge(graph, 2, 3);
+//   addEdge(graph, 3, 0);
 
 //   printGraph(graph);
 

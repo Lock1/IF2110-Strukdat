@@ -481,11 +481,11 @@ int actionUndo() {
                 currentTime = NextNMenit(currentTime,1440-BUILD_TIME);
                 money += lastAction.actIdentifier;
                 actionGoldSum -= lastAction.actIdentifier;
-                actionTime -= BUILD_TIME;
-                destroyWahana(buildingAt(map[currentMap],lastAction.eventPosX,lastAction.eventPosY));
-                buildingAt(map[currentMap],lastAction.eventPosX,lastAction.eventPosY) = NULL;
-                entityAt(map[currentMap],lastAction.eventPosX,lastAction.eventPosY) = 0;
-                occupiedAt(map[currentMap],lastAction.eventPosX,lastAction.eventPosY) = false;
+                actionTime -= BUILD_TIME; // TODO : Refund material
+                destroyWahana(buildingAt(map[lastAction.actionMap],lastAction.eventPosX,lastAction.eventPosY));
+                buildingAt(map[lastAction.actionMap],lastAction.eventPosX,lastAction.eventPosY) = NULL;
+                entityAt(map[lastAction.actionMap],lastAction.eventPosX,lastAction.eventPosY) = 0;
+                occupiedAt(map[lastAction.actionMap],lastAction.eventPosX,lastAction.eventPosY) = false;
                 return 1;
                 break;
             case 2:
@@ -670,7 +670,7 @@ void prepDay() {
                             int buildCost = getHargaWahanaByID(buildingDatabase,tempID+19);
                             if (money >= buildCost) {
                                 // TODO : another layer of material checking
-                                actionTuple buildLog = { 1,tempID+19,Ordinat(cursorLocation),Absis(cursorLocation),buildCost };
+                                actionTuple buildLog = { 1,tempID+19,Ordinat(cursorLocation),Absis(cursorLocation),buildCost,currentMap };
                                 Push(&actionStack,buildLog);
                                 currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
                                 occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = true;
@@ -716,7 +716,7 @@ void prepDay() {
                             setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+4);
                             int buyCost = buyQuantity * getHargaMaterialByID(materialDatabase,tempID+9);
                             if (money >= buyCost) {
-                                actionTuple buyLog = { 3,tempID+9,-1,-1,buyQuantity };
+                                actionTuple buyLog = { 3,tempID+9,-1,-1,buyQuantity,-1 };
                                 Push(&actionStack,buyLog);
                                 setCountMaterialByID(materialDatabase,tempID+9,buyQuantity+getCountMaterialByID(materialDatabase,tempID+9));
                                 currentTime = NextNMenit(currentTime,BUY_TIME); // Buy time
@@ -785,8 +785,8 @@ void prepDay() {
             if (CurrentInput[0] == 'y') {
                 while (actionUndo());
                 break;
-            }
-        }
+            } // TODO : Port loading bar
+        } // TODO : Total rework frame buffer
         else if (stringCompare("color",CurrentInput)) {
             colorSchemeChange(30);
             forceDraw();
