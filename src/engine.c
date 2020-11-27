@@ -700,11 +700,20 @@ void prepDay() {
                     setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
                     if (integerInput(&tempID)){
                         if((tempID == Left(Akar(upgradeDatabase[ID]))) || (tempID == Right(Akar(upgradeDatabase[ID])))){
-                            int buildCost=
+                            int buildCost= getHargaWahanaByID(buildingDatabase, ) //fixme, dunno parameter
+                            if (money >= buildCost){
+                                boolean isMaterialEnough = true;
+                                if (isMaterialEnough){
 
+                                }
+                                else
+                                    puts("Maaf material tidak cukup");
+                            }
+                            else
+                                puts("Maaf uang tidak cukup");
                         }
                         else
-                            puts("ID tidak sesuai")
+                            puts("ID tidak sesuai");
                     }
                     else
                         puts("Pembangunan dibatalkan");
