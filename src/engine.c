@@ -477,7 +477,10 @@ int actionUndo() {
         Pop(&actionStack,&lastAction);
         actionCount--;
         switch (lastAction.actID) {
-            case 1:
+            case 1: {
+                Wahana selectedBuilding = buildingDatabase[getIndexByID(buildingDatabase,lastAction.entityID)];
+                for (int i = 0 ; i < materialCount ; i++)
+                    materialDatabase[i].material_count += selectedBuilding.materialArray[i];
                 currentTime = NextNMenit(currentTime,1440-BUILD_TIME);
                 money += lastAction.actIdentifier;
                 actionGoldSum -= lastAction.actIdentifier;
@@ -488,6 +491,7 @@ int actionUndo() {
                 occupiedAt(map[lastAction.actionMap],lastAction.eventPosX,lastAction.eventPosY) = false;
                 return 1;
                 break;
+            }
             case 2:
                 // TODO : Upgrade
                 return 2;
@@ -669,27 +673,38 @@ void prepDay() {
                         if ((tempID < 120) && searchWahanaByID(buildingDatabase,tempID+19)) {
                             int buildCost = getHargaWahanaByID(buildingDatabase,tempID+19);
                             if (money >= buildCost) {
-                                // TODO : another layer of material checking
-                                actionTuple buildLog = { 1,tempID+19,Ordinat(cursorLocation),Absis(cursorLocation),buildCost,currentMap };
-                                Push(&actionStack,buildLog);
-                                currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
-                                occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = true;
-                                entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
-                                buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = createWahanaByID(buildingDatabase,tempID+19);
-                                money -= buildCost;
-                                actionGoldSum += buildCost;
-                                actionCount++;
-                                actionTime += BUILD_TIME;
-                                puts("Wahana telah dibangun!");
+                                boolean isMaterialEnough = true;
+                                Wahana selectedBuilding = buildingDatabase[getIndexByID(buildingDatabase,tempID + 19)];
+                                // Warn : Direct access
+                                for (int i = 0 ; i < materialCount ; i++)
+                                    if (selectedBuilding.materialArray[i] > materialDatabase[i].material_count)
+                                        isMaterialEnough = false;
+                                if (isMaterialEnough) {
+                                    for (int i = 0 ; i < materialCount ; i++)
+                                        materialDatabase[i].material_count -= selectedBuilding.materialArray[i];
+                                    actionTuple buildLog = { 1,tempID+19,Ordinat(cursorLocation),Absis(cursorLocation),buildCost,currentMap };
+                                    Push(&actionStack,buildLog);
+                                    currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
+                                    occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = true;
+                                    entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
+                                    buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = createWahanaByID(buildingDatabase,tempID+19);
+                                    money -= buildCost;
+                                    actionGoldSum += buildCost;
+                                    actionCount++;
+                                    actionTime += BUILD_TIME;
+                                    puts("Wahana telah dibangun!");
+                                }
+                                else
+                                    puts("Maaf material tidak cukup");
                             }
                             else
-                            puts("Maaf uang tidak cukup");
+                                puts("Maaf uang tidak cukup");
                         }
                         else
-                        puts("ID Wahana tidak dapat ditemukan");
+                            puts("ID Wahana tidak dapat ditemukan");
                     }
                     else
-                    puts("Pembangunan dibatalkan");
+                        puts("Pembangunan dibatalkan");
                     drawLoading(20);
                     forceDraw();
                     unicodeDraw(1);

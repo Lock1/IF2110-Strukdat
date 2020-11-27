@@ -1,7 +1,7 @@
 //13519146 - Fadel Ananda Dotty
 //13519110 - M. Akromi Afif
 //13519046 - Dwianditya Hanif Raharjanto
-
+#include "../config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "boolean.h"
@@ -98,7 +98,7 @@ void destroyWahana(Wahana* w) {
 }
 
 boolean searchWahanaByID(Wahana* w, int ID){
-  for (int i=0; i<20; i++){
+  for (int i=0; i<WAHANA_MAX; i++){
     if (w[i].ID==ID){
       return true;
     }
@@ -107,7 +107,7 @@ boolean searchWahanaByID(Wahana* w, int ID){
 }
 
 int getHargaWahanaByID(Wahana* w, int ID){
-  for (int i=0; i<20; i++){
+  for (int i=0; i<WAHANA_MAX; i++){
         if (w[i].ID==ID){
             return w[i].harga;
         }
@@ -141,7 +141,7 @@ int getHargaWahanaByID(Wahana* w, int ID){
 //   return i;
 // }
 int getWahanaDurasiByID(Wahana* w, int ID){
-   for (int i=0; i<20; i++){
+   for (int i=0; i<WAHANA_MAX; i++){
      if (w[i].ID==ID){
        return w[i].durasi;
      }
@@ -150,7 +150,7 @@ int getWahanaDurasiByID(Wahana* w, int ID){
 }
 
 int getKapasitasByID(Wahana* w, int ID){
-  for (int i=0; i<20; i++){
+  for (int i=0; i<WAHANA_MAX; i++){
     if (w[i].ID==ID){
       return w[i].kapasitas;
     }
@@ -159,7 +159,7 @@ return 0;
 }
 
 int getFrekuensiByID(Wahana* w, int ID){
-  for (int i=0; i<20; i++){
+  for (int i=0; i<WAHANA_MAX; i++){
     if (w[i].ID==ID){
       return w[i].frekuensiHari;
     }
@@ -168,10 +168,19 @@ int getFrekuensiByID(Wahana* w, int ID){
 }
 
 int getStatusWahanaByID(Wahana* w, int ID){
-  for (int i=0; i<20; i++){
+  for (int i=0; i<WAHANA_MAX; i++){
     if (w[i].ID==ID){
       return w[i].statusWahana;
     }
   }
    return 0;
+}
+
+int getIndexByID(Wahana* w, int ID){
+  for (int i=0; i<WAHANA_MAX; i++){
+    if (w[i].ID==ID){
+      return i;
+    }
+  }
+return -1;
 }

@@ -65,6 +65,8 @@ boolean searchWahanaByID(Wahana* w, int ID);
 
 int getHargaWahanaByID(Wahana* w, int ID);
 
+int getIndexByID(Wahana* w, int ID);
+
 // int CountWahana();
 //
 // int CountAllWahana();
