@@ -74,6 +74,8 @@ int actionUndo();
 
 void printBuildList();
 
+void printUpgradeList();
+
 void printMaterialList();
 
 void printLegendList();

@@ -688,7 +688,25 @@ void prepDay() {
                 puts("Lokasi terpilih tidak dapat dibangun");
             }
         }
-        // else if (stringCompare("upgrade",CurrentInput))
+
+        else if (stringCompare("upgrade",CurrentInput)){
+            boolean isAtEntity=occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation));
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+            if (isAtEntity){
+                if ((Durasi(currentTime,cPlayTime)%1440 -UPGRADE_TIME) >= 0){
+                    printUpgradeList();
+                    int tempID;
+                    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+                    if (integerInput(&tempID)){
+                        if((tempID))
+                    }
+                    else
+                        puts("Pembangunan dibatalkan");
+                }
+                else
+                    puts("Maaf durasi waktu tidak cukup");
+            }
+        }
         //
         else if (stringCompare("buy",CurrentInput)) {
             setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
@@ -907,6 +925,20 @@ void printBuildList() {
     printf(BUILD_MATERIAL_PROC_4_END);
 
     puts("Masukkan ID yang ingin dibangun :");
+}
+
+void printUpgradeList(int ID_Wahana){
+    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+3);
+    // First Table
+    puts(UPGRADE_TITLE);
+    puts(UPGRADE_LIST_1);
+    puts(UPGRADE_LIST_2);
+    puts(UPGRADE_LIST_3);
+    int ID=getIndexByID(buildingDatabase, ID_Wahana);
+    printf(UPGRADE_LIST_4, Left(Akar(upgradeDatabase[ID])), buildingDatabase[ID].nama, buildingDatabase[ID].harga, buildingDatabase[ID].durasi, buildingDatabase[ID].kapasitas, buildingDatabase[ID].deskripsi);
+    printf(UPGRADE_LIST_4, Right(Akar(upgradeDatabase[ID])), buildingDatabase[ID].nama, buildingDatabase[ID].harga, buildingDatabase[ID].durasi, buildingDatabase[ID].kapasitas, buildingDatabase[ID].deskripsi);
+    printf(UPGRADE_LIST_5);
+    puts("Masukkan ID yang ingin dibeli :")
 }
 
 void printMaterialList() {
