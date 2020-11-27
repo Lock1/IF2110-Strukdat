@@ -49,6 +49,7 @@ Stack actionStack;
 int actionCount = 0;
 int actionGoldSum = 0;
 int currentMap = 0;
+int playerMapLocation = 0;
 char *colorScheme[3] = {COLOR_RESET,COLOR_BLACK,COLOR_WHITE};
 int currentColorScheme = 1;
 
@@ -138,7 +139,7 @@ void loadMap() {
         }
     }
 
-    playerLocation = MakePOINT(Absis(initialLocation[0]),Ordinat(initialLocation[0])); // FIXME : Potential problem on Play day
+    playerLocation = MakePOINT(Ordinat(initialLocation[0]), Absis(initialLocation[0])); // FIXME : Potential problem on Play day
     entityAt(map[0],Absis(initialLocation[0]),Ordinat(initialLocation[0])) = 1; // Player location
     occupiedAt(map[0],Absis(initialLocation[0]),Ordinat(initialLocation[0])) = true;
     entityAt(map[0],Absis(initialLocation[1]),Ordinat(initialLocation[1])) = 7; // Office location
@@ -348,6 +349,7 @@ void mapUpdate(int tp) {
                         mapframe[i][j] = buildingAt(map[currentMap],i,j)->gambar;
                     break;
             }
+
     // Draw cursor only on preparation phase
     if (tp == 1) {
         mapframe[Ordinat(cursorLocation)][Absis(cursorLocation)] = 'x';
@@ -355,57 +357,9 @@ void mapUpdate(int tp) {
         // puts("\u2588");
     }
 
-    // Move map checking
-    if (tp == 1 || tp == 2) {
-        // for (int i = 0 ; i < 3 ; i++) {
-            // Due the way graph implemented,
-            // theres no way to convey a position with it
-            // if (isGraphConnected(2,1));
-            // {
-                // switch (currentMap) {
-                //     case 0:
-                //         mapframe[MAP_SIZE_Y/2][MAP_SIZE_X-1] = '>';
-                //         mapframe[MAP_SIZE_Y/2-1][MAP_SIZE_X-1] = '>';
-                //         mapframe[MAP_SIZE_Y/2+1][MAP_SIZE_X-1] = '>';
-                //
-                //         mapframe[MAP_SIZE_Y-1][MAP_SIZE_X/2] = 'v';
-                //         mapframe[MAP_SIZE_Y-1][MAP_SIZE_X/2-1] = 'v';
-                //         mapframe[MAP_SIZE_Y-1][MAP_SIZE_X/2-2] = 'v';
-                //         break;
-                //     case 1:
-                //         mapframe[MAP_SIZE_Y/2][0] = '<';
-                //         mapframe[MAP_SIZE_Y/2-1][0] = '<';
-                //         mapframe[MAP_SIZE_Y/2+1][0] = '<';
-                //
-                //         mapframe[MAP_SIZE_Y-1][MAP_SIZE_X/2] = 'v';
-                //         mapframe[MAP_SIZE_Y-1][MAP_SIZE_X/2-1] = 'v';
-                //         mapframe[MAP_SIZE_Y-1][MAP_SIZE_X/2-2] = 'v';
-                //         break;
-                //     case 2:
-                //         mapframe[0][MAP_SIZE_X/2] = '^';
-                //         mapframe[0][MAP_SIZE_X/2-1] = '^';
-                //         mapframe[0][MAP_SIZE_X/2-2] = '^';
-                //
-                //         mapframe[MAP_SIZE_Y/2][MAP_SIZE_X-1] = '>';
-                //         mapframe[MAP_SIZE_Y/2-1][MAP_SIZE_X-1] = '>';
-                //         mapframe[MAP_SIZE_Y/2+1][MAP_SIZE_X-1] = '>';
-                //         break;
-                //     case 3:
-                //         mapframe[0][MAP_SIZE_X/2] = '^';
-                //         mapframe[0][MAP_SIZE_X/2-1] = '^';
-                //         mapframe[0][MAP_SIZE_X/2-2] = '^';
-                //
-                //         mapframe[MAP_SIZE_Y/2][0] = '<';
-                //         mapframe[MAP_SIZE_Y/2-1][0] = '<';
-                //         mapframe[MAP_SIZE_Y/2+1][0] = '<';
-                //         break;
-                // }
-                // FIXME : BUGGED CALL
-            // }
-        // }
-
+    else if (tp == 2) {
+        mapframe[Ordinat(playerLocation)][Absis(playerLocation)] = '@';
     }
-
 
      // TODO : Let unique UNICODE char print as '*' at background
     for (int i = 0 ; i < MAP_SIZE_Y ; i++)
@@ -524,116 +478,116 @@ int actionUndo() {
         return 0;
 }
 
-void moveCursor(char input) {
+void moveCursor(POINT* movingObject, char input) {
     switch (input) {
         case 'w':
-            if (1 < Ordinat(cursorLocation))
-                Geser(&cursorLocation,0,-1);
+            if (1 < Ordinat(*movingObject))
+                Geser(movingObject,0,-1);
             break;
         case 'a':
-            if (Absis(cursorLocation) > 1 && input == 'a')
-                Geser(&cursorLocation,-1,0);
+            if (Absis(*movingObject) > 1 && input == 'a')
+                Geser(movingObject,-1,0);
             break;
         case 's':
-            if (Ordinat(cursorLocation) < MAP_SIZE_Y - 2)
-                Geser(&cursorLocation,0,1);
+            if (Ordinat(*movingObject) < MAP_SIZE_Y - 2)
+                Geser(movingObject,0,1);
             break;
         case 'd':
-            if (Absis(cursorLocation) < MAP_SIZE_X - 2)
-                Geser(&cursorLocation,1,0);
+            if (Absis(*movingObject) < MAP_SIZE_X - 2)
+                Geser(movingObject,1,0);
             break;
     }
 }
 
-void moveMap(char input) {
+void moveMap(POINT* movingObject, char input, int drawMode) {
     switch (currentMap) {
         case 0:
             // Right arrow
-            if (Absis(cursorLocation) == (MAP_SIZE_X - 2) && input == 'd') {
+            if (Absis(*movingObject) == (MAP_SIZE_X - 2) && input == 'd') {
                 if (isGraphConnected(mapGraph,0,1))
-                    if ((MAP_SIZE_Y / 2 - 1) <= Ordinat(cursorLocation) && Ordinat(cursorLocation) <= (MAP_SIZE_Y / 2 + 1)) {
+                    if ((MAP_SIZE_Y / 2 - 1) <= Ordinat(*movingObject) && Ordinat(*movingObject) <= (MAP_SIZE_Y / 2 + 1)) {
                         currentMap = 1;
-                        Geser(&cursorLocation,3-MAP_SIZE_X,0); //-= (MAP_SIZE_X - 3);
-                        unicodeDraw(1);
+                        Geser(movingObject,3-MAP_SIZE_X,0); //-= (MAP_SIZE_X - 3);
+                        unicodeDraw(drawMode);
                     }
             }
             // Down arrow
-            else if (Ordinat(cursorLocation) == (MAP_SIZE_Y - 2) && input == 's') {
+            else if (Ordinat(*movingObject) == (MAP_SIZE_Y - 2) && input == 's') {
                 if (isGraphConnected(mapGraph,0,2))
-                    if ((MAP_SIZE_X / 2 - 3) <= Absis(cursorLocation) && Absis(cursorLocation) <= (MAP_SIZE_X / 2 + 1)) {
+                    if ((MAP_SIZE_X / 2 - 3) <= Absis(*movingObject) && Absis(*movingObject) <= (MAP_SIZE_X / 2 + 1)) {
                         currentMap = 2;
-                        Geser(&cursorLocation,0,3-MAP_SIZE_Y);
-                        unicodeDraw(1);
+                        Geser(movingObject,0,3-MAP_SIZE_Y);
+                        unicodeDraw(drawMode);
                     }
             }
             else
-                moveCursor(input);
+                moveCursor(movingObject,input);
             break;
         case 1:
             // Left arrow
-            if (Absis(cursorLocation) == 1 && input == 'a') {
+            if (Absis(*movingObject) == 1 && input == 'a') {
                 if (isGraphConnected(mapGraph,1,0))
-                    if ((MAP_SIZE_Y / 2 - 1) <= Ordinat(cursorLocation) && Ordinat(cursorLocation) <= (MAP_SIZE_Y / 2 + 1)) {
+                    if ((MAP_SIZE_Y / 2 - 1) <= Ordinat(*movingObject) && Ordinat(*movingObject) <= (MAP_SIZE_Y / 2 + 1)) {
                         currentMap = 0;
-                        Geser(&cursorLocation,MAP_SIZE_X-3,0);
-                        unicodeDraw(1);
+                        Geser(movingObject,MAP_SIZE_X-3,0);
+                        unicodeDraw(drawMode);
                     }
             }
             // Down arrow
-            else if (Ordinat(cursorLocation) == (MAP_SIZE_Y - 2) && input == 's') {
+            else if (Ordinat(*movingObject) == (MAP_SIZE_Y - 2) && input == 's') {
                 if (isGraphConnected(mapGraph,1,3))
-                    if ((MAP_SIZE_X / 2 - 3) <= Absis(cursorLocation) && Absis(cursorLocation) <= (MAP_SIZE_X / 2 + 1)) {
+                    if ((MAP_SIZE_X / 2 - 3) <= Absis(*movingObject) && Absis(*movingObject) <= (MAP_SIZE_X / 2 + 1)) {
                         currentMap = 3;
-                        Geser(&cursorLocation,0,3-MAP_SIZE_Y);
-                        unicodeDraw(1);
+                        Geser(movingObject,0,3-MAP_SIZE_Y);
+                        unicodeDraw(drawMode);
                     }
             }
             else
-                moveCursor(input);
+                moveCursor(movingObject,input);
             break;
         case 2:
             // Right arrow
-            if (Absis(cursorLocation) == (MAP_SIZE_X - 2) && input == 'd') {
+            if (Absis(*movingObject) == (MAP_SIZE_X - 2) && input == 'd') {
                 if (isGraphConnected(mapGraph,2,3))
-                    if ((MAP_SIZE_Y / 2 - 1) <= Ordinat(cursorLocation) && Ordinat(cursorLocation) <= (MAP_SIZE_Y / 2 + 1)) {
+                    if ((MAP_SIZE_Y / 2 - 1) <= Ordinat(*movingObject) && Ordinat(*movingObject) <= (MAP_SIZE_Y / 2 + 1)) {
                         currentMap = 3;
-                        Geser(&cursorLocation,3-MAP_SIZE_X,0); //-= (MAP_SIZE_X - 3);
-                        unicodeDraw(1);
+                        Geser(movingObject,3-MAP_SIZE_X,0); //-= (MAP_SIZE_X - 3);
+                        unicodeDraw(drawMode);
                     }
             }
             // Up arrow
-            else if (Ordinat(cursorLocation) == 1 && input == 'w') {
+            else if (Ordinat(*movingObject) == 1 && input == 'w') {
                 if (isGraphConnected(mapGraph,2,0))
-                    if ((MAP_SIZE_X / 2 - 3) <= Absis(cursorLocation) && Absis(cursorLocation) <= (MAP_SIZE_X / 2 + 1)) {
+                    if ((MAP_SIZE_X / 2 - 3) <= Absis(*movingObject) && Absis(*movingObject) <= (MAP_SIZE_X / 2 + 1)) {
                         currentMap = 0;
-                        Geser(&cursorLocation,0,MAP_SIZE_Y-3);
-                        unicodeDraw(1);
+                        Geser(movingObject,0,MAP_SIZE_Y-3);
+                        unicodeDraw(drawMode);
                     }
             }
             else
-                moveCursor(input);
+                moveCursor(movingObject,input);
             break;
         case 3:
             // Top arrow
-            if (Ordinat(cursorLocation) == 1 && input == 'w') {
+            if (Ordinat(*movingObject) == 1 && input == 'w') {
                 if (isGraphConnected(mapGraph,3,1))
-                    if ((MAP_SIZE_X / 2 - 3) <= Absis(cursorLocation) && Absis(cursorLocation) <= (MAP_SIZE_X / 2 + 1)) {
+                    if ((MAP_SIZE_X / 2 - 3) <= Absis(*movingObject) && Absis(*movingObject) <= (MAP_SIZE_X / 2 + 1)) {
                         currentMap = 1;
-                        Geser(&cursorLocation,0,MAP_SIZE_Y-3);
-                        unicodeDraw(1);
+                        Geser(movingObject,0,MAP_SIZE_Y-3);
+                        unicodeDraw(drawMode);
                     }
             }
             // Left arrow
-            else if (Absis(cursorLocation) == 1 && input == 'a') {
+            else if (Absis(*movingObject) == 1 && input == 'a') {
                 if (isGraphConnected(mapGraph,3,2))
-                    if ((MAP_SIZE_Y / 2 - 1) <= Ordinat(cursorLocation) && Ordinat(cursorLocation) <= (MAP_SIZE_Y / 2 + 1)) {
+                    if ((MAP_SIZE_Y / 2 - 1) <= Ordinat(*movingObject) && Ordinat(*movingObject) <= (MAP_SIZE_Y / 2 + 1)) {
                         currentMap = 2;
-                        Geser(&cursorLocation,MAP_SIZE_X-3,0);
-                        unicodeDraw(1);
+                        Geser(movingObject,MAP_SIZE_X-3,0);
+                        unicodeDraw(drawMode);
                     }
             }
             else
-                moveCursor(input);
+                moveCursor(movingObject,input);
             break;
     }
 }
@@ -857,7 +811,7 @@ void prepDay() {
             unicodeDraw(1);
         }
         else if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd')
-            moveMap(CurrentInput[0]);
+            moveMap(&cursorLocation, CurrentInput[0], 1);
     }
 }
 
@@ -865,15 +819,38 @@ void playDay() {
     frameSet(2);
     infoUpdate(2);
     mapUpdate(2);
+    currentMap = playerMapLocation;
+    entityAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)) = 0;
+    occupiedAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)) = false;
+
     forceDraw();
     unicodeDraw(2);
     // LOOP
+    while (true) {
+        infoUpdate(2);
+        mapUpdate(2);
+        draw();
+        // Positioning for user input
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+        wordInput();
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+        puts("                   ");
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+        puts("                                                 ");
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+        // Set cursor pos for repeated input, which can cause weird overwrite
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+        if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd')
+            moveMap(&playerLocation, CurrentInput[0], 2);
+        else if (stringCompare("ff",CurrentInput))
+            break;
 
+    }
     // DEBUG
-    setCursorPosition(0, MAP_OFFSET_Y + MAP_SIZE_Y+2);
-    drawLoading(40);
     // DEBUG STOP
-
+    playerMapLocation = currentMap;
+    entityAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)) = 1;
+    occupiedAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)) = true;
     currentDay++;
 }
 
