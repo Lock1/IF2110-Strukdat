@@ -691,12 +691,40 @@ void prepDay() {
                 puts("Lokasi terpilih tidak dapat dibangun");
             }
         }
-        else if (stringCompare("upgrade",CurrentInput)) {
-            boolean isAreaUpgradeable = occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation));
-            // isAreaBuildable = 2;
+        else if (stringCompare("upgrade",CurrentInput)){
+            boolean isEntityAt=occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation));
             setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
-        }
+            if (isEntityAt){
+                if ((Durasi(currentTime,cPlayTime)%1440 -UPGRADE_TIME) >= 0){
+                    printUpgradeList(entityAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)));
+                    int tempID;
+                    int ID=getIndexByID(buildingDatabase, entityAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)));
+                    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+                    if (integerInput(&tempID)){
+                        if((tempID == Left(Akar(upgradeDatabase[ID]))) || (tempID == Right(Akar(upgradeDatabase[ID])))){
+                            int buildCost= getHargaWahanaByID(buildingDatabase, ) //fixme, dunno parameter
+                            if (money >= buildCost){
+                                boolean isMaterialEnough = true;
+                                if (isMaterialEnough){
 
+                                }
+                                else
+                                    puts("Maaf material tidak cukup");
+                            }
+                            else
+                                puts("Maaf uang tidak cukup");
+                        }
+                        else
+                            puts("ID tidak sesuai");
+                    }
+                    else
+                        puts("Pembangunan dibatalkan");
+                }
+                else
+                    puts("Maaf durasi waktu tidak cukup");
+            }
+        }
+        //
         else if (stringCompare("buy",CurrentInput)) {
             setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
             if ((Durasi(currentTime,cPlayTime)%1440 - BUY_TIME) >= 0) {
@@ -914,6 +942,20 @@ void printBuildList() {
     printf(BUILD_MATERIAL_PROC_4_END);
 
     puts("Masukkan ID yang ingin dibangun :");
+}
+
+void printUpgradeList(int ID_Wahana){
+    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+3);
+    // First Table
+    puts(UPGRADE_TITLE);
+    puts(UPGRADE_LIST_1);
+    puts(UPGRADE_LIST_2);
+    puts(UPGRADE_LIST_3);
+    int ID=getIndexByID(buildingDatabase, ID_Wahana);
+    printf(UPGRADE_LIST_4, Akar(Left(upgradeDatabase[ID])), buildingDatabase[ID].nama, buildingDatabase[ID].harga, buildingDatabase[ID].durasi, buildingDatabase[ID].kapasitas, buildingDatabase[ID].deskripsi);
+    printf(UPGRADE_LIST_4, Akar(Right(upgradeDatabase[ID])), buildingDatabase[ID].nama, buildingDatabase[ID].harga, buildingDatabase[ID].durasi, buildingDatabase[ID].kapasitas, buildingDatabase[ID].deskripsi);
+    printf(UPGRADE_LIST_5);
+    puts("Masukkan ID yang ingin dibeli :");
 }
 
 void printMaterialList() {
