@@ -7,11 +7,11 @@
 #include <stdlib.h>
 #include "boolean.h"
 
-typedef struct node* addrNode;
+typedef struct node* addressGraphNode;
 
 typedef struct node {
   int vertex;
-  addrNode next;
+  addressGraphNode next;
 }node;
 
 typedef struct node** LIST;
@@ -28,7 +28,7 @@ typedef struct Graph {
 #define NumVertices(G) (G)->numVertices
 #define AdjList(G) (G)->adjLists
 
-addrNode createNode(int);
+addressGraphNode createNode(int);
 addrGraph createAGraph(int vertices);
 void addEdge(addrGraph graph, int src, int dst);
 void printGraph(addrGraph graph);
