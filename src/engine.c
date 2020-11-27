@@ -690,15 +690,21 @@ void prepDay() {
         }
 
         else if (stringCompare("upgrade",CurrentInput)){
-            boolean isAtEntity=occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation));
+            boolean isEntityAt=occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation));
             setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
-            if (isAtEntity){
+            if (isEntityAt){
                 if ((Durasi(currentTime,cPlayTime)%1440 -UPGRADE_TIME) >= 0){
-                    printUpgradeList();
+                    printUpgradeList(entityAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)));
                     int tempID;
+                    int ID=getIndexByID(buildingDatabase, entityAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)));
                     setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
                     if (integerInput(&tempID)){
-                        if((tempID))
+                        if((tempID == Left(Akar(upgradeDatabase[ID]))) || (tempID == Right(Akar(upgradeDatabase[ID])))){
+                            int buildCost=
+
+                        }
+                        else
+                            puts("ID tidak sesuai")
                     }
                     else
                         puts("Pembangunan dibatalkan");
@@ -935,10 +941,10 @@ void printUpgradeList(int ID_Wahana){
     puts(UPGRADE_LIST_2);
     puts(UPGRADE_LIST_3);
     int ID=getIndexByID(buildingDatabase, ID_Wahana);
-    printf(UPGRADE_LIST_4, Left(Akar(upgradeDatabase[ID])), buildingDatabase[ID].nama, buildingDatabase[ID].harga, buildingDatabase[ID].durasi, buildingDatabase[ID].kapasitas, buildingDatabase[ID].deskripsi);
-    printf(UPGRADE_LIST_4, Right(Akar(upgradeDatabase[ID])), buildingDatabase[ID].nama, buildingDatabase[ID].harga, buildingDatabase[ID].durasi, buildingDatabase[ID].kapasitas, buildingDatabase[ID].deskripsi);
+    printf(UPGRADE_LIST_4, Akar(Left(upgradeDatabase[ID])), buildingDatabase[ID].nama, buildingDatabase[ID].harga, buildingDatabase[ID].durasi, buildingDatabase[ID].kapasitas, buildingDatabase[ID].deskripsi);
+    printf(UPGRADE_LIST_4, Akar(Right(upgradeDatabase[ID])), buildingDatabase[ID].nama, buildingDatabase[ID].harga, buildingDatabase[ID].durasi, buildingDatabase[ID].kapasitas, buildingDatabase[ID].deskripsi);
     printf(UPGRADE_LIST_5);
-    puts("Masukkan ID yang ingin dibeli :")
+    puts("Masukkan ID yang ingin dibeli :");
 }
 
 void printMaterialList() {
