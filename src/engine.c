@@ -664,28 +664,62 @@ int actionUndo() {
 }
 
 // -- Movement function --
-void moveCursor(POINT* movingObject, char input) {
-    switch (input) {
-        case 'w':
-            if (1 < Ordinat(*movingObject))
-                Geser(movingObject,0,-1);
-            break;
-        case 'a':
-            if (Absis(*movingObject) > 1 && input == 'a')
-                Geser(movingObject,-1,0);
-            break;
-        case 's':
-            if (Ordinat(*movingObject) < MAP_SIZE_Y - 2)
-                Geser(movingObject,0,1);
-            break;
-        case 'd':
-            if (Absis(*movingObject) < MAP_SIZE_X - 2)
-                Geser(movingObject,1,0);
-            break;
+void moveCursor(POINT* movingObject, char input, boolean collision) {
+    // FIXME : Collision in edge of map
+    // TODO : Collison interaction
+    if (collision) {
+        switch (input) {
+            case 'w': {
+                boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject) - 1, Absis(*movingObject));
+                if (1 < Ordinat(*movingObject) && isTraversable)
+                    Geser(movingObject,0,-1);
+                break;
+            }
+            case 'a': {
+                boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) - 1);
+                if (Absis(*movingObject) > 1 && isTraversable)
+                    Geser(movingObject,-1,0);
+                // TODO : add detail + office here
+                break;
+            }
+            case 's': {
+                boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject) + 1, Absis(*movingObject));
+                if (Ordinat(*movingObject) < MAP_SIZE_Y - 2 && isTraversable)
+                    Geser(movingObject,0,1);
+                break;
+            }
+            case 'd': {
+                boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) + 1);
+                if (Absis(*movingObject) < MAP_SIZE_X - 2 && isTraversable)
+                    Geser(movingObject,1,0);
+                break;
+            }
+        }
+    }
+
+    else {
+        switch (input) {
+            case 'w':
+                if (1 < Ordinat(*movingObject))
+                    Geser(movingObject,0,-1);
+                break;
+            case 'a':
+                if (Absis(*movingObject) > 1)
+                    Geser(movingObject,-1,0);
+                break;
+            case 's':
+                if (Ordinat(*movingObject) < MAP_SIZE_Y - 2)
+                    Geser(movingObject,0,1);
+                break;
+            case 'd':
+                if (Absis(*movingObject) < MAP_SIZE_X - 2)
+                    Geser(movingObject,1,0);
+                break;
+        }
     }
 }
 
-void moveMap(POINT* movingObject, char input, int drawMode) {
+void moveMap(POINT* movingObject, char input, int drawMode, boolean collision) {
     switch (currentMap) {
         case 0:
             // Right arrow
@@ -707,7 +741,7 @@ void moveMap(POINT* movingObject, char input, int drawMode) {
                     }
             }
             else
-                moveCursor(movingObject,input);
+                moveCursor(movingObject,input,collision);
             break;
         case 1:
             // Left arrow
@@ -729,7 +763,7 @@ void moveMap(POINT* movingObject, char input, int drawMode) {
                     }
             }
             else
-                moveCursor(movingObject,input);
+                moveCursor(movingObject,input,collision);
             break;
         case 2:
             // Right arrow
@@ -751,7 +785,7 @@ void moveMap(POINT* movingObject, char input, int drawMode) {
                     }
             }
             else
-                moveCursor(movingObject,input);
+                moveCursor(movingObject,input,collision);
             break;
         case 3:
             // Top arrow
@@ -773,7 +807,7 @@ void moveMap(POINT* movingObject, char input, int drawMode) {
                     }
             }
             else
-                moveCursor(movingObject,input);
+                moveCursor(movingObject,input,collision);
             break;
     }
 }
@@ -832,11 +866,10 @@ void prepDay() {
             upgradeBuilding();
         else if (stringCompare("buy",CurrentInput))
             buyMaterial();
-
         else if (stringCompare("undo",CurrentInput)) {
             setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
             switch (actionUndo()) {
-                case 0: // FIXME : Multimap undo
+                case 0:
                     puts("Tidak ada aksi yang dapat diundo");
                     break;
                 case 1:
@@ -888,6 +921,7 @@ void prepDay() {
             unicodeDraw(1);
         }
         else if (stringCompare("db",CurrentInput)) {
+            // DEBUG only
             setCountMaterialByID(materialDatabase,10,10+getCountMaterialByID(materialDatabase,10));
             setCountMaterialByID(materialDatabase,11,10+getCountMaterialByID(materialDatabase,11));
             setCountMaterialByID(materialDatabase,12,10+getCountMaterialByID(materialDatabase,12));
@@ -919,7 +953,7 @@ void prepDay() {
             unicodeDraw(1);
         }
         else if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd')
-            moveMap(&cursorLocation, CurrentInput[0], 1);
+            moveMap(&cursorLocation, CurrentInput[0], 1, false);
     }
 }
 
@@ -948,10 +982,60 @@ void playDay() {
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
         // Set cursor pos for repeated input, which can cause weird overwrite
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
-        if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd')
-            moveMap(&playerLocation, CurrentInput[0], 2);
-        else if (stringCompare("ff",CurrentInput))
-            break;
+
+
+
+        if (stringCompare("serve",CurrentInput)) {
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+            puts("nothing");
+        }
+        else if (stringCompare("color",CurrentInput)) {
+            colorSchemeChange(30);
+            forceDraw();
+            unicodeDraw(2);
+        }
+        else if (stringCompare("legend",CurrentInput)) {
+            printLegendList(1); // ??
+            puts("Tekan enter untuk melanjutkan");
+            wordInput();
+            forceDraw();
+            unicodeDraw(2);
+        }
+        else if (stringCompare("quit",CurrentInput)) {
+            // TODO ADD ASCII
+            system(CLSCRN);
+            setCursorPosition(0,0);
+
+            puts("Are you sure? (y/n)");
+            wordInput();
+            if (CurrentInput[0] == 'y')
+                endGame();
+            else {
+                forceDraw();
+                unicodeDraw(2);
+            }
+        }
+        else if (stringCompare(key,CurrentInput)) {
+            system(CLSCRN);
+            money += 1000;
+            setCursorPosition(0,0);
+            puts(wait);
+            puts(pressf);
+            delay(1500);
+            forceDraw();
+            unicodeDraw(2);
+        }
+        else if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd')
+            moveMap(&playerLocation, CurrentInput[0], 2, true);
+        else if (stringCompare("prepare",CurrentInput)) {
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+            puts("Apakah anda yakin untuk mengosongkan antrian dan mulai preparation? (y/n)");
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+            wordInput();
+            if (CurrentInput[0] == 'y')
+                break;
+                // TODO : Port loading bar
+        }
 
     }
     // DEBUG
