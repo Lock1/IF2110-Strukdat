@@ -61,6 +61,7 @@ BinTree* upgradeDatabase;
 Wahana** currentBuildingDatabase;
 POINT* buildingLocationDatabase;
 addrGraph mapGraph;
+PrioQueueChar playQueue;
 
 // -------------------------------------------------------
 
@@ -163,6 +164,7 @@ void loadDatabase() {
     upgradeCount = MakePohonUpgrade(&upgradeDatabase,buildingCount); // TODO : Fix
     currentBuildingDatabase = (Wahana**) malloc(MAX_WAHANA*sizeof(Wahana*));
     buildingLocationDatabase = (POINT*) malloc(MAX_WAHANA*sizeof(POINT));
+    MakeEmptyQueue(&playQueue,5);
     // for (int i = 0 ; i < upgradeCount ; i++)
     //     PrintTree(upgradeDatabase[i],5);
     // printf("%d fffffffffffff\n",Akar(Left(upgradeDatabase[0])));
@@ -330,6 +332,13 @@ void infoUpdate(int tp) {
                 break;
             else
                 infoframe[9][INFO_BLOCK_SIZE+i+1] = actionString[i];
+    }
+
+    else if (tp == 2) {
+        // TODO : Put queue here
+        for (int i = 0 ; i < 5 ; i++)
+            for (int j = 0 ; j < INFO_SIZE_X ; j++)
+                infoframe[7+i][j] = ' ';
     }
 
     // Moving info frame to next frame buffer
@@ -716,7 +725,7 @@ void getDetails() {
     }
 }
 
-void getLaporan(){
+void getLaporan() {
     if (currentBuildingCount > 0) {
         setCursorPosition(0,MAP_OFFSET_Y + MAP_SIZE_Y + 3);
         puts(LAPORAN_WAHANA_TITLE);
@@ -760,29 +769,23 @@ void repairBuilding(int posX, int posY) {
     else
         printf("%s tidak rusak", (*selectedBuilding).nama);
 }
-// DEBUG
+// DEBUG for checking repair
 void destroy() {
     for (int i = 0 ; i < currentBuildingCount ; i++)
         (*currentBuildingDatabase[i]).statusWahana = 0;
 }
-void buildingCollisionPrompt(int posX, int posY) {
-    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
-    printf("Ketik detail / repair / cancel");
-    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
-    wordInput();
-    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
-    puts("                   ");
-    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
-    puts("                                                 ");
-    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
-    // Set cursor pos for repeated input, which can cause weird overwrite
-    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
-    if (stringCompare("detail",CurrentInput))
-        printDetail(posX, posY, 2);
-    else if (stringCompare("repair",CurrentInput))
-        repairBuilding(posX, posY);
-}
 
+void generateNewCustomer() {
+    int rollValue = random() % 100;
+    if (!QueIsFull(playQueue) && currentBuildingCount > 0 && rollValue < 5) {
+        queueElmtType newCustomer;
+        // TODO : Temporary using 2 building only
+        newCustomer.prio = 1;
+        newCustomer.info[0] = random() % (currentBuildingCount - 1);
+        newCustomer.info[1] = random() % (currentBuildingCount - 1);
+        Enqueue(&playQueue,newCustomer);
+    }
+}
 
 // -- Movement function --
 void moveCursor(POINT* movingObject, char input, boolean collision) {
@@ -942,6 +945,27 @@ void moveMap(POINT* movingObject, char input, int drawMode, boolean collision) {
     }
 }
 
+
+void buildingCollisionPrompt(int posX, int posY) {
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+    printf("Ketik detail / repair / cancel");
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+    wordInput();
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+    puts("                   ");
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+    puts("                                                 ");
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+    // Set cursor pos for repeated input, which can cause weird overwrite
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+    if (stringCompare("detail",CurrentInput))
+        printDetail(posX, posY, 2);
+    else if (stringCompare("repair",CurrentInput))
+        repairBuilding(posX, posY);
+}
+
+
+
 // TODO : Move between map
 void prepDay() {
     // Preparation day references
@@ -955,6 +979,7 @@ void prepDay() {
     Every action logged on actionTuple,
     check stack.h for more information
     */
+    currentTime = cPrepTime;
     frameSet(1);
     forceDraw();
     unicodeDraw(1);
@@ -1058,7 +1083,7 @@ void prepDay() {
             setCountMaterialByID(materialDatabase,13,10+getCountMaterialByID(materialDatabase,13));
             setCountMaterialByID(materialDatabase,14,10+getCountMaterialByID(materialDatabase,14));
         }
-        else if (stringCompare("fff",CurrentInput))
+        else if (stringCompare("fff",CurrentInput)) // DEBUG
             getDetails();
         else if (stringCompare("ggg",CurrentInput))
             destroy();
@@ -1102,8 +1127,8 @@ void prepDay() {
 }
 
 void playDay() {
+    currentTime = cPlayTime;
     frameSet(2);
-    infoUpdate(2);
     mapUpdate(2);
     currentMap = playerMapLocation;
     entityAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)) = 0;
@@ -1128,6 +1153,11 @@ void playDay() {
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
 
 
+        // If input too long, force draw everything
+        if (LengthInput > 15) {
+            forceDraw();
+            unicodeDraw(2);
+        }
 
         if (stringCompare("serve",CurrentInput)) {
             setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
@@ -1435,7 +1465,12 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
     }
     else if (tp == 2) {
         infoBlock[4] = "Closing time   | ";
-        infoBlock[6] = "     ---------------- Queue -----------------     ";
+        infoBlock[6] = "     ---------------  Queue -----------------     ";
+        char* queueBlock;
+        queueBlock = "                                                  ";
+        for (int i = 0 ; i < 5 ; i++)
+            for (int j = 0 ; j < INFO_BLOCK_SIZE ; j++)
+                infoframe[7+i][j] = queueBlock[j];
         sprintf(endTime,"%d",Hour(cPrepTime));
     }
     endTime[2] = ':';
@@ -1635,10 +1670,9 @@ void unicodeDraw(int tp) {
             puts(INFO_VERTICAL_DASH);
         }
     }
-    setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y+12);
-    puts(INFO_WINDOW_SEP);
+
     setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y+13);
-    puts(INFO_BROKEN_BUILDING);
+    puts(INFO_BROKEN_BUILDING); // TODO : Add broken building
     setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y+INFO_SIZE_Y);
     puts(INFO_BOTTOM_UNICODE);
 
@@ -1652,13 +1686,18 @@ void unicodeDraw(int tp) {
             puts(PREP_DAY_TITLE_2);
             setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y+6);
             puts(INFO_PREP_WINDOW);
-
+            setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y+12);
+            puts(INFO_WINDOW_SEP);
             break;
         case 2:
             setCursorPosition(INFO_OFFSET_X+10,INFO_OFFSET_Y-4);
             puts(PLAY_DAY_TITLE_1);
             setCursorPosition(INFO_OFFSET_X+10,INFO_OFFSET_Y-3);
             puts(PLAY_DAY_TITLE_2);
+            setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y+6);
+            puts(INFO_PLAY_WINDOW);
+            setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y+12);
+            puts(INFO_WINDOW_SEP_PLAY);
             break;
     }
 }

@@ -94,10 +94,10 @@ Undo                              | :green_square:
 Spesifikasi                       | Status
 -----------                       | ------
 Serve                             | :red_square:
-Repair                            | :red_square:
-Detail                            | :red_square:
-Office                            | :red_square:
-Prepare                           | :red_square:
+Repair                            | :green_square:
+Detail                            | :green_square:
+Office                            | :green_square:
+Prepare                           | :green_square:
 
 **Struktur**
 Spesifikasi     | Status

@@ -7,10 +7,10 @@
 
 
 boolean QueIsFull (PrioQueueChar Q){
-    return (NBElmt(Q) == MaxEl(Q));
+    return (NBElmtQueue(Q) == QueueMaxEl(Q));
 }
 
-int NBElmt (PrioQueueChar Q){
+int NBElmtQueue (PrioQueueChar Q){
     if (!(Head(Q) || Tail(Q))) {
         return 0;
     }
@@ -18,60 +18,60 @@ int NBElmt (PrioQueueChar Q){
         return (Tail(Q)-Head(Q) + 1);
     }
     else{
-        return (MaxEl(Q)-Head(Q) + Tail(Q) + 1);
+        return (QueueMaxEl(Q)-Head(Q) + Tail(Q) + 1);
     }
 }
 
-void MakeEmpty (PrioQueueChar * Q, int Max){
-    (*Q).T = (infotype *) malloc ((Max) * sizeof(infotype));
+void MakeEmptyQueue (PrioQueueChar * Q, int Max){
+    (*Q).T = (queueElmtType *) malloc ((Max) * sizeof(queueElmtType));
     if ((*Q).T != NULL){
-        MaxEl(*Q) = Max;
-        Head(*Q) = Nil;
-        Tail(*Q) = Nil;
+        QueueMaxEl(*Q) = Max;
+        Head(*Q) = QueueNil;
+        Tail(*Q) = QueueNil;
     } else {
-        MaxEl(*Q) = 0;
+        QueueMaxEl(*Q) = 0;
     }
 
 }
 
-void DeAlokasi(PrioQueueChar * Q){
+void QueueDealokasi(PrioQueueChar * Q){
     free((*Q).T);
-    MaxEl(*Q) = 0;
+    QueueMaxEl(*Q) = 0;
 }
 
-void Enqueue (PrioQueueChar * Q, infotype X){
-    if(Head(*Q) == Nil)   Head(*Q) = 0;
-    Tail(*Q) = (Tail(*Q) + 1) % MaxEl(*Q);
-    InfoTail(*Q) = X;
+void Enqueue (PrioQueueChar * Q, queueElmtType X){
+    if(Head(*Q) == QueueNil)   Head(*Q) = 0;
+    Tail(*Q) = (Tail(*Q) + 1) % QueueMaxEl(*Q);
+    QueueInfoTail(*Q) = X;
     int a1 = Tail(*Q);
-    int a2 = (a1 + MaxEl(*Q) - 1)% MaxEl(*Q);
-    infotype temp;
-    while (a1 != Head(*Q) && Prio(Elmt(*Q, a1)) < Prio(Elmt(*Q, a2))){
-        temp = Elmt(*Q, a1);
-        Elmt(*Q, a1) = Elmt(*Q, a2);
-        Elmt(*Q, a2) = temp;
+    int a2 = (a1 + QueueMaxEl(*Q) - 1)% QueueMaxEl(*Q);
+    queueElmtType temp;
+    while (a1 != Head(*Q) && Prio(QueueElmt(*Q, a1)) < Prio(QueueElmt(*Q, a2))){
+        temp = QueueElmt(*Q, a1);
+        QueueElmt(*Q, a1) = QueueElmt(*Q, a2);
+        QueueElmt(*Q, a2) = temp;
         a1 = a2;
-        a2 = (a1 + MaxEl(*Q) - 1)% MaxEl(*Q);
+        a2 = (a1 + QueueMaxEl(*Q) - 1)% QueueMaxEl(*Q);
     }
 }
 
-void Dequeue (PrioQueueChar * Q, infotype * X){
-    *X= InfoHead(*Q);
-    if (NBElmt(*Q) == 1) {
-        Head(*Q) = Nil;
-        Tail(*Q) = Nil;
+void Dequeue (PrioQueueChar * Q, queueElmtType * X){
+    *X= QueueInfoHead(*Q);
+    if (NBElmtQueue(*Q) == 1) {
+        Head(*Q) = QueueNil;
+        Tail(*Q) = QueueNil;
     }
     else {
         Head(*Q)++;
-        Head(*Q) %= MaxEl(*Q);
+        Head(*Q) %= QueueMaxEl(*Q);
     }
 }
 
 void PrintPrioQueueChar (PrioQueueChar Q){
     int temp;
-    for (int i = 0; i < NBElmt(Q);i++){
-        temp = (Head(Q)+i+MaxEl(Q)) % MaxEl(Q);
-        printf("%d %c\n", Elmt(Q,temp).prio,Elmt(Q,temp).info);
+    for (int i = 0; i < NBElmtQueue(Q);i++){
+        temp = (Head(Q)+i+QueueMaxEl(Q)) % QueueMaxEl(Q);
+        printf("%d \n", QueueElmt(Q,temp).prio);
     }
 
     printf("#\n");
