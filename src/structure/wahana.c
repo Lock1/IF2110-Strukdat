@@ -77,11 +77,13 @@ Wahana* createWahanaByID(Wahana* w, int ID){
     if (w[i].ID==ID){
       ID(*hasil)=ID(w[i]);
       Harga(*hasil)=Harga(w[i]);
-      WahanaDurasi(*hasil)=0;
+      // WahanaDurasi(*hasil)=0;
+      WahanaDurasi(*hasil)=WahanaDurasi(w[i]);
       Kapasitas(*hasil)=Kapasitas(w[i]);
-      Frekuensi(*hasil)=Frekuensi(w[i]);
-      Penghasilan(*hasil)=Penghasilan(w[i]);
-      Frekuensi(*hasil)=Frekuensi(w[i]);
+      Frekuensi(*hasil)=0;
+      Penghasilan(*hasil)=0;
+      FrekuensiHari(*hasil)=0;
+      PenghasilanHari(*hasil)=0;
       StatusWahana(*hasil)= 1;
       for (int j = 0 ; j < 999 ; j++) {
           Nama(*hasil)[j] = Nama(w[i])[j];

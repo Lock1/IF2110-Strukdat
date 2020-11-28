@@ -543,6 +543,9 @@ void upgradeBuilding(void) {
                             currentTime = NextNMenit(currentTime,UPGRADE_TIME); // Upgrade time
                             entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = upgradeID;
                             InsVLast(&Upgrade(*buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation))),upgradeID);
+                            (*buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation))).harga += selectedBuilding.harga;
+                            (*buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation))).kapasitas += selectedBuilding.kapasitas;
+                            (*buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation))).durasi -= selectedBuilding.durasi;
                             money -= upgradeCost;
                             actionGoldSum += upgradeCost;
                             actionCount++;
@@ -655,6 +658,9 @@ int actionUndo() {
                 money += upgradeCost;
                 actionGoldSum -= upgradeCost;
                 actionTime -= UPGRADE_TIME;
+                (*buildingAt(map[lastAction.actionMap],lastAction.eventPosX,lastAction.eventPosY)).harga -= upgradedBuilding.harga;
+                (*buildingAt(map[lastAction.actionMap],lastAction.eventPosX,lastAction.eventPosY)).kapasitas -= upgradedBuilding.kapasitas;
+                (*buildingAt(map[lastAction.actionMap],lastAction.eventPosX,lastAction.eventPosY)).durasi += upgradedBuilding.durasi;
                 entityAt(map[lastAction.actionMap],lastAction.eventPosX,lastAction.eventPosY) = lastAction.actIdentifier;
                 DelVLast(&Upgrade(*buildingAt(map[lastAction.actionMap],lastAction.eventPosX,lastAction.eventPosY)),&tempTrash);
                 return 2;
@@ -999,6 +1005,8 @@ void prepDay() {
                 unicodeDraw(1);
             }
         }
+        else if (stringCompare("fff",CurrentInput))
+            getDetails(); // DEBUG
         else if (stringCompare(key,CurrentInput)) {
             system(CLSCRN);
             money += 1000;

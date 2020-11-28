@@ -21,7 +21,7 @@ int ReadFromWahana(Wahana** database, int materialCount){
 	do {
 		Wahana w;
 		char *temp;
-		sscanf(buffer,"%d %s %d %d %d %s %c", &w.ID, w.nama, &w.harga, &w.durasi, &w.kapasitas, w.deskripsi, &w.gambar);
+		sscanf(buffer,"%d %s %d %d %d %s %c", &w.ID, w.nama, &w.harga, &w.kapasitas, &w.durasi , w.deskripsi, &w.gambar);
 		w.materialArray = (int *) malloc(materialCount*sizeof(int));
 		// list L; // TODO : List ?
 		// w.materialArray = makeList(materialCount, &L);
@@ -33,7 +33,6 @@ int ReadFromWahana(Wahana** database, int materialCount){
 
 		fgets(buffer, 200, file);
 		Frekuensi(w)=0;
-		w.durasi=0;
 		Penghasilan(w)=0;
 		PenghasilanHari(w)=0;
 		StatusWahana(w)=0;
