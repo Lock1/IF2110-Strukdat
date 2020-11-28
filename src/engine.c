@@ -1190,6 +1190,8 @@ void printDetail(){
     puts(DETAIL_LIST_1);
     puts(DETAIL_LIST_2);
     puts(DETAIL_LIST_3);
+    //printf(DETAIL_LIST_4, );
+    puts(DETAIL_LIST_5);
 
 }
 
