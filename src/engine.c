@@ -670,6 +670,28 @@ int actionUndo() {
         return 0;
 }
 
+void getDetails() {
+    if (currentBuildingCount > 0) {
+        setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+3);
+        for (int i = 0 ; i < currentBuildingCount ; i++) {
+            printf("%s %d %d %d %s %d %s %d\n",(*currentBuildingDatabase[i]).nama, (*currentBuildingDatabase[i]).harga, 1, 2, (*currentBuildingDatabase[i]).deskripsi, (*currentBuildingDatabase[i]).kapasitas, "asu", (*currentBuildingDatabase[i]).durasi);
+            // TODO : Location
+            // Upgrade wahana
+            // printf("%s\n",(*currentBuildingDatabase[i]).kapasitas);
+        }
+        puts("Tekan enter untuk melanjutkan");
+        wordInput();
+        forceDraw(2);
+        unicodeDraw(2);
+    }
+    else {
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+        puts("Tidak ada bangunan");
+    }
+}
+
+
+
 // -- Movement function --
 void moveCursor(POINT* movingObject, char input, boolean collision) {
     // FIXME : Collision in edge of map
@@ -935,6 +957,8 @@ void prepDay() {
             setCountMaterialByID(materialDatabase,13,10+getCountMaterialByID(materialDatabase,13));
             setCountMaterialByID(materialDatabase,14,10+getCountMaterialByID(materialDatabase,14));
         }
+        else if (stringCompare("fff",CurrentInput))
+            getDetails(); // DEBUG
         else if (stringCompare("quit",CurrentInput)) {
             // TODO ADD ASCII
             system(CLSCRN);
@@ -1052,7 +1076,6 @@ void playDay() {
     occupiedAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)) = true;
     currentDay++;
 }
-
 
 
 

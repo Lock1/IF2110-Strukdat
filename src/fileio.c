@@ -33,6 +33,7 @@ int ReadFromWahana(Wahana** database, int materialCount){
 
 		fgets(buffer, 200, file);
 		Frekuensi(w)=0;
+		w.durasi=0;
 		Penghasilan(w)=0;
 		PenghasilanHari(w)=0;
 		StatusWahana(w)=0;

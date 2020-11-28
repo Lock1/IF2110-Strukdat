@@ -77,7 +77,7 @@ Wahana* createWahanaByID(Wahana* w, int ID){
     if (w[i].ID==ID){
       ID(*hasil)=ID(w[i]);
       Harga(*hasil)=Harga(w[i]);
-      WahanaDurasi(*hasil)=WahanaDurasi(w[i]);
+      WahanaDurasi(*hasil)=0;
       Kapasitas(*hasil)=Kapasitas(w[i]);
       Frekuensi(*hasil)=Frekuensi(w[i]);
       Penghasilan(*hasil)=Penghasilan(w[i]);
