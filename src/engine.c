@@ -678,7 +678,7 @@ void getDetails() {
         puts(DETAIL_WAHANA_LIST_2);
         puts(DETAIL_WAHANA_LIST_3);
         for (int i = 0 ; i < currentBuildingCount ; i++) {
-            printf(DETAIL_WAHANA_LIST_4, (*currentBuildingDatabase[i]).ID, (*currentBuildingDatabase[i]).nama, (*currentBuildingDatabase[i]).harga, 1, 2, (*currentBuildingDatabase[i]).durasi, (*currentBuildingDatabase[i]).kapasitas, (*currentBuildingDatabase[i]).deskripsi, "history upgred");
+            printf(DETAIL_WAHANA_LIST_4, (*currentBuildingDatabase[i]).ID, (*currentBuildingDatabase[i]).nama, (*currentBuildingDatabase[i]).harga, 1, 2, (*currentBuildingDatabase[i]).durasi, (*currentBuildingDatabase[i]).kapasitas, (*currentBuildingDatabase[i]).deskripsi, "upgrade interior");
             // TODO : Location
             // Upgrade wahana
             // printf("%s\n",(*currentBuildingDatabase[i]).kapasitas);
