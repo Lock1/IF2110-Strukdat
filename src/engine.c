@@ -716,6 +716,27 @@ void getDetails() {
     }
 }
 
+void getLaporan(){
+    if (currentBuildingCount > 0) {
+        setCursorPosition(0,MAP_OFFSET_Y + MAP_SIZE_Y + 3);
+        puts(LAPORAN_WAHANA_TITLE);
+        puts(LAPORAN_WAHANA_LIST_1);
+        puts(LAPORAN_WAHANA_LIST_2);
+        puts(LAPORAN_WAHANA_LIST_3);
+        for (int i = 0 ; i < currentBuildingCount ; i++)
+            printf(LAPORAN_WAHANA_LIST_4, (*currentBuildingDatabase[i]).ID, (*currentBuildingDatabase[i]).nama, (*currentBuildingDatabase[i]).frekuensiTotal, (*currentBuildingDatabase[i]).penghasilanTotal, (*currentBuildingDatabase[i]).frekuensiHari, (*currentBuildingDatabase[i]).penghasilanHari);
+        puts(LAPORAN_WAHANA_LIST_5);
+        puts("Tekan enter untuk melanjutkan");
+        wordInput();
+        forceDraw(2);
+        unicodeDraw(2);
+    }
+    else {
+        setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X + 5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+        puts("Tidak ada bangunan");
+    }
+}
+
 
 
 // -- Movement function --
@@ -991,6 +1012,8 @@ void prepDay() {
             setCountMaterialByID(materialDatabase,13,10+getCountMaterialByID(materialDatabase,13));
             setCountMaterialByID(materialDatabase,14,10+getCountMaterialByID(materialDatabase,14));
         }
+        else if (stringCompare("fff",CurrentInput))
+            getLaporan(); // DEBUG
         else if (stringCompare("quit",CurrentInput)) {
             // TODO ADD ASCII
             system(CLSCRN);
@@ -1005,8 +1028,6 @@ void prepDay() {
                 unicodeDraw(1);
             }
         }
-        else if (stringCompare("fff",CurrentInput))
-            getDetails(); // DEBUG
         else if (stringCompare(key,CurrentInput)) {
             system(CLSCRN);
             money += 1000;
