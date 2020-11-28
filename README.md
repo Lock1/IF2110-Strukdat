@@ -25,11 +25,11 @@
 ## Snapshot
 **TBA** \
 **lul** \
-![Kekw](/other/img/cool.gif)
+![Kekw](/other/img/cool.gif) \
 **uhh** \
-![nope](/other/img/wrong.gif)
+![nope](/other/img/wrong.gif) \
 **have fun** \
-![havefun](/other/img/have-fun.jpg)
+![havefun](/other/img/have-fun.jpg) \
 **loading...** \
 ![loading](/other/img/loading.gif)
 <!--
@@ -78,17 +78,26 @@ Standard C Library | stdlib.h
 **Base Game**
 Spesifikasi                       | Status
 -----------                       | ------
-Input                             | :red_square:
-Tick                              | :red_square:
+Input                             | :green_square:
+Tick                              | :green_square:
 Draw                              | :green_square:
 
 
-
-<!--**Fitur**
-**Status : WIP**
+**Preparation phase**
 Spesifikasi                       | Status
 -----------                       | ------
--->
+Build                             | :green_square:
+Upgrade                           | :green_square:
+Undo                              | :green_square:
+
+**Main phase**
+Spesifikasi                       | Status
+-----------                       | ------
+Serve                             | :red_square:
+Repair                            | :red_square:
+Detail                            | :red_square:
+Office                            | :red_square:
+Prepare                           | :red_square:
 
 **Struktur**
 Spesifikasi     | Status
