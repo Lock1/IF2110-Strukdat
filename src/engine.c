@@ -1154,6 +1154,16 @@ void printUpgradeList(int buildingIndex){
     puts("Masukkan ID upgrade yang diinginkan :");
 }
 
+void printDetail(){
+    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+3);
+
+    puts(DETAIL_TITLE);
+    puts(DETAIL_LIST_1);
+    puts(DETAIL_LIST_2);
+    puts(DETAIL_LIST_3);
+
+}
+
 void printMaterialList() {
     setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+3);
     puts(MATERIAL_TITLE);
