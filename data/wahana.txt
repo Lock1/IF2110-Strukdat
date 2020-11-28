@@ -5,15 +5,15 @@ ID-NAMA-        HARGA-KAPASITAS-DURASI-DESKRIPSI-                  KAYU-BESI-BAT
 23 Wanky-wonderland      8 2 5     Spot-foto-paling-gaulzzz         W     2 2 1 0 0
 24 Chocolate-eater       7 2 10    Kumpulan-cokelat-diseluruh-dunia M     1 3 0 0 1
 25 Dip-train             12 3 20   Masuk-dunia-fantasi              Q     1 2 3 1 0
-120 Chocolate-disaster   10 3 7 a                                   A     1 3 2 1 3
-121 Lollipop-lolicon     15 2 25 s                                  L     2 2 2 2 1
-122 Chocolate-realm      10 5 10 d                                  S     1 3 4 1 2
-123 Wangky-universe      12 3 12 f                                  T     2 2 1 1 4
-124 Greedy-eater         10 4 15 a                                  R     2 3 0 0 5
-125 Fun-train            15 3 25 a                                  U     2 3 4 1 1
-220 Chocolate-pandemic   17 4 8 a                                   K     2 4 3 2 3
-221 Lollipop-lolirock    20 3 27 a                                  D     3 3 3 3 3
-222 Chocolate-world      15 7 12 a                                  C     2 4 4 2 1
-223 Wangky-multiverse    16 5 15 a                                  I     3 3 2 1 2
-224 Chocolate-addict     13 6 18 a                                  E     3 4 1 1 1
-225 Chaos-train          20 5 30 a                                  Y     3 4 5 1 0
+120 Upgrade mesin kereta 10 3 7 a                                   A     1 3 2 1 3
+121 Upgrade rasa permen  15 2 25 s                                  L     2 2 2 2 1
+122 Upgrade rasa cokelat 10 5 10 d                                  S     1 3 4 1 2
+123 Upgrade pos foto     12 3 12 f                                  T     2 2 1 1 4
+124 Upgrade tembok       10 4 15 a                                  R     2 3 0 0 5
+125 Upgrade interior     15 3 25 a                                  U     2 3 4 1 1
+220 Upgrade rel kereta   17 4 8 a                                   K     2 4 3 2 3
+221 Upgrade ukuran house 20 3 27 a                                  D     3 3 3 3 3
+222 Upgrade pencahayaan  15 7 12 a                                  C     2 4 4 2 1
+223 Upgrade jalan        16 5 15 a                                  I     3 3 2 1 2
+224 Upgrade interior     13 6 18 a                                  E     3 4 1 1 1
+225 Upgrade rel kereta   20 5 30 a                                  Y     3 4 5 1 0
