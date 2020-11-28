@@ -5,6 +5,7 @@
 #define _WAHANA_H_
 
 #include "boolean.h"
+#include "listlinear.h"
 
 typedef struct {
 	int ID, harga, durasi, kapasitas, frekuensiTotal, penghasilanTotal, penghasilanHari, frekuensiHari, statusWahana;
@@ -12,6 +13,7 @@ typedef struct {
 	char nama[999];
 	char deskripsi[999];
     char gambar;
+	ListLin upgrade;
 } Wahana;
 
 #define ID(W) (W).ID
@@ -26,6 +28,7 @@ typedef struct {
 #define Nama(W) (W).nama
 #define Deskripsi(W) (W).deskripsi
 #define Gambar(W) (W).gambar
+#define Upgrade(W) (W).upgrade
 
 // Wahana MakeWahana(int ID, int harga, int durasi, int kapasitas, char nama[999], char deskripsi, char gambar);
 
@@ -67,6 +70,7 @@ int getHargaWahanaByID(Wahana* w, int ID);
 
 int getIndexByID(Wahana* w, int ID);
 
+char getCharByID(Wahana* w, int ID);
 // int CountWahana();
 //
 // int CountAllWahana();

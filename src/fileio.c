@@ -25,7 +25,7 @@ int ReadFromWahana(Wahana** database, int materialCount){
 		w.materialArray = (int *) malloc(materialCount*sizeof(int));
 		// list L; // TODO : List ?
 		// w.materialArray = makeList(materialCount, &L);
-		if (w.ID < 120)
+		// if (w.ID < 120)
 			for (int i = 0 ; i < materialCount ; i++) {
 				temp = &buffer[73+i*2];
 				sscanf(temp,"%d",&w.materialArray[i]);
@@ -89,7 +89,7 @@ int MakePohonUpgrade(BinTree** database, int wahanacount){
 		// AddDaun(&P,120+i,220+i,false);
 		// AddDaun(&P,20+i,120+i,false);
 		addrNode L = AlokNode(120+i);
-	    addrNode R = AlokNode(220+i); // TODO : Upgrade
+	    addrNode R = AlokNode(220+i); // TODO : Fix
 	    BinTree P = Tree(i+20, L, R);
 	    array[i] = P;
 	}

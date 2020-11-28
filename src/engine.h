@@ -23,6 +23,7 @@ source: from my shitty C++ and windows-based game lul
 #include "structure/stack.h"
 #include "structure/graph.h"
 #include "structure/tree.h"
+#include "structure/listlinear.h"
 
 
 #include "fileio.h"
@@ -71,6 +72,12 @@ void frameSet();
 void loadMap();
 
 int actionUndo();
+
+void buildNewBuilding(void);
+
+void buyMaterial(void);
+
+void upgradeBuilding(void);
 
 void printBuildList();
 

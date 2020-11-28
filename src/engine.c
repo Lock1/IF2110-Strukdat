@@ -2,7 +2,7 @@
 ----- Self note -----
 Useful Unicode Char for map
 \u2588 -> Solid block
-Check box-drawing character in wikipedia for other
+Check box-drawing character in wikipedia for others
 
 \33[ <ANSI Escape codes>
 Check ANSI Escape codes for more details
@@ -10,6 +10,7 @@ Check ANSI Escape codes for more details
 Internal reference in engine.c
 Preparation phase -> Prep
 Main phase -> Play
+Wahana -> Building
 
 // FIXME : Consistency of coordinate space
 // TODO : Massive function call refactor
@@ -348,8 +349,15 @@ void mapUpdate(int tp) {
                     mapframe[i][j] = 'a'; // Queue
                     break;
                 default:
-                    if (entityAt(map[currentMap],i,j) > 19)
-                        mapframe[i][j] = buildingAt(map[currentMap],i,j)->gambar;
+                    if (entityAt(map[currentMap],i,j) > 19) {
+                        if (!LinIsEmpty((*buildingAt(map[currentMap],i,j)).upgrade)) {
+                            int currentUpgradeID = Info(First((*buildingAt(map[currentMap],i,j)).upgrade));
+                            mapframe[i][j] = getCharByID(buildingDatabase, currentUpgradeID);
+                        }
+                        else
+                            mapframe[i][j] = buildingAt(map[currentMap],i,j)->gambar;
+
+                    }
                     break;
             }
 
@@ -429,6 +437,169 @@ void endGame() {
     exit(0);
 }
 
+// -- Action function --
+void buildNewBuilding(void) {
+    // TODO : Add double pointer to store build result in play phase
+    boolean isAreaBuildable = !occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation));
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+    if (isAreaBuildable) {
+        if ((Durasi(currentTime,cPlayTime)%1440 - BUILD_TIME) >= 0) {
+            printBuildList();// WARNING : BUILDING ID START FROM 20
+            int tempID;
+            setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
+            if (integerInput(&tempID)) {
+                if ((tempID < 120) && searchWahanaByID(buildingDatabase,tempID+19)) {
+                    int buildCost = getHargaWahanaByID(buildingDatabase,tempID+19);
+                    if (money >= buildCost) {
+                        boolean isMaterialEnough = true;
+                        Wahana selectedBuilding = buildingDatabase[getIndexByID(buildingDatabase,tempID + 19)];
+                        // Warn : Direct access
+                        for (int i = 0 ; i < materialCount ; i++)
+                            if (selectedBuilding.materialArray[i] > materialDatabase[i].material_count)
+                                isMaterialEnough = false;
+                        if (isMaterialEnough) {
+                            for (int i = 0 ; i < materialCount ; i++)
+                                materialDatabase[i].material_count -= selectedBuilding.materialArray[i];
+                            actionTuple buildLog = { 1,tempID+19,Ordinat(cursorLocation),Absis(cursorLocation),buildCost,currentMap };
+                            Push(&actionStack,buildLog);
+                            currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
+                            occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = true;
+                            entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
+                            buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = createWahanaByID(buildingDatabase,tempID+19);
+                            money -= buildCost;
+                            actionGoldSum += buildCost;
+                            actionCount++;
+                            actionTime += BUILD_TIME;
+                            puts("Wahana telah dibangun!");
+                        }
+                        else
+                            puts("Maaf material tidak cukup");
+                    }
+                    else
+                        puts("Maaf uang tidak cukup");
+                }
+                else
+                    puts("ID Wahana tidak dapat ditemukan");
+            }
+            else
+                puts("Pembangunan dibatalkan");
+            drawLoading(20);
+            forceDraw();
+            unicodeDraw(1);
+        }
+        else
+            puts("Maaf durasi waktu tidak cukup");
+    }
+    else {
+        puts("Lokasi terpilih tidak dapat dibangun");
+    }
+}
+
+void upgradeBuilding(void) {
+    boolean isOccupiedAt = occupiedAt(map[currentMap], Ordinat(cursorLocation), Absis(cursorLocation));
+    int entityIDAtCursor = entityAt(map[currentMap], Ordinat(cursorLocation), Absis(cursorLocation));
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+    if (isOccupiedAt && 25 >= entityIDAtCursor && entityIDAtCursor >= 20) { // Temp
+        if ((Durasi(currentTime,cPlayTime) % 1440 - UPGRADE_TIME) >= 0){
+            int originalIndex = getIndexByID(buildingDatabase, entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)));
+            printUpgradeList(originalIndex);
+            int tempID;
+            if (integerInput(&tempID)) {
+                // WARNING : Upgrade offset
+                if ((tempID == Akar(Left(upgradeDatabase[originalIndex])) - 119) || (tempID == Akar(Right(upgradeDatabase[originalIndex]))) - 219) {
+                    int upgradeID = tempID;
+                    if (tempID == 1)
+                        upgradeID += 119;
+                    else
+                        upgradeID += 219;
+                    // Change tempID to store original unupgraded building
+                    tempID = entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation));
+                    int upgradeCost = getHargaWahanaByID(buildingDatabase, upgradeID);
+                    if (money >= upgradeCost) {
+                        boolean isMaterialEnough = true;
+                        Wahana selectedBuilding = buildingDatabase[getIndexByID(buildingDatabase,upgradeID)];
+                        // Warn : Direct access
+                        for (int i = 0 ; i < materialCount ; i++)
+                            if (selectedBuilding.materialArray[i] > materialDatabase[i].material_count)
+                                isMaterialEnough = false;
+                        if (isMaterialEnough) {
+                            for (int i = 0 ; i < materialCount ; i++)
+                                materialDatabase[i].material_count -= selectedBuilding.materialArray[i];
+                            actionTuple upgradeLog = { 2, upgradeID, Ordinat(cursorLocation), Absis(cursorLocation), tempID, currentMap };
+                            Push(&actionStack,upgradeLog);
+                            currentTime = NextNMenit(currentTime,UPGRADE_TIME); // Upgrade time
+                            entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = upgradeID;
+                            InsVLast(&Upgrade(*buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation))),upgradeID);
+                            money -= upgradeCost;
+                            actionGoldSum += upgradeCost;
+                            actionCount++;
+                            actionTime += UPGRADE_TIME;
+                            puts("Wahana telah diupgrade!");
+                        }
+                        else
+                            puts("Maaf material tidak cukup");
+                    }
+                    else
+                        puts("Maaf uang tidak cukup");
+                }
+                else
+                    puts("ID upgrade tidak ditemukan");
+            }
+            else
+                puts("Upgrade dibatalkan");
+            drawLoading(20);
+            forceDraw();
+            unicodeDraw(1);
+        }
+        else
+            puts("Maaf durasi waktu tidak cukup");
+    }
+    else
+        puts("Tidak ditemukan wahana yang dapat diupgrade");
+}
+
+void buyMaterial(void) {
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+    if ((Durasi(currentTime,cPlayTime)%1440 - BUY_TIME) >= 0) {
+        printMaterialList(); // WARNING : Material ID START FROM 10
+        int tempID, buyQuantity;
+        if (integerInput(&tempID)) {
+            if (searchMaterialByID(materialDatabase,tempID+9)) {
+                setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
+                puts("Masukkan jumlah yang akan dibeli");
+                if (integerInput(&buyQuantity)) {
+                    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+4);
+                    int buyCost = buyQuantity * getHargaMaterialByID(materialDatabase,tempID+9);
+                    if (money >= buyCost) {
+                        actionTuple buyLog = { 3,tempID+9,-1,-1,buyQuantity,-1 };
+                        Push(&actionStack,buyLog);
+                        setCountMaterialByID(materialDatabase,tempID+9,buyQuantity+getCountMaterialByID(materialDatabase,tempID+9));
+                        currentTime = NextNMenit(currentTime,BUY_TIME); // Buy time
+                        money -= buyCost;
+                        actionGoldSum += buyCost;
+                        actionCount++;
+                        actionTime += BUY_TIME;
+                        puts("Material telah dibeli!");
+                    }
+                    else
+                    puts("Maaf uang tidak cukup");
+                }
+                else
+                puts("Pembelian dibatalkan");
+            }
+            else
+                puts("ID Material tidak dapat ditemukan");
+        }
+        else
+            puts("Pembelian dibatalkan");
+        drawLoading(20);
+        forceDraw();
+        unicodeDraw(1);
+    }
+    else
+        puts("Maaf durasi waktu tidak cukup");
+}
+
 int actionUndo() {
     /* Undo table
     | ActID | Action |
@@ -452,7 +623,7 @@ int actionUndo() {
                 currentTime = NextNMenit(currentTime,1440-BUILD_TIME);
                 money += lastAction.actIdentifier;
                 actionGoldSum -= lastAction.actIdentifier;
-                actionTime -= BUILD_TIME; // TODO : Refund material
+                actionTime -= BUILD_TIME;
                 destroyWahana(buildingAt(map[lastAction.actionMap],lastAction.eventPosX,lastAction.eventPosY));
                 buildingAt(map[lastAction.actionMap],lastAction.eventPosX,lastAction.eventPosY) = NULL;
                 entityAt(map[lastAction.actionMap],lastAction.eventPosX,lastAction.eventPosY) = 0;
@@ -460,10 +631,21 @@ int actionUndo() {
                 return 1;
                 break;
             }
-            case 2:
-                // TODO : Upgrade
+            case 2: {
+                Wahana upgradedBuilding = buildingDatabase[getIndexByID(buildingDatabase,lastAction.entityID)];
+                int upgradeCost = upgradedBuilding.harga;
+                int tempTrash;
+                for (int i = 0 ; i < materialCount ; i++)
+                    materialDatabase[i].material_count += upgradedBuilding.materialArray[i];
+                currentTime = NextNMenit(currentTime,1440-UPGRADE_TIME);
+                money += upgradeCost;
+                actionGoldSum -= upgradeCost;
+                actionTime -= UPGRADE_TIME;
+                entityAt(map[lastAction.actionMap],lastAction.eventPosX,lastAction.eventPosY) = lastAction.actIdentifier;
+                DelVLast(&Upgrade(*buildingAt(map[lastAction.actionMap],lastAction.eventPosX,lastAction.eventPosY)),&tempTrash);
                 return 2;
                 break;
+            }
             case 3:
                 currentTime = NextNMenit(currentTime,1440-BUY_TIME);
                 money += lastAction.actIdentifier * getHargaMaterialByID(materialDatabase,lastAction.entityID);
@@ -481,6 +663,7 @@ int actionUndo() {
         return 0;
 }
 
+// -- Movement function --
 void moveCursor(POINT* movingObject, char input) {
     switch (input) {
         case 'w':
@@ -619,6 +802,13 @@ void prepDay() {
         mapUpdate(1);
         draw();
 
+        // setCountMaterialByID(materialDatabase,10,10+getCountMaterialByID(materialDatabase,10)); // DEBUG
+        // setCountMaterialByID(materialDatabase,11,10+getCountMaterialByID(materialDatabase,11));
+        // setCountMaterialByID(materialDatabase,12,10+getCountMaterialByID(materialDatabase,12));
+        // setCountMaterialByID(materialDatabase,13,10+getCountMaterialByID(materialDatabase,13));
+        // setCountMaterialByID(materialDatabase,14,10+getCountMaterialByID(materialDatabase,14));
+
+
         // Positioning for user input
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
         wordInput();
@@ -636,136 +826,12 @@ void prepDay() {
             unicodeDraw(1);
         }
         // Input check
-        if (stringCompare("build",CurrentInput)) { // TODO : Add double pointer to store build result in play phase
-            boolean isAreaBuildable = !occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation));
-            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
-            if (isAreaBuildable) {
-                if ((Durasi(currentTime,cPlayTime)%1440 - BUILD_TIME) >= 0) {
-                    printBuildList();// WARNING : BUILDING ID START FROM 20
-                    int tempID;
-                    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
-                    if (integerInput(&tempID)) {
-                        if ((tempID < 120) && searchWahanaByID(buildingDatabase,tempID+19)) {
-                            int buildCost = getHargaWahanaByID(buildingDatabase,tempID+19);
-                            if (money >= buildCost) {
-                                boolean isMaterialEnough = true;
-                                Wahana selectedBuilding = buildingDatabase[getIndexByID(buildingDatabase,tempID + 19)];
-                                // Warn : Direct access
-                                for (int i = 0 ; i < materialCount ; i++)
-                                    if (selectedBuilding.materialArray[i] > materialDatabase[i].material_count)
-                                        isMaterialEnough = false;
-                                if (isMaterialEnough) {
-                                    for (int i = 0 ; i < materialCount ; i++)
-                                        materialDatabase[i].material_count -= selectedBuilding.materialArray[i];
-                                    actionTuple buildLog = { 1,tempID+19,Ordinat(cursorLocation),Absis(cursorLocation),buildCost,currentMap };
-                                    Push(&actionStack,buildLog);
-                                    currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
-                                    occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = true;
-                                    entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
-                                    buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = createWahanaByID(buildingDatabase,tempID+19);
-                                    money -= buildCost;
-                                    actionGoldSum += buildCost;
-                                    actionCount++;
-                                    actionTime += BUILD_TIME;
-                                    puts("Wahana telah dibangun!");
-                                }
-                                else
-                                    puts("Maaf material tidak cukup");
-                            }
-                            else
-                                puts("Maaf uang tidak cukup");
-                        }
-                        else
-                            puts("ID Wahana tidak dapat ditemukan");
-                    }
-                    else
-                        puts("Pembangunan dibatalkan");
-                    drawLoading(20);
-                    forceDraw();
-                    unicodeDraw(1);
-                }
-                else
-                    puts("Maaf durasi waktu tidak cukup");
-            }
-            else {
-                puts("Lokasi terpilih tidak dapat dibangun");
-            }
-        }
-        else if (stringCompare("upgrade",CurrentInput)){
-            boolean isEntityAt=occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation));
-            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
-            if (isEntityAt){
-                if ((Durasi(currentTime,cPlayTime)%1440 -UPGRADE_TIME) >= 0){
-                    printUpgradeList(entityAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)));
-                    int tempID;
-                    int ID=getIndexByID(buildingDatabase, entityAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)));
-                    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
-                    if (integerInput(&tempID)){
-                        if((tempID == Left(Akar(upgradeDatabase[ID]))) || (tempID == Right(Akar(upgradeDatabase[ID])))){
-                            int buildCost= getHargaWahanaByID(buildingDatabase, ) //fixme, dunno parameter
-                            if (money >= buildCost){
-                                boolean isMaterialEnough = true;
-                                if (isMaterialEnough){
-
-                                }
-                                else
-                                    puts("Maaf material tidak cukup");
-                            }
-                            else
-                                puts("Maaf uang tidak cukup");
-                        }
-                        else
-                            puts("ID tidak sesuai");
-                    }
-                    else
-                        puts("Pembangunan dibatalkan");
-                }
-                else
-                    puts("Maaf durasi waktu tidak cukup");
-            }
-        }
-        //
-        else if (stringCompare("buy",CurrentInput)) {
-            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
-            if ((Durasi(currentTime,cPlayTime)%1440 - BUY_TIME) >= 0) {
-                printMaterialList(); // WARNING : Material ID START FROM 10
-                int tempID, buyQuantity;
-                if (integerInput(&tempID)) {
-                    if (searchMaterialByID(materialDatabase,tempID+9)) {
-                        setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+2);
-                        puts("Masukkan jumlah yang akan dibeli");
-                        if (integerInput(&buyQuantity)) {
-                            setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+4);
-                            int buyCost = buyQuantity * getHargaMaterialByID(materialDatabase,tempID+9);
-                            if (money >= buyCost) {
-                                actionTuple buyLog = { 3,tempID+9,-1,-1,buyQuantity,-1 };
-                                Push(&actionStack,buyLog);
-                                setCountMaterialByID(materialDatabase,tempID+9,buyQuantity+getCountMaterialByID(materialDatabase,tempID+9));
-                                currentTime = NextNMenit(currentTime,BUY_TIME); // Buy time
-                                money -= buyCost;
-                                actionGoldSum += buyCost;
-                                actionCount++;
-                                actionTime += BUY_TIME;
-                                puts("Material telah dibeli!");
-                            }
-                            else
-                            puts("Maaf uang tidak cukup");
-                        }
-                        else
-                        puts("Pembelian dibatalkan");
-                    }
-                    else
-                        puts("ID Material tidak dapat ditemukan");
-                }
-                else
-                    puts("Pembelian dibatalkan");
-                drawLoading(20);
-                forceDraw();
-                unicodeDraw(1);
-            }
-            else
-                puts("Maaf durasi waktu tidak cukup");
-        }
+        if (stringCompare("build",CurrentInput))
+            buildNewBuilding();
+        else if (stringCompare("upgrade",CurrentInput))
+            upgradeBuilding();
+        else if (stringCompare("buy",CurrentInput))
+            buyMaterial();
 
         else if (stringCompare("undo",CurrentInput)) {
             setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
@@ -820,6 +886,13 @@ void prepDay() {
             wordInput();
             forceDraw();
             unicodeDraw(1);
+        }
+        else if (stringCompare("db",CurrentInput)) {
+            setCountMaterialByID(materialDatabase,10,10+getCountMaterialByID(materialDatabase,10));
+            setCountMaterialByID(materialDatabase,11,10+getCountMaterialByID(materialDatabase,11));
+            setCountMaterialByID(materialDatabase,12,10+getCountMaterialByID(materialDatabase,12));
+            setCountMaterialByID(materialDatabase,13,10+getCountMaterialByID(materialDatabase,13));
+            setCountMaterialByID(materialDatabase,14,10+getCountMaterialByID(materialDatabase,14));
         }
         else if (stringCompare("quit",CurrentInput)) {
             // TODO ADD ASCII
@@ -929,33 +1002,72 @@ void printBuildList() {
     for (int i = 0 ; i < buildingCount ; i++) {
         if (buildingDatabase[i].ID < 120) {
             printf(BUILD_MATERIAL_4,buildingDatabase[i].ID-19, buildingDatabase[i].nama);
-            for (int j = 0 ; j < materialCount ; j++)
+            for (int j = 0 ; j < materialCount ; j++) {
+                if (buildingDatabase[i].materialArray[j] > materialDatabase[j].material_count)
+                    printf("\33\[31m\33\[1m");
+                else
+                    printf("\33\[32m\33\[1m");
                 printf(BUILD_MATERIAL_PROC_INNER,buildingDatabase[i].materialArray[j]);
-            printf("\n");
+            }
+            printf("\33\[m\n");
         }
     }
     printf(BUILD_MATERIAL_5);
     for (int i = 0 ; i < materialCount - 1 ; i++) {
         printf(BUILD_MATERIAL_PROC_4);
-
     }
     printf(BUILD_MATERIAL_PROC_4_END);
 
     puts("Masukkan ID yang ingin dibangun :");
 }
 
-void printUpgradeList(int ID_Wahana){
+void printUpgradeList(int buildingIndex){
     setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+3);
     // First Table
+    MakePohonUpgrade(&upgradeDatabase,buildingCount); // FIXME : Temporary fix
     puts(UPGRADE_TITLE);
-    puts(UPGRADE_LIST_1);
-    puts(UPGRADE_LIST_2);
-    puts(UPGRADE_LIST_3);
-    int ID=getIndexByID(buildingDatabase, ID_Wahana);
-    printf(UPGRADE_LIST_4, Akar(Left(upgradeDatabase[ID])), buildingDatabase[ID].nama, buildingDatabase[ID].harga, buildingDatabase[ID].durasi, buildingDatabase[ID].kapasitas, buildingDatabase[ID].deskripsi);
-    printf(UPGRADE_LIST_4, Akar(Right(upgradeDatabase[ID])), buildingDatabase[ID].nama, buildingDatabase[ID].harga, buildingDatabase[ID].durasi, buildingDatabase[ID].kapasitas, buildingDatabase[ID].deskripsi);
+    printf(UPGRADE_LIST_1);
+    for (int i = 0 ; i < materialCount - 1 ; i++)
+        printf(UPGRADE_MATERIAL_PROC_1);
+    puts(UPGRADE_MATERIAL_PROC_1_END);
+    printf(UPGRADE_LIST_2);
+    for (int i = 0 ; i < materialCount ; i++)
+        printf(UPGRADE_MATERIAL_PROC_2,materialDatabase[i].nama);
+    printf(UPGRADE_LIST_3);
+    for (int i = 0 ; i < materialCount - 1 ; i++)
+        printf(UPGRADE_MATERIAL_PROC_3);
+    puts(UPGRADE_MATERIAL_PROC_3_END);
+    int leftUpgrade = Akar(Left(upgradeDatabase[buildingIndex]));
+    int rightUpgrade = Akar(Right(upgradeDatabase[buildingIndex]));
+    int leftIndex = getIndexByID(buildingDatabase, leftUpgrade);
+    int rightIndex = getIndexByID(buildingDatabase, rightUpgrade);
+
+    printf(UPGRADE_LIST_4, 1, buildingDatabase[leftIndex].nama, buildingDatabase[leftIndex].harga, buildingDatabase[leftIndex].durasi, buildingDatabase[leftIndex].kapasitas);
+    for (int i = 0 ; i < materialCount ; i++) {
+        if (buildingDatabase[leftIndex].materialArray[i] > materialDatabase[i].material_count)
+            printf("\33\[31m\33\[1m");
+        else
+            printf("\33\[32m\33\[1m");
+        printf(UPGRADE_MATERIAL_PROC_INNER,buildingDatabase[leftIndex].materialArray[i]);
+    }
+    printf("\33\[m\n");
+
+    printf(UPGRADE_LIST_4, 2, buildingDatabase[rightIndex].nama, buildingDatabase[rightIndex].harga, buildingDatabase[rightIndex].durasi, buildingDatabase[rightIndex].kapasitas);
+    for (int i = 0 ; i < materialCount ; i++) {
+        if (buildingDatabase[rightIndex].materialArray[i] > materialDatabase[i].material_count)
+            printf("\33\[31m\33\[1m");
+        else
+            printf("\33\[32m\33\[1m");
+        printf(UPGRADE_MATERIAL_PROC_INNER,buildingDatabase[rightIndex].materialArray[i]);
+    }
+    printf("\n");
+
     printf(UPGRADE_LIST_5);
-    puts("Masukkan ID yang ingin dibeli :");
+    for (int i = 0 ; i < materialCount - 1 ; i++) {
+        printf(UPGRADE_MATERIAL_PROC_4);
+    }
+    printf(UPGRADE_MATERIAL_PROC_4_END);
+    puts("Masukkan ID upgrade yang diinginkan :");
 }
 
 void printMaterialList() {

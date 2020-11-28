@@ -88,6 +88,7 @@ Wahana* createWahanaByID(Wahana* w, int ID){
           Deskripsi(*hasil)[j] = Deskripsi(w[i])[j];
       }
       Gambar(*hasil)=Gambar(w[i]);
+      LinCreateEmpty(&Upgrade(*hasil));
     }
   }
   return hasil;
@@ -180,6 +181,15 @@ int getIndexByID(Wahana* w, int ID){
   for (int i=0; i<WAHANA_MAX; i++){
     if (w[i].ID==ID){
       return i;
+    }
+  }
+return -1;
+}
+
+char getCharByID(Wahana* w, int ID){
+  for (int i=0; i<WAHANA_MAX; i++){
+    if (w[i].ID==ID){
+      return w[i].gambar;
     }
   }
 return -1;
