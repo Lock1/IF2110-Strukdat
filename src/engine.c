@@ -520,11 +520,11 @@ void upgradeBuilding(void) {
             if (integerInput(&tempID)) {
                 // WARNING : Upgrade offset
                 if ((tempID == Akar(Left(upgradeDatabase[originalIndex])) - 119) || (tempID == Akar(Right(upgradeDatabase[originalIndex]))) - 219) {
-                    int upgradeID = tempID;
+                    int upgradeID = entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation));
                     if (tempID == 1)
-                        upgradeID += 119;
+                        upgradeID += 100;
                     else
-                        upgradeID += 219;
+                        upgradeID += 200;
                     // Change tempID to store original unupgraded building
                     tempID = entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation));
                     int upgradeCost = getHargaWahanaByID(buildingDatabase, upgradeID);
@@ -532,7 +532,7 @@ void upgradeBuilding(void) {
                         boolean isMaterialEnough = true;
                         Wahana selectedBuilding = buildingDatabase[getIndexByID(buildingDatabase,upgradeID)];
                         // Warn : Direct access
-                        for (int i = 0 ; i < materialCount ; i++)
+                        for (int i = 0 ; i < materialCount ; i++) // TODO : Change building stat
                             if (selectedBuilding.materialArray[i] > materialDatabase[i].material_count)
                                 isMaterialEnough = false;
                         if (isMaterialEnough) {
@@ -685,7 +685,15 @@ void getDetails() {
         puts(DETAIL_WAHANA_LIST_2);
         puts(DETAIL_WAHANA_LIST_3);
         for (int i = 0 ; i < currentBuildingCount ; i++) {
-            printf(DETAIL_WAHANA_LIST_4, (*currentBuildingDatabase[i]).ID, (*currentBuildingDatabase[i]).nama, (*currentBuildingDatabase[i]).harga, 1, 2, (*currentBuildingDatabase[i]).durasi, (*currentBuildingDatabase[i]).kapasitas, (*currentBuildingDatabase[i]).deskripsi, "upgrade interior");
+            int posX = Absis(buildingLocationDatabase[i]), posY = Ordinat(buildingLocationDatabase[i]);
+            if (!LinIsEmpty((*currentBuildingDatabase[i]).upgrade)) {
+                int upgradeIndex = getIndexByID(buildingDatabase,Info(First((*currentBuildingDatabase[i]).upgrade)));
+                char upgradeName[STRING_LENGTH];
+                stringCopy(buildingDatabase[upgradeIndex].nama,upgradeName);
+                printf(DETAIL_WAHANA_LIST_4, (*currentBuildingDatabase[i]).ID, (*currentBuildingDatabase[i]).nama, (*currentBuildingDatabase[i]).harga, posX, posY, (*currentBuildingDatabase[i]).durasi, (*currentBuildingDatabase[i]).kapasitas, (*currentBuildingDatabase[i]).deskripsi, upgradeName);
+            }
+            else
+                printf(DETAIL_WAHANA_LIST_4, (*currentBuildingDatabase[i]).ID, (*currentBuildingDatabase[i]).nama, (*currentBuildingDatabase[i]).harga, posX, posY, (*currentBuildingDatabase[i]).durasi, (*currentBuildingDatabase[i]).kapasitas, (*currentBuildingDatabase[i]).deskripsi, "Tidak ada");
             // TODO : Location
             // Upgrade wahana
             // printf("%s\n",(*currentBuildingDatabase[i]).kapasitas);
@@ -1064,9 +1072,8 @@ void playDay() {
                 unicodeDraw(2);
             }
         }
-        // else if (stringCompare("fff",CurrentInput))
-        //     // getDetails(); // DEBUG
-        //     printDetail(); // TODO : Done
+        else if (stringCompare("fff",CurrentInput))
+            getDetails(); // DEBUG
         else if (stringCompare(key,CurrentInput)) {
             system(CLSCRN);
             money += 1000;
@@ -1208,7 +1215,7 @@ void printDetail(int posX, int posY) {
     // TODO : Collision
     setCursorPosition(0, MAP_OFFSET_Y + MAP_SIZE_Y + 3);
     Wahana selectedBuilding = *buildingAt(map[currentMap], posX, posY);
-    POINT buildingLocation = MakePOINT(posX,posY); // DEBUG
+    POINT buildingLocation = MakePOINT(posY,posX); // DEBUG
     puts(DETAIL_TITLE);
     puts(DETAIL_LIST_1);
     puts(DETAIL_LIST_2);
