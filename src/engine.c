@@ -59,6 +59,7 @@ Wahana* buildingDatabase;
 Material* materialDatabase;
 BinTree* upgradeDatabase;
 Wahana** currentBuildingDatabase;
+POINT* buildingLocationDatabase;
 addrGraph mapGraph;
 
 // -------------------------------------------------------
@@ -74,8 +75,12 @@ void setCursorPosition(int XPos, int YPos) {
 }
 
 void stringCopy(char src[STRING_LENGTH], char dst[STRING_LENGTH]) {
-    for (int i = 0 ; src[i] != '\0' ; i++)
+    int i = 0;
+    while (src[i] != '\0') {
         dst[i] = src[i]; // FIXME : maybe null terminator
+        i++;
+    }
+    dst[i] = '\0';
 }
 
 boolean stringCompare(char st1[STRING_LENGTH], char st2[STRING_LENGTH]) {
@@ -157,6 +162,7 @@ void loadDatabase() {
     buildingCount = ReadFromWahana(&buildingDatabase,materialCount);
     upgradeCount = MakePohonUpgrade(&upgradeDatabase,buildingCount); // TODO : Fix
     currentBuildingDatabase = (Wahana**) malloc(MAX_WAHANA*sizeof(Wahana*));
+    buildingLocationDatabase = (POINT*) malloc(MAX_WAHANA*sizeof(POINT));
     // for (int i = 0 ; i < upgradeCount ; i++)
     //     PrintTree(upgradeDatabase[i],5);
     // printf("%d fffffffffffff\n",Akar(Left(upgradeDatabase[0])));
@@ -470,6 +476,7 @@ void buildNewBuilding(void) {
                             entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
                             Wahana* newBuilding = createWahanaByID(buildingDatabase,tempID+19);
                             buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = newBuilding;
+                            buildingLocationDatabase[currentBuildingCount] = MakePOINT(Absis(cursorLocation),Ordinat(cursorLocation));
                             currentBuildingDatabase[currentBuildingCount] = newBuilding;
                             currentBuildingCount++;
                             money -= buildCost;
@@ -700,26 +707,34 @@ void moveCursor(POINT* movingObject, char input, boolean collision) {
         switch (input) {
             case 'w': {
                 boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject) - 1, Absis(*movingObject));
-                if (1 < Ordinat(*movingObject) && isTraversable)
+                if (20 < entityAt(map[currentMap],Ordinat(*movingObject) - 1, Absis(*movingObject)))
+                    printDetail(Ordinat(*movingObject) - 1, Absis(*movingObject));
+                else if (1 < Ordinat(*movingObject) && isTraversable)
                     Geser(movingObject,0,-1);
                 break;
             }
             case 'a': {
                 boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) - 1);
-                if (Absis(*movingObject) > 1 && isTraversable)
+                if (20 < entityAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) - 1))
+                    printDetail(Ordinat(*movingObject), Absis(*movingObject) - 1);
+                else if (Absis(*movingObject) > 1 && isTraversable)
                     Geser(movingObject,-1,0);
                 // TODO : add detail + office here
                 break;
             }
             case 's': {
                 boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject) + 1, Absis(*movingObject));
-                if (Ordinat(*movingObject) < MAP_SIZE_Y - 2 && isTraversable)
+                if (20 < entityAt(map[currentMap],Ordinat(*movingObject) + 1, Absis(*movingObject)))
+                    printDetail(Ordinat(*movingObject) + 1, Absis(*movingObject));
+                else if (Ordinat(*movingObject) < MAP_SIZE_Y - 2 && isTraversable)
                     Geser(movingObject,0,1);
                 break;
             }
             case 'd': {
                 boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) + 1);
-                if (Absis(*movingObject) < MAP_SIZE_X - 2 && isTraversable)
+                if (20 < entityAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) + 1))
+                    printDetail(Ordinat(*movingObject), Absis(*movingObject) + 1);
+                else if (Absis(*movingObject) < MAP_SIZE_X - 2 && isTraversable)
                     Geser(movingObject,1,0);
                 break;
             }
@@ -957,8 +972,6 @@ void prepDay() {
             setCountMaterialByID(materialDatabase,13,10+getCountMaterialByID(materialDatabase,13));
             setCountMaterialByID(materialDatabase,14,10+getCountMaterialByID(materialDatabase,14));
         }
-        else if (stringCompare("fff",CurrentInput))
-            getDetails(); // DEBUG
         else if (stringCompare("quit",CurrentInput)) {
             // TODO ADD ASCII
             system(CLSCRN);
@@ -1046,6 +1059,9 @@ void playDay() {
                 unicodeDraw(2);
             }
         }
+        // else if (stringCompare("fff",CurrentInput))
+        //     // getDetails(); // DEBUG
+        //     printDetail(); // TODO : Done
         else if (stringCompare(key,CurrentInput)) {
             system(CLSCRN);
             money += 1000;
@@ -1183,16 +1199,38 @@ void printUpgradeList(int buildingIndex){
     puts("Masukkan ID upgrade yang diinginkan :");
 }
 
-void printDetail(){
-    setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+3);
-
+void printDetail(int posX, int posY) {
+    // TODO : Collision
+    setCursorPosition(0, MAP_OFFSET_Y + MAP_SIZE_Y + 3);
+    Wahana selectedBuilding = *buildingAt(map[currentMap], posX, posY);
+    POINT buildingLocation = MakePOINT(posX,posY); // DEBUG
     puts(DETAIL_TITLE);
     puts(DETAIL_LIST_1);
     puts(DETAIL_LIST_2);
     puts(DETAIL_LIST_3);
-    //printf(DETAIL_LIST_4, );
-    puts(DETAIL_LIST_5);
+    char statusBuilding[10], upgradeStatus[25], historyUpgrade[16];
 
+    if (selectedBuilding.statusWahana)
+        stringCopy("Berfungsi",statusBuilding);
+    else
+        stringCopy("Rusak",statusBuilding);
+
+    if (LinIsEmpty(selectedBuilding.upgrade)) {
+        stringCopy("Tidak ada",upgradeStatus);
+        stringCopy("Tidak ada",historyUpgrade);
+    }
+    else {
+        int upgradeIndex = getIndexByID(buildingDatabase, Info(First(selectedBuilding.upgrade)));
+        stringCopy(buildingDatabase[upgradeIndex].nama, upgradeStatus);
+        stringCopy("Tidak ada",historyUpgrade); // TODO : ???
+    }
+
+    printf(DETAIL_LIST_4, selectedBuilding.ID, selectedBuilding.nama, Absis(buildingLocation), Ordinat(buildingLocation), upgradeStatus, historyUpgrade, statusBuilding);
+    puts(DETAIL_LIST_5);
+    puts("Tekan enter untuk melanjutkan");
+    wordInput();
+    forceDraw(2);
+    unicodeDraw(2);
 }
 
 void printMaterialList() {

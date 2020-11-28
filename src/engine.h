@@ -101,6 +101,8 @@ void delay(int limit);
 void drawLoading();
 void unicodeDraw();
 
+void printDetail();
+
 void draw();
 // Draw frame on screen with double buffering
 /* Note : Like my C++, implemented with double buffer

@@ -82,7 +82,7 @@ Wahana* createWahanaByID(Wahana* w, int ID){
       Frekuensi(*hasil)=Frekuensi(w[i]);
       Penghasilan(*hasil)=Penghasilan(w[i]);
       Frekuensi(*hasil)=Frekuensi(w[i]);
-      StatusWahana(*hasil)=StatusWahana(w[i]);
+      StatusWahana(*hasil)= 1;
       for (int j = 0 ; j < 999 ; j++) {
           Nama(*hasil)[j] = Nama(w[i])[j];
           Deskripsi(*hasil)[j] = Deskripsi(w[i])[j];
