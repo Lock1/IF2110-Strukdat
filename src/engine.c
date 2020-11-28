@@ -473,8 +473,8 @@ void buildNewBuilding(void) {
                             Push(&actionStack,buildLog);
                             currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
                             occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = true;
-                            entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
-                            Wahana* newBuilding = createWahanaByID(buildingDatabase,tempID+19);
+                            entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = tempID + 19;
+                            Wahana* newBuilding = createWahanaByID(buildingDatabase,tempID + 19);
                             buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = newBuilding;
                             buildingLocationDatabase[currentBuildingCount] = MakePOINT(Absis(cursorLocation),Ordinat(cursorLocation));
                             currentBuildingDatabase[currentBuildingCount] = newBuilding;
@@ -737,6 +737,51 @@ void getLaporan(){
     }
 }
 
+void repairBuilding(int posX, int posY) {
+    Wahana* selectedBuilding = buildingAt(map[currentMap], posX, posY);
+    setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X + 5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+    if (!(*selectedBuilding).statusWahana) {
+        printf("Perbaiki %s? (y/n)", (*selectedBuilding).nama);
+        setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X + 25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+        wordInput();
+        setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X + 5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+        if (CurrentInput[0] == 'y') {
+            if (money >= (*selectedBuilding).harga) {
+                (*selectedBuilding).statusWahana = 1;
+                money -= (*selectedBuilding).harga;
+                printf("%s telah diperbaiki!", (*selectedBuilding).nama);
+            }
+            else
+                printf("Uang tidak cukup untuk perbaiki");
+        }
+        else
+            printf("%s tidak diperbaiki", (*selectedBuilding).nama);
+    }
+    else
+        printf("%s tidak rusak", (*selectedBuilding).nama);
+}
+// DEBUG
+void destroy() {
+    for (int i = 0 ; i < currentBuildingCount ; i++)
+        (*currentBuildingDatabase[i]).statusWahana = 0;
+}
+void buildingCollisionPrompt(int posX, int posY) {
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+    printf("Ketik detail / repair / cancel");
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+    wordInput();
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+    puts("                   ");
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+    puts("                                                 ");
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+    // Set cursor pos for repeated input, which can cause weird overwrite
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+    if (stringCompare("detail",CurrentInput))
+        printDetail(posX, posY, 2);
+    else if (stringCompare("repair",CurrentInput))
+        repairBuilding(posX, posY);
+}
 
 
 // -- Movement function --
@@ -747,16 +792,16 @@ void moveCursor(POINT* movingObject, char input, boolean collision) {
         switch (input) {
             case 'w': {
                 boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject) - 1, Absis(*movingObject));
-                if (20 < entityAt(map[currentMap],Ordinat(*movingObject) - 1, Absis(*movingObject)))
-                    printDetail(Ordinat(*movingObject) - 1, Absis(*movingObject));
+                if (20 <= entityAt(map[currentMap],Ordinat(*movingObject) - 1, Absis(*movingObject)))
+                    buildingCollisionPrompt(Ordinat(*movingObject) - 1, Absis(*movingObject));
                 else if (1 < Ordinat(*movingObject) && isTraversable)
                     Geser(movingObject,0,-1);
                 break;
             }
             case 'a': {
                 boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) - 1);
-                if (20 < entityAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) - 1))
-                    printDetail(Ordinat(*movingObject), Absis(*movingObject) - 1);
+                if (20 <= entityAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) - 1))
+                    buildingCollisionPrompt(Ordinat(*movingObject), Absis(*movingObject) - 1);
                 else if (Absis(*movingObject) > 1 && isTraversable)
                     Geser(movingObject,-1,0);
                 // TODO : add detail + office here
@@ -764,16 +809,16 @@ void moveCursor(POINT* movingObject, char input, boolean collision) {
             }
             case 's': {
                 boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject) + 1, Absis(*movingObject));
-                if (20 < entityAt(map[currentMap],Ordinat(*movingObject) + 1, Absis(*movingObject)))
-                    printDetail(Ordinat(*movingObject) + 1, Absis(*movingObject));
+                if (20 <= entityAt(map[currentMap],Ordinat(*movingObject) + 1, Absis(*movingObject)))
+                    buildingCollisionPrompt(Ordinat(*movingObject) + 1, Absis(*movingObject));
                 else if (Ordinat(*movingObject) < MAP_SIZE_Y - 2 && isTraversable)
                     Geser(movingObject,0,1);
                 break;
             }
             case 'd': {
                 boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) + 1);
-                if (20 < entityAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) + 1))
-                    printDetail(Ordinat(*movingObject), Absis(*movingObject) + 1);
+                if (20 <= entityAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) + 1))
+                    buildingCollisionPrompt(Ordinat(*movingObject), Absis(*movingObject) + 1);
                 else if (Absis(*movingObject) < MAP_SIZE_X - 2 && isTraversable)
                     Geser(movingObject,1,0);
                 break;
@@ -802,6 +847,7 @@ void moveCursor(POINT* movingObject, char input, boolean collision) {
         }
     }
 }
+
 
 void moveMap(POINT* movingObject, char input, int drawMode, boolean collision) {
     switch (currentMap) {
@@ -1013,7 +1059,17 @@ void prepDay() {
             setCountMaterialByID(materialDatabase,14,10+getCountMaterialByID(materialDatabase,14));
         }
         else if (stringCompare("fff",CurrentInput))
-            getLaporan(); // DEBUG
+            getDetails();
+        else if (stringCompare("ggg",CurrentInput))
+            destroy();
+        else if (stringCompare("detail",CurrentInput)) {
+            if (entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) >= 20)
+                printDetail(Ordinat(cursorLocation), Absis(cursorLocation), 1);
+        }
+        else if (stringCompare("repair",CurrentInput)) {
+            if (entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) >= 20)
+                repairBuilding(Ordinat(cursorLocation), Absis(cursorLocation));
+        }
         else if (stringCompare("quit",CurrentInput)) {
             // TODO ADD ASCII
             system(CLSCRN);
@@ -1038,8 +1094,10 @@ void prepDay() {
             forceDraw();
             unicodeDraw(1);
         }
-        else if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd')
+        else if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd') {
             moveMap(&cursorLocation, CurrentInput[0], 1, false);
+        }
+        CurrentInput[1] = '\0';
     }
 }
 
@@ -1113,8 +1171,9 @@ void playDay() {
             forceDraw();
             unicodeDraw(2);
         }
-        else if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd')
+        else if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd') {
             moveMap(&playerLocation, CurrentInput[0], 2, true);
+        }
         else if (stringCompare("prepare",CurrentInput)) {
             setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
             puts("Apakah anda yakin untuk mengosongkan antrian? (y/n)");
@@ -1124,7 +1183,7 @@ void playDay() {
                 break;
                 // TODO : Port loading bar
         }
-
+        CurrentInput[1] = '\0';
     }
     // DEBUG
     // DEBUG STOP
@@ -1240,7 +1299,7 @@ void printUpgradeList(int buildingIndex){
     puts("Masukkan ID upgrade yang diinginkan :");
 }
 
-void printDetail(int posX, int posY) {
+void printDetail(int posX, int posY, int tp) {
     // TODO : Collision
     setCursorPosition(0, MAP_OFFSET_Y + MAP_SIZE_Y + 3);
     Wahana selectedBuilding = *buildingAt(map[currentMap], posX, posY);
@@ -1270,8 +1329,8 @@ void printDetail(int posX, int posY) {
     puts(DETAIL_LIST_5);
     puts("Tekan enter untuk melanjutkan");
     wordInput();
-    forceDraw(2);
-    unicodeDraw(2);
+    forceDraw(tp);
+    unicodeDraw(tp);
 }
 
 void printMaterialList() {
