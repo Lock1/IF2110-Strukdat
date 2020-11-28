@@ -43,6 +43,7 @@ long int actionTime = 0;
 int money = START_MONEY;
 int currentDay = 1;
 int buildingCount = 0;
+int currentBuildingCount = 0;
 int materialCount = 0;
 int upgradeCount = 0;
 JAM currentTime;
@@ -57,6 +58,7 @@ int currentColorScheme = 1;
 Wahana* buildingDatabase;
 Material* materialDatabase;
 BinTree* upgradeDatabase;
+Wahana** currentBuildingDatabase;
 addrGraph mapGraph;
 
 // -------------------------------------------------------
@@ -153,7 +155,8 @@ void loadMap() {
 void loadDatabase() {
     materialCount = ReadFromBahan(&materialDatabase);
     buildingCount = ReadFromWahana(&buildingDatabase,materialCount);
-    upgradeCount = MakePohonUpgrade(&upgradeDatabase,buildingCount);
+    upgradeCount = MakePohonUpgrade(&upgradeDatabase,buildingCount); // TODO : Fix
+    currentBuildingDatabase = (Wahana**) malloc(MAX_WAHANA*sizeof(Wahana*));
     // for (int i = 0 ; i < upgradeCount ; i++)
     //     PrintTree(upgradeDatabase[i],5);
     // printf("%d fffffffffffff\n",Akar(Left(upgradeDatabase[0])));
@@ -465,7 +468,10 @@ void buildNewBuilding(void) {
                             currentTime = NextNMenit(currentTime,BUILD_TIME); // Build time
                             occupiedAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = true;
                             entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = tempID+19;
-                            buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = createWahanaByID(buildingDatabase,tempID+19);
+                            Wahana* newBuilding = createWahanaByID(buildingDatabase,tempID+19);
+                            buildingAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) = newBuilding;
+                            currentBuildingDatabase[currentBuildingCount] = newBuilding;
+                            currentBuildingCount++;
                             money -= buildCost;
                             actionGoldSum += buildCost;
                             actionCount++;
@@ -621,6 +627,7 @@ int actionUndo() {
                 for (int i = 0 ; i < materialCount ; i++)
                     materialDatabase[i].material_count += selectedBuilding.materialArray[i];
                 currentTime = NextNMenit(currentTime,1440-BUILD_TIME);
+                currentBuildingCount--;
                 money += lastAction.actIdentifier;
                 actionGoldSum -= lastAction.actIdentifier;
                 actionTime -= BUILD_TIME;
@@ -1029,7 +1036,7 @@ void playDay() {
             moveMap(&playerLocation, CurrentInput[0], 2, true);
         else if (stringCompare("prepare",CurrentInput)) {
             setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
-            puts("Apakah anda yakin untuk mengosongkan antrian dan mulai preparation? (y/n)");
+            puts("Apakah anda yakin untuk mengosongkan antrian? (y/n)");
             setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
             wordInput();
             if (CurrentInput[0] == 'y')
@@ -1045,7 +1052,6 @@ void playDay() {
     occupiedAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)) = true;
     currentDay++;
 }
-
 
 
 
@@ -1088,7 +1094,7 @@ void printBuildList() {
             printf(BUILD_MATERIAL_4,buildingDatabase[i].ID-19, buildingDatabase[i].nama);
             for (int j = 0 ; j < materialCount ; j++) {
                 if (buildingDatabase[i].materialArray[j] > materialDatabase[j].material_count)
-                    printf("\33\[31m\33\[1m");
+                    printf("\33\[31m\33\[2m");
                 else
                     printf("\33\[32m\33\[1m");
                 printf(BUILD_MATERIAL_PROC_INNER,buildingDatabase[i].materialArray[j]);
@@ -1129,7 +1135,7 @@ void printUpgradeList(int buildingIndex){
     printf(UPGRADE_LIST_4, 1, buildingDatabase[leftIndex].nama, buildingDatabase[leftIndex].harga, buildingDatabase[leftIndex].durasi, buildingDatabase[leftIndex].kapasitas);
     for (int i = 0 ; i < materialCount ; i++) {
         if (buildingDatabase[leftIndex].materialArray[i] > materialDatabase[i].material_count)
-            printf("\33\[31m\33\[1m");
+            printf("\33\[31m\33\[2m");
         else
             printf("\33\[32m\33\[1m");
         printf(UPGRADE_MATERIAL_PROC_INNER,buildingDatabase[leftIndex].materialArray[i]);
@@ -1139,7 +1145,7 @@ void printUpgradeList(int buildingIndex){
     printf(UPGRADE_LIST_4, 2, buildingDatabase[rightIndex].nama, buildingDatabase[rightIndex].harga, buildingDatabase[rightIndex].durasi, buildingDatabase[rightIndex].kapasitas);
     for (int i = 0 ; i < materialCount ; i++) {
         if (buildingDatabase[rightIndex].materialArray[i] > materialDatabase[i].material_count)
-            printf("\33\[31m\33\[1m");
+            printf("\33\[31m\33\[2m");
         else
             printf("\33\[32m\33\[1m");
         printf(UPGRADE_MATERIAL_PROC_INNER,buildingDatabase[rightIndex].materialArray[i]);

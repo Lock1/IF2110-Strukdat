@@ -25,6 +25,7 @@
 #define BUILD_TIME 120
 #define UPGRADE_TIME 60
 #define BUY_TIME 90
+#define MAX_WAHANA 200
 
 #define LOADING_LENGTH 20
 #define LOADING_OPEN_BRACKET "\u2523"

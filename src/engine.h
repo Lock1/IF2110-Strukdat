@@ -24,6 +24,7 @@ source: from my shitty C++ and windows-based game lul
 #include "structure/graph.h"
 #include "structure/tree.h"
 #include "structure/listlinear.h"
+#include "structure/listarray.h"
 
 
 #include "fileio.h"
