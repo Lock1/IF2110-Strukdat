@@ -6,38 +6,38 @@
 //Nama  : Fadel Ananda D
 //NIM   : 13519146
 
-/****************** TEST LIST KOSONG ******************/
-boolean LinIsEmpty (List L){
-    return First(L)==Nil;
+/****************** TEST ListLin KOSONG ******************/
+boolean LinIsEmpty (ListLin L){
+    return First(L)==listLinNil;
 }
 
-/****************** PEMBUATAN LIST KOSONG ******************/
-void LinCreateEmpty (List *L){
-    First(*L)=Nil;
+/****************** PEMBUATAN ListLin KOSONG ******************/
+void LinCreateEmpty (ListLin *L){
+    First(*L)=listLinNil;
 }
 
 /****************** Manajemen Memori ******************/
-address LinAlokasi (infotype X){
-    address P=(address) malloc(1*sizeof(ElmtList));
-    if (P!=Nil){
+listLinAddress LinAlokasi (listLinInfotype X){
+    listLinAddress P=(listLinAddress) malloc(1*sizeof(listLinElmtList));
+    if (P!=listLinNil){
         Info(P)=X;
-        Next(P)=Nil;
+        Next(P)=listLinNil;
     }
     return P;
 }
 
-void DeLinAlokasi (address *P){
+void DeLinAlokasi (listLinAddress *P){
     free(*P);
 }
 
-/****************** PENCARIAN SEBUAH ELEMEN LIST ******************/
-address LinSearch (List L, infotype X){
-  address P;
+/****************** PENCARIAN SEBUAH ELEMEN ListLin ******************/
+listLinAddress LinSearch (ListLin L, listLinInfotype X){
+  listLinAddress P;
   boolean xFound = false;
 
   if (!LinIsEmpty(L)) {
     P = First(L);
-    while (!xFound && P != Nil) {
+    while (!xFound && P != listLinNil) {
       if (X == Info(P)) {
         xFound = true;
       } else {
@@ -48,36 +48,36 @@ address LinSearch (List L, infotype X){
     if (xFound) {
       return P;
     } else {
-      return Nil;
+      return listLinNil;
     }
 
   } else {
-    return Nil;
+    return listLinNil;
   }
 }
 
-/****************** PRIMITIF BERDASARKAN NilAI ******************/
-void InsVLast (List *L, infotype X){
-    address P=LinAlokasi(X);
-    if (P!=Nil){
+/****************** PRIMITIF BERDASARKAN listLinNilAI ******************/
+void InsVLast (ListLin *L, listLinInfotype X){
+    listLinAddress P=LinAlokasi(X);
+    if (P!=listLinNil){
         InsertLast(L, P);
     }
 }
 
 /*** PENGHAPUSAN ELEMEN ***/
-void DelVLast (List *L, infotype *X){
-    address P=First(*L);
-    address Prec=Nil;
+void DelVLast (ListLin *L, listLinInfotype *X){
+    listLinAddress P=First(*L);
+    listLinAddress Prec=listLinNil;
 
-    while (Next(P)!=Nil){
+    while (Next(P)!=listLinNil){
         Prec=P;
         P=Next(P);
     }
 
-    if (Prec==Nil)
-        First(*L)=Nil;
+    if (Prec==listLinNil)
+        First(*L)=listLinNil;
     else{
-        Next(Prec)=Nil;
+        Next(Prec)=listLinNil;
     }
     *X=Info(P);
     DeLinAlokasi(&P);
@@ -85,20 +85,20 @@ void DelVLast (List *L, infotype *X){
 
 /****************** PRIMITIF BERDASARKAN ALAMAT ******************/
 /*** PENAMBAHAN ELEMEN BERDASARKAN ALAMAT ***/
-void InsertAfter (address P, address Prec){
+void InsertAfter (listLinAddress P, listLinAddress Prec){
   Next(P) = Next(Prec);
   Next(Prec) = P;
 }
 
-void InsertLast (List *L, address P){
-  address Last;
+void InsertLast (ListLin *L, listLinAddress P){
+  listLinAddress Last;
 
   if (LinIsEmpty(*L)) {
     Next(P)=First(*L);
     First(*L)=P;
   } else {
     Last = First(*L);
-    while (Next(Last) != Nil) {
+    while (Next(Last) != listLinNil) {
       Last = Next(Last);
     }
     InsertAfter(P, Last);
@@ -106,33 +106,33 @@ void InsertLast (List *L, address P){
 }
 
 /*** PENGHAPUSAN SEBUAH ELEMEN ***/
-void DelLast (List *L, address *P){
-    address Last=First(*L);
-    address PrecLast=Nil;
+void DelLast (ListLin *L, listLinAddress *P){
+    listLinAddress Last=First(*L);
+    listLinAddress PrecLast=listLinNil;
 
-    while (Next(Last)!=Nil){
+    while (Next(Last)!=listLinNil){
         PrecLast=Last;
         Last=Next(Last);
     }
 
     *P=Last;
-    if (PrecLast==Nil)
-        First(*L)=Nil;
+    if (PrecLast==listLinNil)
+        First(*L)=listLinNil;
     else{
-        Next(PrecLast)=Nil;
+        Next(PrecLast)=listLinNil;
     }
 }
 
 
-/****************** PROSES SEMUA ELEMEN LIST ******************/
-void PrintInfo (List L){
-  address P;
+/****************** PROSES SEMUA ELEMEN ListLin ******************/
+void PrintInfo (ListLin L){
+  listLinAddress P;
   boolean isFirst = true;
 
   printf("[");
   if (!LinIsEmpty(L)) {
     P = First(L);
-    while (P != Nil) {
+    while (P != listLinNil) {
       if (!isFirst) {
         printf(",");
       }
@@ -145,13 +145,13 @@ void PrintInfo (List L){
   printf("]");
 }
 
-int LinNBElmt (List L){
-    address P;
+int LinNBElmt (ListLin L){
+    listLinAddress P;
     int count=0;
 
     if(!LinIsEmpty(L)){
         P=First(L);
-        while (P!=Nil){
+        while (P!=listLinNil){
             count+=1;
             P=Next(P);
         }

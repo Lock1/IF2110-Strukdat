@@ -1,23 +1,37 @@
 // ADT Graf
 // 13519146 / Fadel Ananda Dotty
+#ifndef GRAPH_H
+#define GRAPH_H
+
 #include <stdio.h>
 #include <stdlib.h>
+#include "boolean.h"
 
-#define maxNode 5
+typedef struct node* addressGraphNode;
 
-typedef struct Node *address;
+typedef struct node {
+  int vertex;
+  addressGraphNode next;
+}node;
 
-typedef struct Node{
-    int vertexNum;
-    address next;
-}Node;
+typedef struct node** LIST;
 
-typedef struct List{
-    address head;
-}List;
+typedef struct Graph* addrGraph;
 
-List *adjlist[maxNode]={0};
+typedef struct Graph {
+  int numVertices;
+  LIST adjLists;
+}Graph;
 
-void addNode(int s, int d);
+#define Vertex(P) (P)->vertex
+#define Next(P) (P)->next
+#define NumVertices(G) (G)->numVertices
+#define AdjList(G) (G)->adjLists
 
-void printList();
+addressGraphNode createNode(int);
+addrGraph createAGraph(int vertices);
+void addEdge(addrGraph graph, int src, int dst);
+void printGraph(addrGraph graph);
+boolean isGraphConnected(addrGraph graph, int src, int dest);
+
+#endif

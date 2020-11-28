@@ -19,7 +19,14 @@ source: from my shitty C++ and windows-based game lul
 #include "structure/mesinkata.h"
 #include "structure/jam.h"
 #include "structure/matrix.h"
+#include "structure/point.h"
+#include "structure/stack.h"
+#include "structure/graph.h"
+#include "structure/tree.h"
+#include "structure/listlinear.h"
 
+
+#include "fileio.h"
 
 // -------------------------------------------------------
 // Player name (line 1)
@@ -37,6 +44,8 @@ void stringCopy(char* src, char* dst);
 // Copying string to destination
 boolean stringCompare(char* st1, char* st2);
 // Comparing 2 string and return true if equal
+boolean integerInput(int *store);
+// Asking for user input
 // xxx------------------------------------xxx
 
 
@@ -45,17 +54,40 @@ boolean stringCompare(char* st1, char* st2);
 
 // TODO : Whole lot of update function
 
-// TODO : Maybe also tick update
 // TODO : Use some seed for rng (probably username also fine lul)
 
 boolean startGame();
 // Checking for save and newgame
+
+void endGame();
+
+void colorSchemeChange();
 
 void prepDay();
 
 void playDay();
 
 void frameSet();
+
+void loadMap();
+
+int actionUndo();
+
+void buildNewBuilding(void);
+
+void buyMaterial(void);
+
+void upgradeBuilding(void);
+
+void printBuildList();
+
+void printUpgradeList();
+
+void printMaterialList();
+
+void printLegendList();
+
+void loadDatabase();
 
 void infoUpdate();
 // Update frame with changes in information screen
@@ -65,7 +97,7 @@ void mapUpdate();
 
 void delay(int limit);
 // Delaying by count
-
+void drawLoading();
 void unicodeDraw();
 
 void draw();

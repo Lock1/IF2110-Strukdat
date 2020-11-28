@@ -25,11 +25,13 @@
 ## Snapshot
 **TBA** \
 **lul** \
-![Kekw](/other/img/cool.gif) \
+![Kekw](/other/img/cool.gif)
 **uhh** \
-![nope](/other/img/wrong.gif) \
-**have fun* \
+![nope](/other/img/wrong.gif)
+**have fun** \
 ![havefun](/other/img/have-fun.jpg)
+**loading...** \
+![loading](/other/img/loading.gif)
 <!--
 **Gauss-Jordan Elimination** \
 ![Gauss Jordan Elimination](/src/readme/gjelimination.gif) -->

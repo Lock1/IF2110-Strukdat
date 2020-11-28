@@ -21,12 +21,12 @@ int main(void) {
     system(CLSCRN);
     if (startGame()) {
         // Give user time to seeing ASCII ART
-        delay(150);
+        drawLoading(20);
 
         // Initial frame setup
         frameSet(0);
-        infoUpdate();
-        mapUpdate();
+        infoUpdate(0);
+        mapUpdate(0);
         forceDraw();
 
         // Game loop
@@ -36,5 +36,7 @@ int main(void) {
             playDay();
         }
     }
+    else
+        endGame();
     return 0;
 }

@@ -6,10 +6,20 @@
 #include "boolean.h"
 
 #define Nil -1
-#define MaxEl 10
+#define MaxEl 100
 /* Nil adalah stack dengan elemen kosong . */
 
-typedef int infotype;
+typedef struct acttpl {
+    int actID;
+    int entityID;
+    int eventPosX;
+    int eventPosY;
+    int actIdentifier;
+    int actionMap;
+} actionTuple;
+// Non used value set with -1
+
+typedef actionTuple infotype;
 typedef int address;   /* indeks tabel */
 
 /* Contoh deklarasi variabel bertype stack dengan ciri TOP : */
