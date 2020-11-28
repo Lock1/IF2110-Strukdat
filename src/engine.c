@@ -673,12 +673,17 @@ int actionUndo() {
 void getDetails() {
     if (currentBuildingCount > 0) {
         setCursorPosition(0,MAP_OFFSET_Y+MAP_SIZE_Y+3);
+        puts(DETAIL_WAHANA_TITLE);
+        puts(DETAIL_WAHANA_LIST_1);
+        puts(DETAIL_WAHANA_LIST_2);
+        puts(DETAIL_WAHANA_LIST_3);
         for (int i = 0 ; i < currentBuildingCount ; i++) {
-            printf("%s %d %d %d %s %d %s %d\n",(*currentBuildingDatabase[i]).nama, (*currentBuildingDatabase[i]).harga, 1, 2, (*currentBuildingDatabase[i]).deskripsi, (*currentBuildingDatabase[i]).kapasitas, "asu", (*currentBuildingDatabase[i]).durasi);
+            printf(DETAIL_WAHANA_LIST_4, (*currentBuildingDatabase[i]).ID, (*currentBuildingDatabase[i]).nama, (*currentBuildingDatabase[i]).harga, 1, 2, (*currentBuildingDatabase[i]).durasi, (*currentBuildingDatabase[i]).kapasitas, (*currentBuildingDatabase[i]).deskripsi, "history upgred";
             // TODO : Location
             // Upgrade wahana
             // printf("%s\n",(*currentBuildingDatabase[i]).kapasitas);
         }
+        puts(DETAIL_WAHANA_LIST_5);
         puts("Tekan enter untuk melanjutkan");
         wordInput();
         forceDraw(2);
