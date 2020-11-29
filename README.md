@@ -10,7 +10,8 @@
 - Pastikan terminal mensupportnya agar dapat dirun dengan baik.
 - Untuk mencompile dari source code, lakukan command **make all** pada folder repository.
 - Jika ingin menjalankannya langsung, jalankan executable **willy**.
-
+- Struktur folder adalah executable dan folder **data** terdapat pada satu folder yang sama.
+- Jika menambahkan wahana atau material, pastikan menambah **newline** pada akhir file untuk mencegah segmentation fault.
 
 ### Style kode
 - Karena keterbatasan waktu, sebagian besar kode banyak yang ditulis ulang / tanpa optimisasi dan refaktor.
@@ -52,13 +53,11 @@ NIM      | Nama
 
 
 **Tools yang digunakan**
-**TBA**
 Komponen      | Menggunakan
 --------      | -----------
 Compiler      | gcc (Ubuntu 7.4.0-1ubuntu1~18.04.1) 7.4.0
 
 **Dependencies**
-**TBA**
 Komponen           | Menggunakan
 --------           | -----------
 Standard C Library | stdio.h
