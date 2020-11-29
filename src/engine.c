@@ -920,7 +920,6 @@ void customerPlayingCheck() {
         else if (!currentServeDone[i] && currentServeDuration[i] == 0) {
             boolean rollBreak = 25 > (random() % 100);
             currentServeDone[i] = true;
-            *(&currentBuildingCapacity[currentServeBuildingIndex[i]]) += 1;
             money += (*currentBuildingDatabase[currentServeBuildingIndex[i]]).harga;
             if (rollBreak)
                 (*currentBuildingDatabase[currentServeBuildingIndex[i]]).statusWahana = false;
@@ -1333,7 +1332,6 @@ void playDay() {
     frameSet(2);
     mapUpdate(2);
     currentMap = playerMapLocation;
-    lastServeIndex = 0;
     entityAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)) = 0;
     occupiedAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)) = false;
 
@@ -1372,12 +1370,6 @@ void playDay() {
             forceDraw();
             unicodeDraw(2);
         }
-        if (stringCompare("ggg",CurrentInput))
-            destroy(0); // DEBUG
-        if (stringCompare("genc",CurrentInput))
-            generateCustomer(); // DEBUG
-        if (stringCompare("ppgf",CurrentInput))
-            destroy(1); // DEBUG
         else if (stringCompare("legend",CurrentInput)) {
             printLegendList(1); // ??
             puts("Tekan enter untuk melanjutkan");
@@ -1399,8 +1391,10 @@ void playDay() {
                 unicodeDraw(2);
             }
         }
-        else if (stringCompare("fff",CurrentInput))
-            getDetails(); // DEBUG
+        else if (stringCompare("detail",CurrentInput))
+            getDetails(); // TODO : Put collision
+        else if (stringCompare("laporan",CurrentInput))
+            getLaporan(); // DEBUG
         else if (stringCompare(key,CurrentInput)) {
             system(CLSCRN);
             money += 1000;
@@ -1414,9 +1408,9 @@ void playDay() {
         else if (stringCompare("serve",CurrentInput)) {
             setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
             if ((Durasi(currentTime,cPrepTime) % 1440 - SERVE_TIME) >= 0) {
-                customerTickCheck();
                 generateNewCustomer();
                 customerPlayingCheck();
+                customerTickCheck();
                 serveCustomer(); // TODO : Completion
             }
             else
@@ -1424,9 +1418,9 @@ void playDay() {
         }
         else if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd') {
             if ((Durasi(currentTime,cPrepTime) % 1440 - MOVE_TIME) >= 0) {
-                customerTickCheck();
                 generateNewCustomer();
                 customerPlayingCheck();
+                customerTickCheck();
                 moveMap(&playerLocation, CurrentInput[0], 2, true);
             }
             else {
