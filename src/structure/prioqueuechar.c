@@ -78,13 +78,14 @@ void Enqueue (PrioQueueChar * Q, queueElmtType X){
 
 void Dequeue (PrioQueueChar * Q, queueElmtType * X){
     *X= QueueInfoHead(*Q);
-    if (NBElmtQueue(*Q) == 1) {
+    // if (NBElmtQueue(*Q) == 1) {
+    if (Tail(*Q) == Head(*Q)) {
         Head(*Q) = QueueNil;
         Tail(*Q) = QueueNil;
     }
     else {
-        Head(*Q)++;
-        Head(*Q) %= QueueMaxEl(*Q);
+        Head(*Q) = Head(*Q) + 1;
+        Head(*Q) = Head(*Q) % QueueMaxEl(*Q);
     }
 }
 

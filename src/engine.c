@@ -864,7 +864,7 @@ void generateNewCustomer() {
     // TODO : Random seed
     // srand(CurrentInput[1]);
     int rollValue = random() % 100;
-    if (NBElmtQueue(playQueue) < 6 && currentBuildingCount > 0 && rollValue < 50) {
+    if (NBElmtQueue(playQueue) < 6 && currentBuildingCount > 0 && rollValue < 10) {
         queueElmtType newCustomer;
         // TODO : Temporary using 2 building only
         newCustomer.prio = 10;
@@ -894,6 +894,9 @@ void customerTickCheck() {
         int currentIndex = Head(playQueue);
         queueElmtType frontCustomer = QueueElmt(playQueue,currentIndex);
         if ((frontCustomer.isServed[0] && frontCustomer.isServed[1]) || frontCustomer.happiness < 1) {
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y);
+            printf("Pelanggan telah keluar dari queue");
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
             queueElmtType tempTrash;
             Dequeue(&playQueue,&tempTrash);
         }
@@ -916,10 +919,19 @@ void customerTickCheck() {
 void customerPlayingCheck() {
     for (int i = 0 ; i < lastServeIndex ; i++) {
         if (!currentServeDone[i] && currentServeDuration[i] > 0)
-            currentServeDuration[i] -= 1;
+            currentServeDuration[i] -= MOVE_TIME; // FIXME : Actually not accurate but whatever
         else if (!currentServeDone[i] && currentServeDuration[i] == 0) {
             boolean rollBreak = 25 > (random() % 100);
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y);
+            int moneyGain = (*currentBuildingDatabase[currentServeBuildingIndex[i]]).harga;
+            printf("Mendapatkan uang %d!",moneyGain);
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+            *(&currentBuildingCapacity[currentServeBuildingIndex[i]]) = currentBuildingCapacity[currentServeBuildingIndex[i]] + 1;
             currentServeDone[i] = true;
+            (*currentBuildingDatabase[currentServeBuildingIndex[i]]).frekuensiHari = (*currentBuildingDatabase[currentServeBuildingIndex[i]]).frekuensiHari + 1;
+            (*currentBuildingDatabase[currentServeBuildingIndex[i]]).frekuensiTotal = (*currentBuildingDatabase[currentServeBuildingIndex[i]]).frekuensiTotal + 1;
+            (*currentBuildingDatabase[currentServeBuildingIndex[i]]).penghasilanHari = (*currentBuildingDatabase[currentServeBuildingIndex[i]]).penghasilanHari + moneyGain;
+            (*currentBuildingDatabase[currentServeBuildingIndex[i]]).penghasilanTotal = (*currentBuildingDatabase[currentServeBuildingIndex[i]]).penghasilanTotal + moneyGain;
             money += (*currentBuildingDatabase[currentServeBuildingIndex[i]]).harga;
             if (rollBreak)
                 (*currentBuildingDatabase[currentServeBuildingIndex[i]]).statusWahana = false;
@@ -931,7 +943,6 @@ void customerPlayingCheck() {
 
 void serveCustomer() {
     queueElmtType servedCustomer;
-    // TODO : Move cursor
     if (NBElmtQueue(playQueue) > 0) {
         Wahana firstBuilding = *currentBuildingDatabase[QueueElmt(playQueue,Head(playQueue)).info[0]];
         Wahana secondBuilding = *currentBuildingDatabase[QueueElmt(playQueue,Head(playQueue)).info[1]];
@@ -941,37 +952,65 @@ void serveCustomer() {
         int* secondBuildingCapacity = &currentBuildingCapacity[QueueElmt(playQueue,Head(playQueue)).info[1]];
         boolean isFirstBuildingDone = QueueElmt(playQueue,Head(playQueue)).isServed[0];
         boolean isSecondBuildingDone = QueueElmt(playQueue,Head(playQueue)).isServed[1];
-
-        if (!isFirstBuildingDone && firstBuilding.statusWahana && (*firstBuildingCapacity > 0))  {
-            Dequeue(&playQueue,&servedCustomer);
-            *firstBuildingCapacity = *firstBuildingCapacity - 1;
-            servedCustomer.isServed[0] = true;
-            currentServe[lastServeIndex] = servedCustomer;
-            currentServeDuration[lastServeIndex] = firstBuilding.durasi;
-            currentServeDone[lastServeIndex] = false;
-            currentServeBuildingIndex[lastServeIndex] = firstBuildingIndex;
-            lastServeIndex++;
+        boolean isFirstServeFail = true, isSecondServeFail = true;
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y);
+        if (!isFirstBuildingDone)  {
+            if (firstBuilding.statusWahana) {
+                if (*firstBuildingCapacity > 0) {
+                    Dequeue(&playQueue,&servedCustomer);
+                    printf("Serve wahana %s!",firstBuilding.nama);
+                    *firstBuildingCapacity = *firstBuildingCapacity - 1;
+                    servedCustomer.isServed[0] = true;
+                    currentServe[lastServeIndex] = servedCustomer;
+                    currentServeDuration[lastServeIndex] = firstBuilding.durasi;
+                    currentServeDone[lastServeIndex] = false;
+                    currentServeBuildingIndex[lastServeIndex] = firstBuildingIndex;
+                    lastServeIndex++;
+                    isFirstServeFail = false;
+                }
+                else
+                    printf("Wahana %s sedang penuh                  ",firstBuilding.nama);
+            }
+            else
+                printf("Wahana %s sedang rusak             ",firstBuilding.nama);
         }
-        else if (!isSecondBuildingDone && secondBuilding.statusWahana && (*secondBuildingCapacity > 0)) {
-            Dequeue(&playQueue,&servedCustomer);
-            *secondBuildingCapacity = *secondBuildingCapacity - 1;
-            servedCustomer.isServed[1] = true;
-            currentServe[lastServeIndex] = servedCustomer;
-            currentServeDuration[lastServeIndex] = secondBuilding.durasi;
-            currentServeDone[lastServeIndex] = false;
-            currentServeBuildingIndex[lastServeIndex] = secondBuildingIndex;
-            lastServeIndex++;
+        if (!isSecondBuildingDone && isFirstServeFail) {
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+            if (secondBuilding.statusWahana) {
+                if (*secondBuildingCapacity > 0) {
+                    Dequeue(&playQueue,&servedCustomer);
+                    printf("Serve wahana %s!",secondBuilding.nama);
+                    *secondBuildingCapacity = *secondBuildingCapacity - 1;
+                    servedCustomer.isServed[1] = true;
+                    currentServe[lastServeIndex] = servedCustomer;
+                    currentServeDuration[lastServeIndex] = secondBuilding.durasi;
+                    currentServeDone[lastServeIndex] = false;
+                    currentServeBuildingIndex[lastServeIndex] = secondBuildingIndex;
+                    lastServeIndex++;
+                    isSecondServeFail = false;
+                }
+                else
+                    printf("Wahana %s sedang penuh              ",secondBuilding.nama);
+            }
+            else
+                printf("Wahana %s sedang rusak             ",secondBuilding.nama);
         }
-        else
-            puts("Tidak ada yang dapat diserve");
+        if (isFirstServeFail && isSecondServeFail) {
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y);
+            puts("Tidak ada yang dapat diserve                  ");
+        }
     }
     else
-        puts("Tidak ada antrian");
+        puts("Tidak ada antrian                 ");
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
 }
 
-void playPhaseCopyCapacity() {
-    for (int i = 0 ; i < currentBuildingCount ; i++)
+void playPhaseSetup() {
+    for (int i = 0 ; i < currentBuildingCount ; i++) {
         currentBuildingCapacity[i] = (*currentBuildingDatabase[i]).kapasitas;
+        (*currentBuildingDatabase[i]).frekuensiHari = 0;
+        (*currentBuildingDatabase[i]).penghasilanHari = 0;
+    }
 }
 
 
@@ -985,6 +1024,10 @@ void moveCursor(POINT* movingObject, char input, boolean collision) {
                 boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject) - 1, Absis(*movingObject));
                 if (20 <= entityAt(map[currentMap],Ordinat(*movingObject) - 1, Absis(*movingObject)))
                     buildingCollisionPrompt(Ordinat(*movingObject) - 1, Absis(*movingObject));
+                else if (7 == entityAt(map[currentMap],Ordinat(*movingObject) - 1, Absis(*movingObject)))
+                    officeCollisionPrompt();
+                else if (8 == entityAt(map[currentMap],Ordinat(*movingObject) - 1, Absis(*movingObject)))
+                    queueCollisionPrompt();
                 else if (1 < Ordinat(*movingObject) && isTraversable) {
                     Geser(movingObject,0,-1);
                     currentTime = NextNMenit(currentTime,MOVE_TIME); // TODO : Time should not tied with collision
@@ -995,6 +1038,10 @@ void moveCursor(POINT* movingObject, char input, boolean collision) {
                 boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) - 1);
                 if (20 <= entityAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) - 1))
                     buildingCollisionPrompt(Ordinat(*movingObject), Absis(*movingObject) - 1);
+                else if (7 == entityAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) - 1))
+                    officeCollisionPrompt();
+                else if (8 == entityAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) - 1))
+                    queueCollisionPrompt();
                 else if (Absis(*movingObject) > 1 && isTraversable) {
                     Geser(movingObject,-1,0);
                     currentTime = NextNMenit(currentTime,MOVE_TIME); // TODO : Time should not tied with collision
@@ -1006,6 +1053,10 @@ void moveCursor(POINT* movingObject, char input, boolean collision) {
                 boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject) + 1, Absis(*movingObject));
                 if (20 <= entityAt(map[currentMap],Ordinat(*movingObject) + 1, Absis(*movingObject)))
                     buildingCollisionPrompt(Ordinat(*movingObject) + 1, Absis(*movingObject));
+                else if (7 ==  entityAt(map[currentMap],Ordinat(*movingObject) + 1, Absis(*movingObject)))
+                    officeCollisionPrompt();
+                else if (8 ==  entityAt(map[currentMap],Ordinat(*movingObject) + 1, Absis(*movingObject)))
+                    queueCollisionPrompt();
                 else if (Ordinat(*movingObject) < MAP_SIZE_Y - 2 && isTraversable) {
                     Geser(movingObject,0,1);
                     currentTime = NextNMenit(currentTime,MOVE_TIME); // TODO : Time should not tied with collision
@@ -1016,6 +1067,10 @@ void moveCursor(POINT* movingObject, char input, boolean collision) {
                 boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) + 1);
                 if (20 <= entityAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) + 1))
                     buildingCollisionPrompt(Ordinat(*movingObject), Absis(*movingObject) + 1);
+                else if (7 == entityAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) + 1))
+                    officeCollisionPrompt();
+                else if (8 == entityAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) + 1))
+                    queueCollisionPrompt();
                 else if (Absis(*movingObject) < MAP_SIZE_X - 2 && isTraversable) {
                     Geser(movingObject,1,0);
                     currentTime = NextNMenit(currentTime,MOVE_TIME); // TODO : Time should not tied with collision
@@ -1160,6 +1215,49 @@ void buildingCollisionPrompt(int posX, int posY) {
         repairBuilding(posX, posY);
 }
 
+void officeCollisionPrompt() {
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+    printf("Office, detail / laporan / cancel");
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+    wordInput();
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+    puts("                   ");
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+    puts("                                                 ");
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+    // Set cursor pos for repeated input, which can cause weird overwrite
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+    if (stringCompare("detail",CurrentInput))
+        getDetails();
+    else if (stringCompare("laporan",CurrentInput))
+        getLaporan();
+}
+
+void queueCollisionPrompt() {
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+    printf("Antrian, serve / cancel");
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+    wordInput();
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+    puts("                   ");
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+    puts("                                                 ");
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+    // Set cursor pos for repeated input, which can cause weird overwrite
+    setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+    if (stringCompare("serve",CurrentInput)) {
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+        if ((Durasi(currentTime,cPrepTime) % 1440 - SERVE_TIME) >= 0) {
+            generateNewCustomer();
+            customerPlayingCheck();
+            customerTickCheck();
+            serveCustomer(); // TODO : Completion
+        }
+        else
+            puts("Maaf waktu tidak cukup");
+    }
+}
+
 
 
 // TODO : Move between map
@@ -1260,7 +1358,8 @@ void prepDay() {
                 while (actionUndo());
                 break;
             } // TODO : Port loading bar
-        } // TODO : Total rework frame buffer
+        }
+        // TODO : Total rework frame buffer
         else if (stringCompare("color",CurrentInput)) {
             colorSchemeChange(30);
             forceDraw();
@@ -1281,12 +1380,6 @@ void prepDay() {
             setCountMaterialByID(materialDatabase,13,10+getCountMaterialByID(materialDatabase,13));
             setCountMaterialByID(materialDatabase,14,10+getCountMaterialByID(materialDatabase,14));
         }
-        else if (stringCompare("fff",CurrentInput)) // DEBUG
-            getDetails();
-        else if (stringCompare("ggg",CurrentInput))
-            destroy(0);
-        else if (stringCompare("hhh",CurrentInput))
-            getLaporan();
         else if (stringCompare("detail",CurrentInput)) {
             if (entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) >= 20)
                 printDetail(Ordinat(cursorLocation), Absis(cursorLocation), 1);
@@ -1335,7 +1428,7 @@ void playDay() {
     entityAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)) = 0;
     occupiedAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)) = false;
 
-    playPhaseCopyCapacity();
+    playPhaseSetup();
 
     forceDraw();
     draw();
@@ -1351,6 +1444,8 @@ void playDay() {
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
         puts("                   ");
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+        puts("                                                 ");
+        setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y );
         puts("                                                 ");
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
         // Set cursor pos for repeated input, which can cause weird overwrite
@@ -1391,10 +1486,6 @@ void playDay() {
                 unicodeDraw(2);
             }
         }
-        else if (stringCompare("detail",CurrentInput))
-            getDetails(); // TODO : Put collision
-        else if (stringCompare("laporan",CurrentInput))
-            getLaporan(); // DEBUG
         else if (stringCompare(key,CurrentInput)) {
             system(CLSCRN);
             money += 1000;
@@ -1404,17 +1495,6 @@ void playDay() {
             delay(1500);
             forceDraw();
             unicodeDraw(2);
-        }
-        else if (stringCompare("serve",CurrentInput)) {
-            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
-            if ((Durasi(currentTime,cPrepTime) % 1440 - SERVE_TIME) >= 0) {
-                generateNewCustomer();
-                customerPlayingCheck();
-                customerTickCheck();
-                serveCustomer(); // TODO : Completion
-            }
-            else
-                puts("Maaf waktu tidak cukup");
         }
         else if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd') {
             if ((Durasi(currentTime,cPrepTime) % 1440 - MOVE_TIME) >= 0) {

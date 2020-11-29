@@ -4,10 +4,3 @@ ID-NamaMaterial-HargaPerBarang
 12 Bata 3
 13 Semen 2
 14 Kaca 2
-15 Cokelat 2
-16 Marshmallow 1
-17 Permen 1
-18 Bubble Gum 1
-19 Gummies 1
-20 Permen Kapas 1
-14 Baja 8

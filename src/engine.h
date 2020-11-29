@@ -116,6 +116,11 @@ void moveMap(POINT* movingObject, char input, int drawMode, boolean collision);
 void buildingCollisionPrompt(int posX, int posY);
 // Prompting user repair or detail
 
+void officeCollisionPrompt();
+// Promting user for detail or report
+
+void queueCollisionPrompt();
+// Promting user for serve
 
 
 
