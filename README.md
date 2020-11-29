@@ -93,7 +93,7 @@ Undo                              | :green_square:
 **Main phase**
 Spesifikasi                       | Status
 -----------                       | ------
-Serve                             | :red_square:
+Serve                             | :green_square:
 Repair                            | :green_square:
 Detail                            | :green_square:
 Office                            | :green_square:
