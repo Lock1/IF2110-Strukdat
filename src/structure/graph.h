@@ -29,7 +29,7 @@ typedef struct Graph {
 #define AdjList(G) (G)->adjLists
 
 //Pembuatan node
-addressGraphNode createNode(int);
+addressGraphNode createNode(int X);
 //Pembuatan graph
 addrGraph createAGraph(int vertices);
 //Pembuatan sisi
