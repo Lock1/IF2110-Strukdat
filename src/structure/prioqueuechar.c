@@ -91,7 +91,7 @@ void Dequeue (PrioQueueChar * Q, queueElmtType * X){
 void PrintPrioQueueChar (PrioQueueChar Q){
     int temp;
     for (int i = 0; i < NBElmtQueue(Q);i++){
-        temp = (Head(Q)+i+QueueMaxEl(Q)) % QueueMaxEl(Q);
+        temp = (Head(Q)+i) % QueueMaxEl(Q);
         printf("%d \n", QueueElmt(Q,temp).prio);
     }
 

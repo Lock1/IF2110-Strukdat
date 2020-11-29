@@ -63,6 +63,7 @@ Wahana** currentBuildingDatabase;
 POINT* buildingLocationDatabase;
 addrGraph mapGraph;
 PrioQueueChar playQueue;
+queueElmtType currentServe[MAX_SERVE];
 
 // -------------------------------------------------------
 
@@ -165,18 +166,9 @@ void loadDatabase() {
     upgradeCount = MakePohonUpgrade(&upgradeDatabase,buildingCount); // TODO : Fix
     currentBuildingDatabase = (Wahana**) malloc(MAX_WAHANA*sizeof(Wahana*));
     buildingLocationDatabase = (POINT*) malloc(MAX_WAHANA*sizeof(POINT));
-    MakeEmptyQueue(&playQueue,5);
-    // for (int i = 0 ; i < upgradeCount ; i++)
-    //     PrintTree(upgradeDatabase[i],5);
-    // printf("%d fffffffffffff\n",Akar(Left(upgradeDatabase[0])));
-    // printf("%d fffffffffffff\n",Akar(Right(upgradeDatabase[0])));
-    // printf("%d fffffffffffff\n",Akar(upgradeDatabase[0]));
-    // exit(1);
-    // exit(1);
-    // List test = MakeListDaun(upgradeDatabase[0]);
-    // PrintList(test);
-    // printf("%d", NbElmt(upgradeDatabase[0]));
+    MakeEmptyQueue(&playQueue,MAX_QUEUE);
 }
+
 
 
 
@@ -341,9 +333,12 @@ void infoUpdate(int tp) {
             for (int j = 0 ; j < INFO_SIZE_X ; j++)
                 infoframe[7+i][j] = ' ';
         // Write queue
-        for (int i = 0 ; i < NBElmtQueue(playQueue) ; i++) {
-            // FIXME : Queue is fucked up so bad
-            // TODO : Removal queue, happiness value
+        int maxPrint;
+        if (NBElmtQueue(playQueue) < 6)
+            maxPrint = NBElmtQueue(playQueue);
+        else
+            maxPrint = 5;
+        for (int i = 0 ; i < maxPrint ; i++) { // Only able print 5 queue
             queueElmtType customer = QueueElmt(playQueue, (Head(playQueue) + QueueMaxEl(playQueue) + i) % QueueMaxEl(playQueue));
             char queueString[STRING_LENGTH];
             for (int p = 0 ; p < STRING_LENGTH ; p++)
@@ -864,10 +859,10 @@ void generateNewCustomer() {
     // TODO : Random seed
     // srand(CurrentInput[1]);
     int rollValue = random() % 100;
-    if (!QueIsFull(playQueue) && currentBuildingCount > 0 && rollValue < 50) {
+    if (NBElmtQueue(playQueue) < 6 && currentBuildingCount > 0 && rollValue < 50) {
         queueElmtType newCustomer;
         // TODO : Temporary using 2 building only
-        newCustomer.prio = 1;
+        newCustomer.prio = 10;
         newCustomer.info[0] = random() % (currentBuildingCount);
         newCustomer.info[1] = random() % (currentBuildingCount);
         newCustomer.isServed[0] = false;
@@ -875,6 +870,44 @@ void generateNewCustomer() {
         newCustomer.happiness = 5;
         Enqueue(&playQueue,newCustomer);
     }
+}
+
+void generateCustomer() { // DEBUG
+    queueElmtType newCustomer;
+    // TODO : Temporary using 2 building only
+    newCustomer.prio = 3;
+    newCustomer.info[0] = random() % (currentBuildingCount);
+    newCustomer.info[1] = random() % (currentBuildingCount);
+    newCustomer.isServed[0] = false;
+    newCustomer.isServed[1] = false;
+    newCustomer.happiness = 3;
+    Enqueue(&playQueue,newCustomer);
+}
+
+void customerTickCheck() {
+    if (NBElmtQueue(playQueue) > 0) {
+        int currentIndex = Head(playQueue);
+        queueElmtType frontCustomer = QueueElmt(playQueue,currentIndex);
+        if ((frontCustomer.isServed[0] && frontCustomer.isServed[1]) || frontCustomer.happiness < 1) {
+            queueElmtType tempTrash;
+            Dequeue(&playQueue,&tempTrash);
+        }
+        else {
+            if (25 > (random() % 100))
+            *(&(QueueElmt(playQueue,currentIndex).happiness)) = QueueElmt(playQueue,currentIndex).happiness - 1;
+        }
+        currentIndex = Head(playQueue);
+        while (currentIndex != Tail(playQueue)) {
+            frontCustomer = QueueElmt(playQueue,currentIndex);
+            if ((frontCustomer.isServed[0] && frontCustomer.isServed[1]) || frontCustomer.happiness < 1) {
+                queueElmtType tempTrash;
+                Dequeue(&playQueue,&tempTrash);
+            }
+            currentIndex = (currentIndex + 1) % QueueMaxEl(playQueue);
+        }
+    }
+    
+
 }
 
 void serveCustomer() {
@@ -1262,7 +1295,6 @@ void playDay() {
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
 
 
-        generateNewCustomer();
 
         // If input too long, force draw everything
         if (LengthInput > 15) {
@@ -1278,6 +1310,8 @@ void playDay() {
         }
         if (stringCompare("ggg",CurrentInput))
             destroy(0); // DEBUG
+        if (stringCompare("genc",CurrentInput))
+            generateCustomer(); // DEBUG
         if (stringCompare("ppgf",CurrentInput))
             destroy(1); // DEBUG
         else if (stringCompare("legend",CurrentInput)) {
@@ -1315,14 +1349,20 @@ void playDay() {
         }
         else if (stringCompare("serve",CurrentInput)) {
             setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
-            if ((Durasi(currentTime,cPrepTime) % 1440 - SERVE_TIME) >= 0)
+            if ((Durasi(currentTime,cPrepTime) % 1440 - SERVE_TIME) >= 0) {
+                customerTickCheck();
+                generateNewCustomer();
                 serveCustomer(); // TODO : Completion
+            }
             else
                 puts("Maaf waktu tidak cukup");
         }
         else if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd') {
-            if ((Durasi(currentTime,cPrepTime) % 1440 - MOVE_TIME) >= 0)
+            if ((Durasi(currentTime,cPrepTime) % 1440 - MOVE_TIME) >= 0) {
+                customerTickCheck();
+                generateNewCustomer();
                 moveMap(&playerLocation, CurrentInput[0], 2, true);
+            }
             else {
                 setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
                 puts("Maaf waktu tidak cukup");
@@ -1333,8 +1373,12 @@ void playDay() {
             puts("Apakah anda yakin untuk mengosongkan antrian? (y/n)");
             setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
             wordInput();
-            if (CurrentInput[0] == 'y')
+            if (CurrentInput[0] == 'y') {
+                queueElmtType tempTrash;
+                while (Head(playQueue) != QueueNil)
+                    Dequeue(&playQueue,&tempTrash);
                 break;
+            }
                 // TODO : Port loading bar
         }
         CurrentInput[1] = '\0';

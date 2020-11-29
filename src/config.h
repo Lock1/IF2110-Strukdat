@@ -29,6 +29,8 @@
 #define SERVE_TIME 15
 #define BUY_TIME 90
 #define MAX_WAHANA 200
+#define MAX_QUEUE 20
+#define MAX_SERVE 200
 
 #define LOADING_LENGTH 20
 #define LOADING_OPEN_BRACKET "\u2523"
