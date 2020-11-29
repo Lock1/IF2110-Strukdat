@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 int main(){
-    STARTKATA();
+    wordInput();
     int i=0;
     while(!EndKata){
         for(i=0;i<CKata.Length;i++){
