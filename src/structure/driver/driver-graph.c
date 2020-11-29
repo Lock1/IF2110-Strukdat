@@ -12,8 +12,9 @@ int main() {
   addEdge(graph, 3, 0);
 
   printGraph(graph);
+  printf("\n");
 
-  if (isGraphConnected(graph, 0, 1))
+  if (isGraphConnected(graph, 0, 1)) //apabila dua simpul ini terhubung akan mengeprint keterhubungan
     printf("0 1 are connected\n");
 
   return 0;

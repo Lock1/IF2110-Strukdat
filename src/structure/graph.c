@@ -42,7 +42,8 @@ void addEdge(addrGraph graph, int src, int dst) {
 void printGraph(addrGraph graph) {
   for (int ver = 0; ver < NumVertices(graph); ver++) {
     addressGraphNode temp = AdjList(graph)[ver];
-    printf("\n Vertex %d\n: ", ver);
+    printf("\n Simpul ke-%d\n", ver);
+    printf("Simpul yang terhubung: \n");
     while (temp) {
       printf("%d -> ", Vertex(temp));
       temp = Next(temp);
@@ -52,8 +53,9 @@ void printGraph(addrGraph graph) {
 
 }
 
+//Mengecek apakah dua buah simpul saling terhubung
 boolean isGraphConnected(addrGraph graph, int src, int dest){
-  for (int i=0; i < graph->numVertices; i++){
+  for (int i=0; i < NumVertices(graph); i++){
     addressGraphNode temp = AdjList(graph)[i];
     if(i==src){
       while(temp){

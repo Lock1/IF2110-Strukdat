@@ -1,4 +1,4 @@
-// ADT Graf
+// ADT Graf Variasi MultiList
 // 13519146 / Fadel Ananda Dotty
 #ifndef GRAPH_H
 #define GRAPH_H
@@ -28,10 +28,15 @@ typedef struct Graph {
 #define NumVertices(G) (G)->numVertices
 #define AdjList(G) (G)->adjLists
 
+//Pembuatan node
 addressGraphNode createNode(int);
+//Pembuatan graph
 addrGraph createAGraph(int vertices);
+//Pembuatan sisi
 void addEdge(addrGraph graph, int src, int dst);
+//Pencetakan graph
 void printGraph(addrGraph graph);
+//Pengecekan dua simpul terhubung
 boolean isGraphConnected(addrGraph graph, int src, int dest);
 
 #endif
