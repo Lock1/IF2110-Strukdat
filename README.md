@@ -19,7 +19,6 @@
 - Digunakan camel case untuk penamaan fungsi dan variable.
 
 ## Snapshot
-**TBA** \
 **lul** \
 ![Kekw](/other/img/cool.gif) \
 **uhh** \
