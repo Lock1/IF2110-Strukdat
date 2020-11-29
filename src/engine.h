@@ -59,36 +59,50 @@ boolean startGame();
 
 // xxx----- Internal function -----xxx
 void prepDay();
+// Preparation phase procedure
 
 void playDay();
+// Play phase procedure
 
 void endGame();
+// Quit game
 
 void colorSchemeChange();
+// Change color scheme
 
 // ------------ Database Procedures ------------
 void loadDatabase();
+// Load from file and create databases
 
 void loadMap();
+// Load from map and create base map
 
 
 
 // ------------- Action Procedures ------------
 int actionUndo();
+// Undo action with stack
 
 void buildNewBuilding(void);
-
-void buyMaterial(void);
+// Creating new building
 
 void upgradeBuilding(void);
+// Upgrading building
+
+void buyMaterial(void);
+// Buy materials
 
 void getDetails();
+// Get all details of building
 
 void getLaporan();
+// Get all report of building
 
 void repairBuilding(int posX, int posY);
+// Fix broken building, no refunds
 
 void destroy();
+// DEBUG ONLY : Break every newBuilding
 
 
 
@@ -117,7 +131,7 @@ void printMaterialList();
 void printLegendList();
 
 void printDetail();
-// Creating list and draw on screen
+// Creating respective list and draw on screen
 
 void infoUpdate(int tp);
 // Update frame with changes in information screen
