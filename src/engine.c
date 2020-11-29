@@ -50,6 +50,7 @@ JAM currentTime;
 Stack actionStack;
 int actionCount = 0;
 int actionGoldSum = 0;
+int currentState = 0;
 int currentMap = 0;
 int playerMapLocation = 0;
 char *colorScheme[3] = {COLOR_RESET,COLOR_BLACK,COLOR_WHITE};
@@ -335,11 +336,66 @@ void infoUpdate(int tp) {
     }
 
     else if (tp == 2) {
-        // TODO : Put queue here
+        // Wipe old record
         for (int i = 0 ; i < 5 ; i++)
             for (int j = 0 ; j < INFO_SIZE_X ; j++)
                 infoframe[7+i][j] = ' ';
+        // Write queue
+        for (int i = 0 ; i < NBElmtQueue(playQueue) ; i++) {
+            // FIXME : Queue is fucked up so bad
+            // TODO : Removal queue, happiness value
+            queueElmtType customer = QueueElmt(playQueue, (Head(playQueue) + QueueMaxEl(playQueue) + i) % QueueMaxEl(playQueue));
+            char queueString[STRING_LENGTH];
+            for (int p = 0 ; p < STRING_LENGTH ; p++)
+                queueString[p] = ' ';
+            int k = 0;
+            while (k < 22 && (*currentBuildingDatabase[customer.info[0]]).nama[k] != '\0') {
+                if (!customer.isServed[0])
+                    queueString[k] = (*currentBuildingDatabase[customer.info[0]]).nama[k];
+                else
+                    queueString[k] = ' ';
+                k++;
+            }
+            k = 0;
+            while (k < 22 && (*currentBuildingDatabase[customer.info[1]]).nama[k] != '\0') {
+                if (!customer.isServed[1])
+                    queueString[20+k] = (*currentBuildingDatabase[customer.info[1]]).nama[k];
+                else
+                    queueString[20+k] = ' ';
+                k++;
+            }
+
+            char happyValue[STRING_LENGTH];
+            // char *happyValue = "aaaabbbb";
+            sprintf(happyValue,"Sabar : %d", customer.happiness);
+            for (int j = 0 ; happyValue[j] != '\0' ; j++)
+                queueString[40+j] = happyValue[j];
+            queueString[49] = '\0';
+            for (int j = 0 ; j < INFO_SIZE_X && queueString[j] != '\0'; j++)
+                infoframe[7+i][j] = queueString[j];
+        }
     }
+
+
+    // Broken building check
+    int brokenBuildingCount = 0;
+    // Wipe old record
+    for (int i = 0 ; i < 3 ; i++) {
+        for (int j = 0 ; j < INFO_SIZE_X ; j++)
+            infoframe[14+i][j] = ' ';
+    }
+    for (int i = 0 ; i < currentBuildingCount ; i++) {
+        if (!(*currentBuildingDatabase[i]).statusWahana && brokenBuildingCount < 3) {
+            for (int j = 0 ; j < INFO_SIZE_X/2 && (*currentBuildingDatabase[i]).nama[j] != '\0'; j++)
+                infoframe[14+brokenBuildingCount][j] = (*currentBuildingDatabase[i]).nama[j];
+            char brokenLocation[STRING_LENGTH];
+            sprintf(brokenLocation,"(%d,%d)",Absis(buildingLocationDatabase[i]),Ordinat(buildingLocationDatabase[i]));
+            for (int j = 0 ; j < INFO_SIZE_X/2 && brokenLocation[j] != '\0'; j++)
+                infoframe[14+brokenBuildingCount][INFO_SIZE_X/2+j] = brokenLocation[j];
+            brokenBuildingCount++;
+        }
+    }
+
 
     // Moving info frame to next frame buffer
     for (int i = 0 ; i < INFO_SIZE_Y ; i++)
@@ -750,42 +806,81 @@ void repairBuilding(int posX, int posY) {
     Wahana* selectedBuilding = buildingAt(map[currentMap], posX, posY);
     setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X + 5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
     if (!(*selectedBuilding).statusWahana) {
-        printf("Perbaiki %s? (y/n)", (*selectedBuilding).nama);
-        setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X + 25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
-        wordInput();
-        setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X + 5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
-        if (CurrentInput[0] == 'y') {
-            if (money >= (*selectedBuilding).harga) {
-                (*selectedBuilding).statusWahana = 1;
-                money -= (*selectedBuilding).harga;
-                printf("%s telah diperbaiki!", (*selectedBuilding).nama);
+        // Time checking
+        boolean isTimeEnough = false;
+        if (currentState == 0 && (Durasi(currentTime,cPlayTime)%1440 - REPAIR_TIME) >= 0)
+            isTimeEnough = true;
+        else if (currentState == 1 && (Durasi(currentTime,cPrepTime)%1440 - REPAIR_TIME) >= 0)
+            isTimeEnough = true;
+
+        if (isTimeEnough) {
+            printf("Perbaiki %s dengan harga %d? (y/n)", (*selectedBuilding).nama, (*selectedBuilding).harga);
+            setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X + 25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+            wordInput();
+            setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X + 5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+            if (CurrentInput[0] == 'y') {
+                if (money >= (*selectedBuilding).harga) {
+                    (*selectedBuilding).statusWahana = 1;
+                    money -= (*selectedBuilding).harga;
+                    currentTime = NextNMenit(currentTime,REPAIR_TIME);
+                    printf("%s telah diperbaiki!               ", (*selectedBuilding).nama);
+                }
+                else
+                    printf("Uang tidak cukup untuk perbaiki");
             }
             else
-                printf("Uang tidak cukup untuk perbaiki");
-        }
+                printf("%s tidak diperbaiki                  ", (*selectedBuilding).nama);
+            }
         else
-            printf("%s tidak diperbaiki", (*selectedBuilding).nama);
+            printf("Maaf waktu tidak cukup                 ");
     }
     else
         printf("%s tidak rusak", (*selectedBuilding).nama);
+    setCursorPosition(MAP_OFFSET_X + MAP_SIZE_X + 25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+    printf("                            ");
 }
 // DEBUG for checking repair
-void destroy() {
+void destroy(int af) {
     for (int i = 0 ; i < currentBuildingCount ; i++)
         (*currentBuildingDatabase[i]).statusWahana = 0;
+    for (int i = 0 ; i < NBElmtQueue(playQueue) ; i++) {
+        if (af == 1) {
+            *(&(QueueElmt(playQueue,i).isServed[0])) = true;
+        }
+        else {
+            *(&(QueueElmt(playQueue,i).isServed[1])) = true;
+        }
+    }
+    for (int i = 0 ; i < currentBuildingCount ; i++) {
+        (*currentBuildingDatabase[i]).frekuensiHari += 1;
+        (*currentBuildingDatabase[i]).frekuensiTotal += 3;
+        (*currentBuildingDatabase[i]).penghasilanHari += 2;
+        (*currentBuildingDatabase[i]).penghasilanTotal += 7;
+
+    }
 }
 
 void generateNewCustomer() {
+    // TODO : Random seed
+    // srand(CurrentInput[1]);
     int rollValue = random() % 100;
-    if (!QueIsFull(playQueue) && currentBuildingCount > 0 && rollValue < 5) {
+    if (!QueIsFull(playQueue) && currentBuildingCount > 0 && rollValue < 50) {
         queueElmtType newCustomer;
         // TODO : Temporary using 2 building only
         newCustomer.prio = 1;
-        newCustomer.info[0] = random() % (currentBuildingCount - 1);
-        newCustomer.info[1] = random() % (currentBuildingCount - 1);
+        newCustomer.info[0] = random() % (currentBuildingCount);
+        newCustomer.info[1] = random() % (currentBuildingCount);
+        newCustomer.isServed[0] = false;
+        newCustomer.isServed[1] = false;
+        newCustomer.happiness = 5;
         Enqueue(&playQueue,newCustomer);
     }
 }
+
+void serveCustomer() {
+
+}
+
 
 // -- Movement function --
 void moveCursor(POINT* movingObject, char input, boolean collision) {
@@ -797,16 +892,20 @@ void moveCursor(POINT* movingObject, char input, boolean collision) {
                 boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject) - 1, Absis(*movingObject));
                 if (20 <= entityAt(map[currentMap],Ordinat(*movingObject) - 1, Absis(*movingObject)))
                     buildingCollisionPrompt(Ordinat(*movingObject) - 1, Absis(*movingObject));
-                else if (1 < Ordinat(*movingObject) && isTraversable)
+                else if (1 < Ordinat(*movingObject) && isTraversable) {
                     Geser(movingObject,0,-1);
+                    currentTime = NextNMenit(currentTime,MOVE_TIME); // TODO : Time should not tied with collision
+                }
                 break;
             }
             case 'a': {
                 boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) - 1);
                 if (20 <= entityAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) - 1))
                     buildingCollisionPrompt(Ordinat(*movingObject), Absis(*movingObject) - 1);
-                else if (Absis(*movingObject) > 1 && isTraversable)
+                else if (Absis(*movingObject) > 1 && isTraversable) {
                     Geser(movingObject,-1,0);
+                    currentTime = NextNMenit(currentTime,MOVE_TIME); // TODO : Time should not tied with collision
+                }
                 // TODO : add detail + office here
                 break;
             }
@@ -814,16 +913,20 @@ void moveCursor(POINT* movingObject, char input, boolean collision) {
                 boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject) + 1, Absis(*movingObject));
                 if (20 <= entityAt(map[currentMap],Ordinat(*movingObject) + 1, Absis(*movingObject)))
                     buildingCollisionPrompt(Ordinat(*movingObject) + 1, Absis(*movingObject));
-                else if (Ordinat(*movingObject) < MAP_SIZE_Y - 2 && isTraversable)
+                else if (Ordinat(*movingObject) < MAP_SIZE_Y - 2 && isTraversable) {
                     Geser(movingObject,0,1);
+                    currentTime = NextNMenit(currentTime,MOVE_TIME); // TODO : Time should not tied with collision
+                }
                 break;
             }
             case 'd': {
                 boolean isTraversable = !occupiedAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) + 1);
                 if (20 <= entityAt(map[currentMap],Ordinat(*movingObject), Absis(*movingObject) + 1))
                     buildingCollisionPrompt(Ordinat(*movingObject), Absis(*movingObject) + 1);
-                else if (Absis(*movingObject) < MAP_SIZE_X - 2 && isTraversable)
+                else if (Absis(*movingObject) < MAP_SIZE_X - 2 && isTraversable) {
                     Geser(movingObject,1,0);
+                    currentTime = NextNMenit(currentTime,MOVE_TIME); // TODO : Time should not tied with collision
+                }
                 break;
             }
         }
@@ -980,8 +1083,10 @@ void prepDay() {
     check stack.h for more information
     */
     currentTime = cPrepTime;
+    currentState = 0;
     frameSet(1);
     forceDraw();
+    draw();
     unicodeDraw(1);
     Absis(cursorLocation) = CURSOR_REST_X;
     Ordinat(cursorLocation) = CURSOR_REST_Y;
@@ -1086,7 +1191,9 @@ void prepDay() {
         else if (stringCompare("fff",CurrentInput)) // DEBUG
             getDetails();
         else if (stringCompare("ggg",CurrentInput))
-            destroy();
+            destroy(0);
+        else if (stringCompare("hhh",CurrentInput))
+            getLaporan();
         else if (stringCompare("detail",CurrentInput)) {
             if (entityAt(map[currentMap],Ordinat(cursorLocation),Absis(cursorLocation)) >= 20)
                 printDetail(Ordinat(cursorLocation), Absis(cursorLocation), 1);
@@ -1128,6 +1235,7 @@ void prepDay() {
 
 void playDay() {
     currentTime = cPlayTime;
+    currentState = 1;
     frameSet(2);
     mapUpdate(2);
     currentMap = playerMapLocation;
@@ -1135,6 +1243,7 @@ void playDay() {
     occupiedAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)) = false;
 
     forceDraw();
+    draw();
     unicodeDraw(2);
     // LOOP
     while (true) {
@@ -1153,21 +1262,24 @@ void playDay() {
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
 
 
+        generateNewCustomer();
+
         // If input too long, force draw everything
         if (LengthInput > 15) {
             forceDraw();
             unicodeDraw(2);
         }
 
-        if (stringCompare("serve",CurrentInput)) {
-            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
-            puts("nothing");
-        }
-        else if (stringCompare("color",CurrentInput)) {
+
+        if (stringCompare("color",CurrentInput)) {
             colorSchemeChange(30);
             forceDraw();
             unicodeDraw(2);
         }
+        if (stringCompare("ggg",CurrentInput))
+            destroy(0); // DEBUG
+        if (stringCompare("ppgf",CurrentInput))
+            destroy(1); // DEBUG
         else if (stringCompare("legend",CurrentInput)) {
             printLegendList(1); // ??
             puts("Tekan enter untuk melanjutkan");
@@ -1201,8 +1313,20 @@ void playDay() {
             forceDraw();
             unicodeDraw(2);
         }
+        else if (stringCompare("serve",CurrentInput)) {
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+            if ((Durasi(currentTime,cPrepTime) % 1440 - SERVE_TIME) >= 0)
+                serveCustomer(); // TODO : Completion
+            else
+                puts("Maaf waktu tidak cukup");
+        }
         else if (CurrentInput[0] == 'w' || CurrentInput[0] == 'a' || CurrentInput[0] == 's' || CurrentInput[0] == 'd') {
-            moveMap(&playerLocation, CurrentInput[0], 2, true);
+            if ((Durasi(currentTime,cPrepTime) % 1440 - MOVE_TIME) >= 0)
+                moveMap(&playerLocation, CurrentInput[0], 2, true);
+            else {
+                setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
+                puts("Maaf waktu tidak cukup");
+            }
         }
         else if (stringCompare("prepare",CurrentInput)) {
             setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+5, MAP_OFFSET_Y + MAP_SIZE_Y - 1);
@@ -1226,7 +1350,7 @@ void playDay() {
 
 
 // ----- Draw function set -----
-// Every draw function which using argument,
+// Every draw function which using argument int tp,
 // these are meaning of those int values
 // 0 Initialization
 // 1 Preparation
@@ -1448,6 +1572,10 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
 
     char *infoBlock[9], endTime[5];
     if (tp == 1 || tp == 0) {
+        // Wipe old record
+        for (int i = 0 ; i < 5 ; i++)
+            for (int j = 0 ; j < INFO_SIZE_X ; j++)
+                infoframe[7+i][j] = ' ';
         infoBlock[4] = "Opening time   | ";
         infoBlock[6] = "     --------------- Action -----------------     ";
         char* actionBlock[3];
@@ -1464,6 +1592,10 @@ void frameSet(int tp) { // TODO : Possible merge with other frame function
         }
     }
     else if (tp == 2) {
+        // Wipe old record
+        for (int i = 0 ; i < 5 ; i++)
+            for (int j = 0 ; j < INFO_SIZE_X ; j++)
+                infoframe[7+i][j] = ' ';
         infoBlock[4] = "Closing time   | ";
         infoBlock[6] = "     ---------------  Queue -----------------     ";
         char* queueBlock;
@@ -1573,6 +1705,7 @@ void unicodeDraw(int tp) {
     }
     setCursorPosition(3,RES_Y-2);
     puts(MAP_BOTTOM_UNICODE);
+    // TODO : Cut day from preparation and play
 
     // Border
     for (int i = 0 ; i < MAP_SIZE_Y ; i++) {
@@ -1650,7 +1783,12 @@ void unicodeDraw(int tp) {
     setCursorPosition(INFO_OFFSET_X-1,INFO_OFFSET_Y-1);
     puts(INFO_UNICODE);
 
-    for (int i = 0 ; i < 12 ; i++) {
+    int middleLineDrawLimit;
+    if (tp == 0 || tp == 1)
+        middleLineDrawLimit = 12;
+    else if (tp == 2)
+        middleLineDrawLimit = 6;
+    for (int i = 0 ; i < middleLineDrawLimit ; i++) {
         if (i == 6)
             continue;
         setCursorPosition(INFO_OFFSET_X+15,INFO_OFFSET_Y+i);

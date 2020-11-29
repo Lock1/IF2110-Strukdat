@@ -17,6 +17,8 @@
 typedef struct {
     int prio;  /* [1..100], prioritas dengan nilai 1..100 (1 adalah prioritas tertinggi) */
     int info[2];  /* elemen karakter */
+    boolean isServed[2];
+    int happiness;
 } queueElmtType;
 typedef int address;   /* indeks tabel */
 /* Contoh deklarasi variabel bertype PrioQueueChar : */
