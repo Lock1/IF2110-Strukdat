@@ -1438,6 +1438,16 @@ void playDay() {
         infoUpdate(2);
         mapUpdate(2);
         draw();
+
+        if ((Durasi(currentTime,cPrepTime) % 1440 - MOVE_TIME) < 0) {
+            setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
+            queueElmtType tempTrash;
+            while (Head(playQueue) != QueueNil)
+                Dequeue(&playQueue,&tempTrash);
+            break;
+        }
+
+
         // Positioning for user input
         setCursorPosition(MAP_OFFSET_X+MAP_SIZE_X+25, MAP_OFFSET_Y + MAP_SIZE_Y - 2);
         wordInput();
