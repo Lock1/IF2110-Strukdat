@@ -1,3 +1,5 @@
+// ADT Jam
+// 13519046 / Dwianditya Hanif Raharjanto
 /*Body ADT Jam */
 #include "jam.h"
 #include <stdio.h>
@@ -60,9 +62,9 @@ JAM MenitToJAM (long N)
     int sisa;
     JAM JOut;
     /* Algoritma */
-    
+
     N=N%1440; //harus ditambah ini agar valid
-    Hour(JOut)=N/60;
+    Hour(JOut)=(int) N/60;
     sisa=N%60;
     Minute(JOut)=sisa;
     return JOut;

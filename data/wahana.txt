@@ -1,15 +1,19 @@
-20 chocolate-tornado 5 2 5 Cocok untukmu yang ingin menantang adrenalin, tornado ini akan membuat adrenalinmu meningkat dengan sangat pesat 
-21 candy-house  10 1 15 Membawamu berkeliling rumah cokelat yang didalamnya terdapat berbagai macam koleksi cokelat
-22 chocolate-factory 6 10 3 Kamu dapat melihat proses pembuatan cokelat khas Willy Wangky disini, kamu juga akan diajari cara membuatnya
-23 wanky-wonderland 8 2 5 Membawamu ke suasana masa depan, cocok untukmu yang suka berfoto
-24 chocolate-eater 7 2 10 Cocok untuk kamu yang suka makan, kamu dapat makan sepuasnya disini
-25 dip-train 12 3 20 Membawamu berkeliling area wahana bermain, disini kamu akan mempelajari banyak hal terkait dengan taman bermain ini
-26 deep-horizon 6 5 15 Membuat anda merasa melupakan semua masalah yang anda hadapi, cocok untuk kamu yang punya banyak masalah
-27 bukan-halilintar-keluarga 9 7 20 Membuat anda melayang selama bermain disini, sangat baik untuk kesehatan keluarga
-28 dollay-gangs 4 9 5 Kamu dapat melihat sisi gelapnya dunia disini, cocok untuk belajar kehidupan
-29 gempol-pride 6 4 12 Cocok untuk kamu yang suka berpetualang untuk melihat keindahan dunia
-30 wanky-tube 7 6 14 Bisa membuat anda merasa menjadi penguasa, cocok untuk anda yang mempunyai jiwa kepemimpinan
-31 wanky-middle-earth 9 7 5 Cocok untuk anda yang suka berpetualang, baik untuk kesehatan otak dan memory
-32 wanky-tongfang 4 5 8 Baik untuk kesehatan dan kebugaran tubuh anda, bawa semua keluarga anda disini
-33 wanky-slim-fit 6 10 3 Bisa membuat tubuh anda memancarkan aura-aura positif dan mengusir semua aura negatif
-34 solo-wanky 7 4 8 Baik untuk melatih kemandirian anda untuk hidup di dunia ini
+ID-NAMA-        HARGA-KAPASITAS-DURASI-DESKRIPSI-                  KAYU-BESI-BATA-SEMEN-BAJA
+20 Chocolate-tornado     5 2 60     Meningkatkan-adrenalin           Z    1 1 0 1 1
+21 Candy-house           10 1 45   Cocok-untuk-orang-rakus          H     2 0 1 1 1
+22 Chocolate-factory     6 4 45     Melihat-proses-pembuatan-cokelat F    3 2 1 1 0
+23 Wanky-wonderland      8 2 45     Spot-foto-paling-gaulzzz         W    2 2 1 0 0
+24 Chocolate-eater       7 2 60    Kumpulan-cokelat-diseluruh-dunia M     1 3 0 0 1
+25 Dip-train             12 3 90   Masuk-dunia-fantasi              Q     1 2 3 1 0
+120 Chocolate-disaster   8 3 15 a                                    A    1 3 2 1 3
+121 Lollipop-lolicon     9 4 15 s                                   L     2 2 2 2 1
+122 Chocolate-realm      7 1 15 d                                   S     1 3 4 1 2
+123 Wangky-universe      6 3 15 f                                   T     2 2 1 1 4
+124 Greedy-eater         9 3 15 a                                   R     2 3 0 0 5
+125 Fun-train            7 2 15 a                                   U     2 3 4 1 1
+220 Chocolate-pandemic   9 2 45 a                                    K    2 4 3 2 3
+221 Lollipop-lolirock    9 1 30 a                                   D     3 3 3 3 3
+222 Chocolate-world      9 1 30 a                                   C     2 4 4 2 1
+223 Wangky-multiverse    6 1 30 a                                   I     3 3 2 1 2
+224 Chocolate-addict     8 1 45 a                                   E     3 4 1 1 1
+225 Chaos-train          9 1 60 a                                   Y     3 4 5 1 0

@@ -27,7 +27,11 @@
 **lul** \
 ![Kekw](/other/img/cool.gif) \
 **uhh** \
-![nope](/other/img/wrong.gif)
+![nope](/other/img/wrong.gif) \
+**have fun** \
+![havefun](/other/img/have-fun.jpg) \
+**loading...** \
+![loading](/other/img/loading.gif)
 <!--
 **Gauss-Jordan Elimination** \
 ![Gauss Jordan Elimination](/src/readme/gjelimination.gif) -->
@@ -74,31 +78,40 @@ Standard C Library | stdlib.h
 **Base Game**
 Spesifikasi                       | Status
 -----------                       | ------
-Input                             | :red_square:
-Tick                              | :red_square:
+Input                             | :green_square:
+Tick                              | :green_square:
 Draw                              | :green_square:
 
 
-
-<!--**Fitur**
-**Status : WIP**
+**Preparation phase**
 Spesifikasi                       | Status
 -----------                       | ------
--->
+Build                             | :green_square:
+Upgrade                           | :green_square:
+Undo                              | :green_square:
+
+**Main phase**
+Spesifikasi                       | Status
+-----------                       | ------
+Serve                             | :red_square:
+Repair                            | :green_square:
+Detail                            | :green_square:
+Office                            | :green_square:
+Prepare                           | :green_square:
 
 **Struktur**
 Spesifikasi     | Status
 -----------     | ------
-Point           | :red_square:
-Jam             | :red_square:
+Point           | :green_square:
+Jam             | :green_square:
 List Array      | :green_square:
 Matriks         | :green_square:
-Mesin Kata      | :red_square:
-Priority Queue  | :red_square:
-Stack           | :red_square:
-Linked List     | :red_square:
-Tree            | :red_square:
-Graph           | :red_square:
+Mesin Kata      | :green_square:
+Priority Queue  | :green_square:
+Stack           | :green_square:
+Linked List     | :green_square:
+Tree            | :green_square:
+Graph           | :green_square:
 
 
 **Bonus**

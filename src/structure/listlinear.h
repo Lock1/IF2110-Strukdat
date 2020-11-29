@@ -3,17 +3,17 @@
 
 #include "boolean.h"
 
-#define Nil NULL
+#define listLinNil NULL
 
-typedef int infotype;
-typedef struct tElmtlist *address;
-typedef struct tElmtlist {
-	infotype info;
-	address next;
-} ElmtList;
+typedef int listLinInfotype;
+typedef struct tlistLinElmtList *listLinAddress;
+typedef struct tlistLinElmtList {
+	listLinInfotype info;
+	listLinAddress next;
+} listLinElmtList;
 typedef struct {
-	address First;
-} List;
+	listLinAddress First;
+} ListLin;
 
 #define Info(P) (P)->info
 #define Next(P) (P)->next
@@ -21,60 +21,60 @@ typedef struct {
 
 
 /****************** TEST KETIKA BELUM DI UPGRADE ******************/
-boolean IsEmpty (List L);
+boolean LinIsEmpty (ListLin L);
 
 
-/****************** PEMBUATAN LIST KOSONG ******************/
-void CreateEmpty (List *L);
+/****************** PEMBUATAN ListLin KOSONG ******************/
+void LinCreateEmpty (ListLin *L);
 
 
 /****************** Manajemen Memori ******************/
-address Alokasi (infotype X);
+listLinAddress LinAlokasi (listLinInfotype X);
 
-void Dealokasi (address *P);
+void LinDealokasi (listLinAddress *P);
 
 
 /****************** Pencarian Upgrade ******************/
-address Search (List L, infotype X);
-/* Mencari apakah ada elemen list dengan Info(P)= X */
-/* Jika ada, mengirimkan address elemen tersebut. */
-/* Jika tidak ada, mengirimkan Nil */
+listLinAddress LinSearch (ListLin L, listLinInfotype X);
+/* Mencari apakah ada elemen ListLin dengan Info(P)= X */
+/* Jika ada, mengirimkan listLinAddress elemen tersebut. */
+/* Jika tidak ada, mengirimkan listLinNil */
 
-/****************** PRIMITIF BERDASARKAN NILAI ******************/
-void InsVLast (List *L, infotype X);
+/****************** PRIMITIF BERDASARKAN listLinNilAI ******************/
+void InsVLast (ListLin *L, listLinInfotype X);
 /* I.S. L mungkin kosong */
-/* F.S. Melakukan alokasi sebuah elemen dan */
-/* menambahkan elemen list di akhir: elemen terakhir yang baru */
-/* berNilai X jika alokasi berhasil. Jika alokasi gagal: I.S.= F.S. */
+/* F.S. Melakukan LinAlokasi sebuah elemen dan */
+/* menambahkan elemen ListLin di akhir: elemen terakhir yang baru */
+/* berlistLinNilai X jika LinAlokasi berhasil. Jika LinAlokasi gagal: I.S.= F.S. */
 
-void DelVLast (List *L, infotype *X);
-/* I.S. list tidak kosong */
-/* F.S. Elemen terakhir list dihapus: Nilai info disimpan pada X */
-/*      dan alamat elemen terakhir di-dealokasi */
+void DelVLast (ListLin *L, listLinInfotype *X);
+/* I.S. ListLin tidak kosong */
+/* F.S. Elemen terakhir ListLin dihapus: listLinNilai info disimpan pada X */
+/*      dan alamat elemen terakhir di-LinDealokasi */
 
 /****************** PRIMITIF BERDASARKAN ALAMAT ******************/
 /*** PENAMBAHAN ELEMEN BERDASARKAN ALAMAT ***/
-void InsertAfter (List *L, address P, address Prec);
-/* I.S. Prec pastilah elemen list dan bukan elemen terakhir, */
-/*      P sudah dialokasi  */
+void InsertAfter (listLinAddress P, listLinAddress Prec);
+/* I.S. Prec pastilah elemen ListLin dan bukan elemen terakhir, */
+/*      P sudah diLinAlokasi  */
 /* F.S. Insert P sebagai elemen sesudah elemen beralamat Prec */
 
-void InsertLast (List *L, address P);
-/* I.S. Sembarang, P sudah dialokasi  */
+void InsertLast (ListLin *L, listLinAddress P);
+/* I.S. Sembarang, P sudah diLinAlokasi  */
 /* F.S. P ditambahkan sebagai elemen terakhir yang baru */
 
-void DelLast (List *L, address *P);
-/* I.S. List tidak kosong */
-/* F.S. P adalah alamat elemen terakhir list sebelum penghapusan  */
-/*      Elemen list berkurang satu (mungkin menjadi kosong) */
+void DelLast (ListLin *L, listLinAddress *P);
+/* I.S. ListLin tidak kosong */
+/* F.S. P adalah alamat elemen terakhir ListLin sebelum penghapusan  */
+/*      Elemen ListLin berkurang satu (mungkin menjadi kosong) */
 /* Last element baru adalah predesesor elemen terakhir yg lama, */
 /* jika ada */
 
 
-/****************** PROSES SEMUA ELEMEN LIST ******************/
-void PrintInfo (List L);
+/****************** PROSES SEMUA ELEMEN ListLin ******************/
+void PrintInfo (ListLin L);
 
-int NbElmt (List L);
+int LinNBElmt (ListLin L);
 /* Buat mengetahui berapa banyak sudah melakukan upgrade */
 
 

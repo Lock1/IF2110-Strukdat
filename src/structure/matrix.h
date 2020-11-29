@@ -7,10 +7,12 @@
 
 // Library
 #include "boolean.h"
+#include "wahana.h"
 
 typedef struct mtrxtpl {
 	boolean occupied;
 	int entityType;
+	Wahana* currentBuilding;
 } matrixTuple;
 
 typedef struct {
@@ -25,7 +27,8 @@ typedef struct {
 #define Elmt(M,i,j) (M).mtrx[(i)+colLen(M)*(j)]
 
 #define occupiedAt(M,i,j) (M).mtrx[(i)+colLen(M)*(j)].occupied
-#define entityAt(M,i,j)  (M).mtrx[(i)+colLen(M)*(j)].entityType
+#define entityAt(M,i,j) (M).mtrx[(i)+colLen(M)*(j)].entityType
+#define buildingAt(M,i,j) (M).mtrx[(i)+colLen(M)*(j)].currentBuilding
 
 // ----------------- Resource Management -----------------
 // Creating matrix by allocating and set bound

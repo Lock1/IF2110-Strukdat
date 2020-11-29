@@ -1,0 +1,38 @@
+ID 0-9 -> Reserved for technical use
+Space
+  Char : ' '
+  ID   : 0
+
+Player
+  Char : '@'
+  ID   : 1
+
+Wall
+  Char : '#'
+  ID   : 2
+
+Up Area
+  Char : '^'
+	3
+
+Left Area
+	4
+
+Right Area
+	5
+
+Down Area
+	6
+
+Office
+	7
+
+Queue
+	8
+
+Special UTF Print
+  Char : '*'
+  ID   : ??
+
+ID 10-19 -> Reserved for materials
+ID 20+ -> Reserved for building

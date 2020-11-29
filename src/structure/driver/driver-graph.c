@@ -1,18 +1,20 @@
-// Driver graph
+// ADT Graf
 // 13519146 / Fadel Ananda Dotty
+#include "../graph.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "../graph.h"
 
-int main(){
-    int nodes;
-    printf("Masukkan jumlah node: ");
-    scanf("%d", &nodes);
+int main() {
+  addrGraph graph = createAGraph(4);
+  addEdge(graph, 0, 1);
+  addEdge(graph, 1, 2);
+  addEdge(graph, 2, 3);
+  addEdge(graph, 3, 0);
 
-    address adj[nodes];
-    for(int i=0; i<nodes; i++)
-        adj[i]=NULL;
-    ReadGraph(adj, nodes);
-    PrintGraph(adj, nodes);
-    return 0;
+  printGraph(graph);
+
+  if (isGraphConnected(graph, 0, 1))
+    printf("0 1 are connected\n");
+
+  return 0;
 }

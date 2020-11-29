@@ -1,6 +1,5 @@
-/* File: jam.h */
-/* Tanggal: 28 Agustus 2016 */
-/* Definisi ADT JAM */
+// ADT Jam
+// 13519046 / Dwianditya Hanif Raharjanto
 
 #ifndef JAM_H
 #define JAM_H

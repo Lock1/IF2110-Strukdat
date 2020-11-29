@@ -1,42 +1,68 @@
+// ADT Graf
+// 13519146 / Fadel Ananda Dotty
+#include "graph.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "graph.h"
 
-
-void ReadGraph(address ad[], int nbNode)
-{
-    address new_node;
-    int k, val;
-    for(int i=0; i<nbNode; i++){
-        address last = NULL;
-        printf("Masukkan jumlah tetangga node %d: ", i+1);
-        scanf("%d", &k);
-        for(int j=0; j<k; j++){
-            printf("Masukkan nilai tetangga node %d: ", i+1);
-            scanf("%d", &val);
-            new_node = (address) malloc(sizeof(address));
-            new_node->info=val;
-            new_node->next=NULL;
-            if(ad[i]==NULL)
-                ad[i]=new_node;
-            else
-                last->next=new_node;
-            last=new_node;
-            
-        }
-    }
+// Membuat sebuah node dengan info berupa v
+addressGraphNode createNode(int X) {
+  addressGraphNode newNode = malloc(sizeof(node));
+  Vertex(newNode) = X;
+  Next(newNode) = NULL;
+  return newNode;
 }
 
+// Membuat graph kosong dengan simpul sebanyak vertices
+addrGraph createAGraph(int vertices) {
+  addrGraph graph = malloc(sizeof(Graph));
+  NumVertices(graph) = vertices;
 
-void PrintGraph(address ad[], int nbNode){
-    address Ptr=NULL;
-    for (int i=0; i<nbNode; i++){
-        Ptr=ad[i];
-        printf("\n The neighbours of %d are: ", i+1);
-        while(Ptr!=NULL){
-            printf("%d\t", Ptr->info);
-            Ptr=Ptr->next;
-        }
-    }
+  AdjList(graph) = malloc(vertices * sizeof(addressGraphNode));
+
+  for (int i = 0; i < vertices; i++)
+    AdjList(graph)[i] = NULL;
+
+  return graph;
 }
 
+// Membuat sisi dari src ke dest
+void addEdge(addrGraph graph, int src, int dst) {
+  // dari src ke dest
+  addressGraphNode newNode = createNode(dst);
+  Next(newNode) = AdjList(graph)[src];
+  AdjList(graph)[src] = newNode;
+
+  // dari dest ke src
+  newNode = createNode(src);
+  Next(newNode) = AdjList(graph)[dst];
+  AdjList(graph)[dst] = newNode;
+}
+
+// Mengeprint graph yang telah dibuat
+void printGraph(addrGraph graph) {
+  for (int ver = 0; ver < NumVertices(graph); ver++) {
+    addressGraphNode temp = AdjList(graph)[ver];
+    printf("\n Vertex %d\n: ", ver);
+    while (temp) {
+      printf("%d -> ", Vertex(temp));
+      temp = Next(temp);
+    }
+    printf("\n");
+  }
+
+}
+
+boolean isGraphConnected(addrGraph graph, int src, int dest){
+  for (int i=0; i < graph->numVertices; i++){
+    addressGraphNode temp = AdjList(graph)[i];
+    if(i==src){
+      while(temp){
+        if (Vertex(temp)==dest)
+          return true;
+        else
+          temp=Next(temp);
+      }
+    }
+  }
+  return false;
+}
