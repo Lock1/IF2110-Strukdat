@@ -25,7 +25,7 @@
 #define BUILD_TIME 120
 #define UPGRADE_TIME 60
 #define REPAIR_TIME 30
-#define MOVE_TIME 1
+#define MOVE_TIME 3
 #define SERVE_TIME 15
 #define BUY_TIME 90
 #define MAX_WAHANA 200

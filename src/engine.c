@@ -60,10 +60,15 @@ Wahana* buildingDatabase;
 Material* materialDatabase;
 BinTree* upgradeDatabase;
 Wahana** currentBuildingDatabase;
+int currentBuildingCapacity[MAX_SERVE];
 POINT* buildingLocationDatabase;
 addrGraph mapGraph;
 PrioQueueChar playQueue;
 queueElmtType currentServe[MAX_SERVE];
+int currentServeDuration[MAX_SERVE];
+int currentServeBuildingIndex[MAX_SERVE];
+boolean currentServeDone[MAX_SERVE];
+int lastServeIndex = 0;
 
 // -------------------------------------------------------
 
@@ -893,8 +898,8 @@ void customerTickCheck() {
             Dequeue(&playQueue,&tempTrash);
         }
         else {
-            if (25 > (random() % 100))
-            *(&(QueueElmt(playQueue,currentIndex).happiness)) = QueueElmt(playQueue,currentIndex).happiness - 1;
+            if (15 > (random() % 100))
+                *(&(QueueElmt(playQueue,currentIndex).happiness)) = QueueElmt(playQueue,currentIndex).happiness - 1;
         }
         currentIndex = Head(playQueue);
         while (currentIndex != Tail(playQueue)) {
@@ -906,12 +911,68 @@ void customerTickCheck() {
             currentIndex = (currentIndex + 1) % QueueMaxEl(playQueue);
         }
     }
-    
+}
 
+void customerPlayingCheck() {
+    for (int i = 0 ; i < lastServeIndex ; i++) {
+        if (!currentServeDone[i] && currentServeDuration[i] > 0)
+            currentServeDuration[i] -= 1;
+        else if (!currentServeDone[i] && currentServeDuration[i] == 0) {
+            boolean rollBreak = 25 > (random() % 100);
+            currentServeDone[i] = true;
+            *(&currentBuildingCapacity[currentServeBuildingIndex[i]]) += 1;
+            money += (*currentBuildingDatabase[currentServeBuildingIndex[i]]).harga;
+            if (rollBreak)
+                (*currentBuildingDatabase[currentServeBuildingIndex[i]]).statusWahana = false;
+            currentServe[i].prio = 1;
+            Enqueue(&playQueue,currentServe[i]);
+        }
+    }
 }
 
 void serveCustomer() {
+    queueElmtType servedCustomer;
+    // TODO : Move cursor
+    if (NBElmtQueue(playQueue) > 0) {
+        Wahana firstBuilding = *currentBuildingDatabase[QueueElmt(playQueue,Head(playQueue)).info[0]];
+        Wahana secondBuilding = *currentBuildingDatabase[QueueElmt(playQueue,Head(playQueue)).info[1]];
+        int firstBuildingIndex = QueueElmt(playQueue,Head(playQueue)).info[0];
+        int secondBuildingIndex = QueueElmt(playQueue,Head(playQueue)).info[1];
+        int* firstBuildingCapacity = &currentBuildingCapacity[QueueElmt(playQueue,Head(playQueue)).info[0]];
+        int* secondBuildingCapacity = &currentBuildingCapacity[QueueElmt(playQueue,Head(playQueue)).info[1]];
+        boolean isFirstBuildingDone = QueueElmt(playQueue,Head(playQueue)).isServed[0];
+        boolean isSecondBuildingDone = QueueElmt(playQueue,Head(playQueue)).isServed[1];
 
+        if (!isFirstBuildingDone && firstBuilding.statusWahana && (*firstBuildingCapacity > 0))  {
+            Dequeue(&playQueue,&servedCustomer);
+            *firstBuildingCapacity = *firstBuildingCapacity - 1;
+            servedCustomer.isServed[0] = true;
+            currentServe[lastServeIndex] = servedCustomer;
+            currentServeDuration[lastServeIndex] = firstBuilding.durasi;
+            currentServeDone[lastServeIndex] = false;
+            currentServeBuildingIndex[lastServeIndex] = firstBuildingIndex;
+            lastServeIndex++;
+        }
+        else if (!isSecondBuildingDone && secondBuilding.statusWahana && (*secondBuildingCapacity > 0)) {
+            Dequeue(&playQueue,&servedCustomer);
+            *secondBuildingCapacity = *secondBuildingCapacity - 1;
+            servedCustomer.isServed[1] = true;
+            currentServe[lastServeIndex] = servedCustomer;
+            currentServeDuration[lastServeIndex] = secondBuilding.durasi;
+            currentServeDone[lastServeIndex] = false;
+            currentServeBuildingIndex[lastServeIndex] = secondBuildingIndex;
+            lastServeIndex++;
+        }
+        else
+            puts("Tidak ada yang dapat diserve");
+    }
+    else
+        puts("Tidak ada antrian");
+}
+
+void playPhaseCopyCapacity() {
+    for (int i = 0 ; i < currentBuildingCount ; i++)
+        currentBuildingCapacity[i] = (*currentBuildingDatabase[i]).kapasitas;
 }
 
 
@@ -1272,8 +1333,11 @@ void playDay() {
     frameSet(2);
     mapUpdate(2);
     currentMap = playerMapLocation;
+    lastServeIndex = 0;
     entityAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)) = 0;
     occupiedAt(map[playerMapLocation],Ordinat(playerLocation),Absis(playerLocation)) = false;
+
+    playPhaseCopyCapacity();
 
     forceDraw();
     draw();
@@ -1352,6 +1416,7 @@ void playDay() {
             if ((Durasi(currentTime,cPrepTime) % 1440 - SERVE_TIME) >= 0) {
                 customerTickCheck();
                 generateNewCustomer();
+                customerPlayingCheck();
                 serveCustomer(); // TODO : Completion
             }
             else
@@ -1361,6 +1426,7 @@ void playDay() {
             if ((Durasi(currentTime,cPrepTime) % 1440 - MOVE_TIME) >= 0) {
                 customerTickCheck();
                 generateNewCustomer();
+                customerPlayingCheck();
                 moveMap(&playerLocation, CurrentInput[0], 2, true);
             }
             else {
