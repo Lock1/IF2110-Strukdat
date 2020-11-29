@@ -1,0 +1,1 @@
+  // createWahanaByID(&W, 1);

@@ -24,6 +24,8 @@ source: from my shitty C++ and windows-based game lul
 #include "structure/graph.h"
 #include "structure/tree.h"
 #include "structure/listlinear.h"
+#include "structure/listarray.h"
+#include "structure/prioqueuechar.h"
 
 
 #include "fileio.h"
@@ -46,39 +48,85 @@ boolean stringCompare(char* st1, char* st2);
 // Comparing 2 string and return true if equal
 boolean integerInput(int *store);
 // Asking for user input
+void delay(int limit);
+// Delaying by count
 // xxx------------------------------------xxx
 
 
-// xxx----- External engine function -----xxx
-// TODO : Input
-
-// TODO : Whole lot of update function
-
-// TODO : Use some seed for rng (probably username also fine lul)
-
+// xxx----- External function -----xxx
 boolean startGame();
-// Checking for save and newgame
+// Checking for save or new game
 
-void endGame();
-
-void colorSchemeChange();
-
+// xxx----- Internal function -----xxx
 void prepDay();
+// Preparation phase procedure
 
 void playDay();
+// Play phase procedure
 
-void frameSet();
+void endGame();
+// Quit game
+
+void colorSchemeChange();
+// Change color scheme
+
+// ------------ Database Procedures ------------
+void loadDatabase();
+// Load from file and create databases
 
 void loadMap();
+// Load from map and create base map
 
+
+
+// ------------- Action Procedures ------------
 int actionUndo();
+// Undo action with stack
 
 void buildNewBuilding(void);
-
-void buyMaterial(void);
+// Creating new building
 
 void upgradeBuilding(void);
+// Upgrading building
 
+void buyMaterial(void);
+// Buy materials
+
+void getDetails();
+// Get all details of building
+
+void getLaporan();
+// Get all report of building
+
+void repairBuilding(int posX, int posY);
+// Fix broken building, no refunds
+
+void destroy();
+// DEBUG ONLY : Break every newBuilding
+
+
+
+// ------------ Movement Procedures ------------
+void moveCursor(POINT* movingObject, char input, boolean collision);
+// If not move map, then check collision / just move
+
+void moveMap(POINT* movingObject, char input, int drawMode, boolean collision);
+// Movement with map checking
+
+void buildingCollisionPrompt(int posX, int posY);
+// Prompting user repair or detail
+
+void officeCollisionPrompt();
+// Promting user for detail or report
+
+void queueCollisionPrompt();
+// Promting user for serve
+
+
+
+
+// -------- Drawing Procedures ---------
+// -- List drawing procedures --
 void printBuildList();
 
 void printUpgradeList();
@@ -87,22 +135,27 @@ void printMaterialList();
 
 void printLegendList();
 
-void loadDatabase();
+void printDetail();
+// Creating respective list and draw on screen
 
-void infoUpdate();
+void infoUpdate(int tp);
 // Update frame with changes in information screen
 
 void mapUpdate();
 // Update frame with changes in map
 
-void delay(int limit);
-// Delaying by count
 void drawLoading();
+// Draw loading bar
+
+void frameSet(int tp);
+// Setting frame with respective mode
+
 void unicodeDraw();
+// Single draw only, force draw but only for unicode char
 
 void draw();
 // Draw frame on screen with double buffering
-/* Note : Like my C++, implemented with double buffer
+/* Note : Like old project, implemented with double buffer
 in order to avoid flickering issues */
 
 void forceDraw();
