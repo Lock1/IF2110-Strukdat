@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "config.h"
 #include "fileio.h"
+#include "structure/listarray.h"
 
 int ReadFromWahana(Wahana** database, int materialCount){
 	FILE* file=fopen("data/wahana.txt", "r");
@@ -61,7 +62,10 @@ int ReadFromBahan(Material**database){
 
 	char buffer[200];
 	fgets(buffer, 200, file);
-	Material* array=(Material*)malloc(BAHAN_MAX*sizeof(Material));
+	// Material* array=(Material*)malloc(BAHAN_MAX*sizeof(Material));
+	list array;
+	makeList(BAHAN_MAX,&array);
+
 
 	// while(!feof(file)){
 	int i=0;
@@ -73,11 +77,12 @@ int ReadFromBahan(Material**database){
 		fgets(buffer, 200, file);
 		MaterialCount(m)=0;
 		// printf("%s\n", m.nama);
-		array[i]=m;
+		append(&array,m);
 		i++;
 	} while(!feof(file));
 	fclose(file);
-	*database = array;
+	*database = array.data;
+	// deleteList(&array);
 	return i;
 }
 

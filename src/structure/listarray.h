@@ -7,14 +7,15 @@
 
 // Library
 #include "boolean.h"
+#include "material.h"
 
-typedef struct lsttpl {
-    char* s;
-    int d;
-} listTuple;
+// typedef struct lsttpl {
+//     char* s;
+//     int d;
+// } listTuple;
 
 typedef struct lst {
-    listTuple *data;
+    Material *data;
     int length;
     int maxIdx;
 } list;
@@ -34,7 +35,7 @@ void deleteList(list *ls);
 // -------------------------------------------------------
 
 // --------------------- Manipulator ---------------------
-void append(list *ls, listTuple newElement);
+void append(list *ls, Material newElement);
 // -------------------------------------------------------
 
 #endif
